@@ -1,0 +1,25 @@
+from config import client, Strings
+from modules.buttons import InlineButtonsData
+from modules.handlers.limiter import Limit
+from telethon.events import CallbackQuery
+from modules.handlers.step import Step
+
+
+async def inline_set_part(event: CallbackQuery.Event) -> None:
+
+    Data = bytes(event.data).decode()
+    if Data == InlineButtonsData.CUSTOM_SHARJ:
+
+        await client.send_message(
+            event.chat_id,
+            Strings.GET_CUSTOM_SHARJ
+        )
+
+        Limit.LIMIT[str(event.sender_id)] = {
+            "part": Step.GET_CUSTOM_SHARJ
+        }
+
+    elif Data == "":
+        ...
+
+
