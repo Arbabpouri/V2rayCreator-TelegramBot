@@ -7,8 +7,8 @@ from modules.handlers.step import Step
 
 async def inline_set_part(event: CallbackQuery.Event) -> None:
 
-    Data = bytes(event.data).decode()
-    if Data == InlineButtonsData.CUSTOM_SHARJ:
+    data = bytes(event.data).decode()
+    if data == InlineButtonsData.CUSTOM_SHARJ:
 
         await client.send_message(
             event.chat_id,
@@ -19,7 +19,7 @@ async def inline_set_part(event: CallbackQuery.Event) -> None:
             "part": Step.GET_CUSTOM_SHARJ
         }
 
-    elif Data == "":
+    elif data == "":
         ...
 
 

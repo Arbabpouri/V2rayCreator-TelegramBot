@@ -1,5 +1,9 @@
 class UrlButtonsString:
+
+    @staticmethod
+    def shop(price: int) -> str:
+        return f"🔋 {int(price):,} تومان 💸"
+
     SUPPORT = "📞 ارتباط با ادمین 📞"
     REFRRAL = "💢 لینک زیر مجموعه گیری 💢"
-    SHOP = lambda Price: f"🔋 {int(Price):,} تومان 💸"
     CLICK_ME = "📍 کلیک کنید 📍"

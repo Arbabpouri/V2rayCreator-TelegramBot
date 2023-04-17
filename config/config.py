@@ -1,7 +1,7 @@
 class Config:
     API_ID = 3359959 # Api id daryaft shode az telegram
     API_HASH = "fc809b5d42bdac477f9ac9b56383a699" # Api Hash daryaft shode az telegram
-    BOT_TOKEN = "6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks" # token daryeft shode az @BotFather
+    BOT_TOKEN = "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8" # token daryeft shode az @BotFather
     BOT_USERNAME = "V2rayCreatorBot" # without the @ , example : V2rayCreatorBot
     SESSION_NAME = "bot" # harchizi
     ADMIN_USERNAME = "cn_mellat" # without the @ , example : ADMIN

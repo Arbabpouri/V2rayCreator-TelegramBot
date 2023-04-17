@@ -1,8 +1,26 @@
 class InlineButtonsData:
     CUSTOM_SHARJ = "CUSTOM-SHARJ"
-    select_server = lambda name: "Server-{}".format(name)
-    select_plan = lambda date, traffic: "Plan-{}-{}".format(traffic, date)
-    select_config = lambda name: "Config-{}".format(name)
-    change_protocol = lambda ServerName, From, To: "ChangeProtocol-{}-{}-{}".format(ServerName, From, To)
-    change_server_from = lambda From: "ChangeServerFrom-{}".format(From)
-    change_server_to = lambda To: "ChangeServerTo-{}".format(To)
+
+    @staticmethod
+    def select_server(name: str) -> str:
+        return "Server-{}".format(name)
+
+    @staticmethod
+    def select_plan(date, traffic) -> str:
+        return "Plan-{}-{}".format(traffic, date)
+
+    @staticmethod
+    def select_config(name) -> str:
+        return "Config-{}".format(name)
+
+    @staticmethod
+    def change_protocol(server_name: str, from_server: str, to_server: str) -> str:
+        return "ChangeProtocol-{}-{}-{}".format(server_name, from_server, to_server)
+
+    @staticmethod
+    def change_server_from(from_server: str) -> str:
+        return "ChangeServerFrom-{}".format(from_server)
+
+    @staticmethod
+    def change_server_to(to_server):
+        return "ChangeServerTo-{}".format(to)
