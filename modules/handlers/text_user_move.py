@@ -6,7 +6,7 @@ from modules import TextButtunsString, TextButtons, UrlButtons
 async def user_move(event: Message) -> None:
     text = str(event.message.message)
 
-    # in bakhsh /start ve ersal menu asli bot ast
+    # this is session for /start and send main menu
     if (text == "/start"):
 
         await client.send_message(
@@ -15,7 +15,7 @@ async def user_move(event: Message) -> None:
             buttons=TextButtons.start_menu(event.sender_id)
         )
 
-    # in bakhsh enteghab server ast baraye kharid
+    # this is session for select server for buy
     elif (text == TextButtunsString.BUY_CONFIG):
 
         await client.send_message(
@@ -24,7 +24,7 @@ async def user_move(event: Message) -> None:
 
         )
 
-    # in bakhsh moshahede moshakhasat ast
+    # this is session for show accounts information
     elif (text == TextButtunsString.ACCOUNT):
 
         await client.send_message(
@@ -34,12 +34,12 @@ async def user_move(event: Message) -> None:
             parse_mode="html"
         )
 
-    # in bakhsh namayesh eshterak haye karbar ast
+    # this is session for show configs
     elif (text == TextButtunsString.MY_SUBSCRIPTIONS):
         print(event.message.message)
         print(event.message.message)
 
-    # in bakhsh ersal dokme haye sharj ast
+    # this is session for show charge buttons
     elif (text == TextButtunsString.SHOP):
 
         seller = False
@@ -49,16 +49,16 @@ async def user_move(event: Message) -> None:
             buttons=UrlButtons.shop(event.sender_id, seller)
         )
 
-    # in bakhsh ersal link refrral ast
-    elif (text == TextButtunsString.REFRRAL):
+    # this is session for send referral link to user
+    elif (text == TextButtunsString.REFERRAL):
 
         await client.send_message(
             event.chat_id,
-            Strings.refrral(event.sender_id),
-            buttons=UrlButtons.refrral(event.sender_id)
+            Strings.referral(event.sender_id),
+            buttons=UrlButtons.referral(event.sender_id)
         )
 
-    # in bakhsh ersal id postiban ast
+    # this is session for send admin username to user
     elif (text == TextButtunsString.SUPPORT):
 
         await client.send_message(
@@ -67,7 +67,7 @@ async def user_move(event: Message) -> None:
             buttons=UrlButtons.SUPPORT
         )
 
-    # in bakhsh daryaft id adadi ast
+    # this is session for send userid for user
     elif (text == TextButtunsString.GET_USER_ID):
 
         await client.send_message(

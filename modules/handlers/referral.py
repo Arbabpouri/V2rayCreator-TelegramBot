@@ -3,7 +3,7 @@ from modules import TextButtons
 from modules import APIS
 
 
-async def refrral(event):
+async def referral_handler(event):
 
     user = str(event.message.message).lower().replace('https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
     CeckUser = ...

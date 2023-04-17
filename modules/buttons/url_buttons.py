@@ -9,17 +9,17 @@ class UrlButtons:
     SUPPORT = [[Button.url(UrlButtonsString.SUPPORT, "https://t.me/{}".format(Config.ADMIN_USERNAME))]]
 
     @staticmethod
-    def refrral(user_id: int) -> list:
+    def referral(user_id: int) -> list:
         return [
             [
-                Button.url(UrlButtonsString.REFRRAL, f"https://t.me/{Config.BOT_USERNAME}?start={user_id}")
+                Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={user_id}")
             ],
         ]
 
     @staticmethod
     def shop(user_id: int, seller: bool) -> list:
 
-        price = Config.USER_SHARJ if not seller else Config.SELLER_SHARJ
+        price = Config.USER_CHARGE if not seller else Config.SELLER_CHARGE
 
         buttons = []
         for i in range(0, len(price) - 1, 2):
@@ -41,7 +41,7 @@ class UrlButtons:
 
         buttons.append(
             [
-                Button.inline(InlineButtonsString.CUSTOM_SHARJ, InlineButtonsData.CUSTOM_SHARJ)
+                Button.inline(InlineButtonsString.CUSTOM_CHARGE, InlineButtonsData.CUSTOM_CHARGE)
             ]
         )
 

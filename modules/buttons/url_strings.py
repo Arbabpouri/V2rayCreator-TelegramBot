@@ -5,5 +5,5 @@ class UrlButtonsString:
         return f"🔋 {int(price):,} تومان 💸"
 
     SUPPORT = "📞 ارتباط با ادمین 📞"
-    REFRRAL = "💢 لینک زیر مجموعه گیری 💢"
+    REFERRAL = "💢 لینک زیر مجموعه گیری 💢"
     CLICK_ME = "📍 کلیک کنید 📍"

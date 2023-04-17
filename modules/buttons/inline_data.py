@@ -1,5 +1,5 @@
 class InlineButtonsData:
-    CUSTOM_SHARJ = "CUSTOM-SHARJ"
+    CUSTOM_CHARGE = "CUSTOM-CHARGE"
 
     @staticmethod
     def select_server(name: str) -> str:
@@ -23,4 +23,4 @@ class InlineButtonsData:
 
     @staticmethod
     def change_server_to(to_server):
-        return "ChangeServerTo-{}".format(to)
+        return "ChangeServerTo-{}".format(to_server)
