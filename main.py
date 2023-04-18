@@ -1,4 +1,4 @@
-from config import client, config
+from config import client
 from modules import user_move, referral_handler, inline_set_part, get_informatios
 from telethon.events import NewMessage, CallbackQuery
 from modules import Limit
