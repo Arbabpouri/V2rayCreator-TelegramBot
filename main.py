@@ -11,7 +11,6 @@ if __name__ == "__main__":
         with open(r"./config/token.txt", "r") as file:
 
             Config.TOKEN = str(file.read())
-
         print("Token received")
         # for move user to different sessions
         client.add_event_handler(
