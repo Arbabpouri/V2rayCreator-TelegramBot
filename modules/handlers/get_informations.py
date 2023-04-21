@@ -8,19 +8,44 @@ from modules.functions.payment_link import create_payment_link
 from modules.buttons import TextButtons, UrlButtons
 
 async def get_informatios(event: Message) -> None:
-
     text = str(event.message.message)
     limit = Limit.LIMIT[str(event.sender_id)]
     if (limit["part"] == Step.GET_CUSTOM_SHARJ):
+        if (not text.isnumeric()):
+            await client.send_message(
+                event.chat_id,
+                Strings.NOT_NUMBER
+            )
 
-        if (text.isnumeric()):
-
+        else:
             seller = await APIS.UserApi.get_user_type(event.sender_id)
+            # if user founded
+            if (seller != 3):
+                Price = Config.MIN_USER_SHARJ if (seller == 1) else Config.MIN_SELLER_SHARJ
+                if (int(text) >= Price):
+                    await client.send_message(
+                        event.chat_id,
+                        Strings.WAITING,
+                        buttons=TextButtons.start_menu(event.sender_id)
+                    )
+                    await asyncio.sleep(0.5)
+                    link = create_payment_link(event.sender_id, int(text))
+                    await client.send_message(
+                        event.chat_id,
+                        Strings.created_payment_link(text),
+                        buttons=UrlButtons.payment_link(link)
+                    )
+                    del Limit.LIMIT[str(event.sender_id)], text, link, Price
 
-            # if (seller == 3):
-            #
-            #     status = await APIS.UserApi.add_user(event.sender_id)
-            #
+                else:
+                    await client.send_message(
+                        event.chat_id,
+                        Strings.low_price(Price)
+                    )
+            # user not found
+            else:
+                status = await APIS.UserApi.add_user(event.sender_id)
+
             #     if (status is False):
             #
             #         await client.send_message(event.sender_id, "")
@@ -30,40 +55,11 @@ async def get_informatios(event: Message) -> None:
             #         del text
             #         del Limit.LIMIT[str(event.sender_id)]
             #         return None
-            # del Limit.LIMIT[str(event.sender_id)], text, link, Price
+            #         del Limit.LIMIT[str(event.sender_id)], text, link, Price
 
 
-            Price = Config.MIN_USER_SHARJ if (seller == 1) else Config.MIN_SELLER_SHARJ
-            if (int(text) >= Price):
 
-                await client.send_message(
-                    event.chat_id,
-                    Strings.WAITING,
-                    buttons= TextButtons.start_menu(event.sender_id)
-                )
-                await asyncio.sleep(0.5)
-                link = create_payment_link(event.sender_id, int(text))
-                await client.send_message(
-                    event.chat_id,
-                    Strings.created_payment_link(text),
-                    buttons= UrlButtons.payment_link(link)
-                )
 
-                del Limit.LIMIT[str(event.sender_id)], text, link, Price
-
-            else:
-
-                await client.send_message(
-                    event.chat_id,
-                    Strings.low_price(Price)
-                )
-
-        else:
-
-            await client.send_message(
-                event.chat_id,
-                Strings.NOT_NUMBER
-            )
 
     elif (limit["part"] == ""):
         ...
