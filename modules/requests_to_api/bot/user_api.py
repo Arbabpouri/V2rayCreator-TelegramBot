@@ -1,5 +1,6 @@
 from requests import post
 from config import Config
+from json import loads
 
 
 class UserApi:
@@ -27,12 +28,10 @@ class UserApi:
             }
         )
 
-        if (req.status_code == 200):
+        if (req.status_code == 200) and str(result["result"]) == "0":
 
-            result = req.json()
-            if (str(result["result"]) == "0"):
-
-                return True
+            result = loads(req.content)
+            return True
 
         return False
 
@@ -54,15 +53,10 @@ class UserApi:
                 "userId": int(user_id),
             }
         )
-
-        if (req.status_code != 200):
-
-            result = req.json()
+        result = loads(req.content)
+        if (req.status_code == 200 and str(result["status"]) == "0"):
+            
             del req
-            if (str(result["status"]) == "0"):
-
-                user_type = result["result"]["type"]
-                del result
-                return self.type_response[str(user_type)]
+            return self.type_response[str(result["result"]["type"])]
 
         return False

@@ -2,6 +2,7 @@ from os import mkdir
 from os.path import exists
 from config import Config
 from requests import post
+from json import loads
 
 
 class ApiConfig:
@@ -16,8 +17,12 @@ class ApiConfig:
                 "password": Config.PASSWORD,
             }
         )
-        if (req.status_code == 200):
-            ...
+        result = loads(req.content)
+        if (req.status_code == 200 and str(req["status_code"]) == "0"):
+            del req
+            
+            
+            
 
         return False
 
