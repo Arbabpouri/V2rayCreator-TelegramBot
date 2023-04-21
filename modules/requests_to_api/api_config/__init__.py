@@ -1,6 +1,3 @@
-from .get_token_from_api import get_token
+from .api_config import ApiConfig
 
-
-class ApiConfig:
-    get_api_token = get_token
 

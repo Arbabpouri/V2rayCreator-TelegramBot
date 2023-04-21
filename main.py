@@ -1,12 +1,18 @@
-from config import client
+from config import client, Config
 from modules import user_move, referral_handler, inline_set_part, get_informatios
 from telethon.events import NewMessage, CallbackQuery
-from modules import Limit
+from modules import Limit, APIS
+
 
 print('Imported')
 if __name__ == "__main__":
     try:
 
+        with open(r"./config/token.txt", "r") as file:
+
+            Config.TOKEN = str(file.read())
+
+        print("Token received")
         # for move user to different sessions
         client.add_event_handler(
             user_move,
@@ -40,6 +46,13 @@ if __name__ == "__main__":
         print('Handlers Created\nBot is online')
         client.run_until_disconnected()
 
+    except FileNotFoundError:
+
+        APIS.ApiConfig.get_token()
+        print("Please re run")
+        exit()
+
     except Exception as ex:
 
         print(ex)
+        exit()
