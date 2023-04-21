@@ -10,18 +10,17 @@ from modules.buttons import TextButtons, UrlButtons
 async def get_informatios(event: Message) -> None:
     text = str(event.message.message)
     limit = Limit.LIMIT[str(event.sender_id)]
-    if (limit["part"] == Step.GET_CUSTOM_SHARJ):
+
+    # get number for payment link for create custom charge
+    if (limit["part"] == Step.GET_CUSTOM_CHARGE):
         if (not text.isnumeric()):
-            await client.send_message(
-                event.chat_id,
-                Strings.NOT_NUMBER
-            )
+            await client.send_message(event.chat_id, Strings.NOT_NUMBER)
 
         else:
-            seller = await APIS.UserApi.get_user_type(event.sender_id)
+            user_type = await APIS.UserApi.get_user_type(event.sender_id)
             # if user founded
             if (seller != 3):
-                Price = Config.MIN_USER_SHARJ if (seller == 1) else Config.MIN_SELLER_SHARJ
+                Price = Config.MIN_USER_CHARGE if (user_type == 1) else Config.MIN_SELLER_CHARGE
                 if (int(text) >= Price):
                     await client.send_message(
                         event.chat_id,
@@ -38,10 +37,8 @@ async def get_informatios(event: Message) -> None:
                     del Limit.LIMIT[str(event.sender_id)], text, link, Price
 
                 else:
-                    await client.send_message(
-                        event.chat_id,
-                        Strings.low_price(Price)
-                    )
+                    await client.send_message(event.chat_id, Strings.low_price(Price))
+
             # user not found
             else:
                 status = await APIS.UserApi.add_user(event.sender_id)
@@ -56,22 +53,3 @@ async def get_informatios(event: Message) -> None:
             #         del Limit.LIMIT[str(event.sender_id)]
             #         return None
             #         del Limit.LIMIT[str(event.sender_id)], text, link, Price
-
-
-
-
-
-    elif (limit["part"] == ""):
-        ...
-
-
-
-
-
-
-
-
-
-
-
-

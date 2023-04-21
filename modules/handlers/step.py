@@ -1,2 +1,2 @@
 class Step:
-    GET_CUSTOM_SHARJ = "Get-Custom-Sharj"
+    GET_CUSTOM_CHARGE = "Get-Custom-Sharj"
