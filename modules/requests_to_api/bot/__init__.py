@@ -1,3 +1,3 @@
-from .is_seller import is_seller
+from .user_type import get_user_type
 class Database:
-    is_seller = is_seller
+    user_type = get_user_type
