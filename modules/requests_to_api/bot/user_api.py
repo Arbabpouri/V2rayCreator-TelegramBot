@@ -15,12 +15,15 @@ class UserApi:
     # for add user to database
     @staticmethod
     async def add_user(user_id: int, referraler: int = 0) -> bool:
+        if (not str(user_id).isnumeric() or not str(referraler).isnumeric()):
+
+            raise ValueError("user_id or referraler argument is not a number")
 
         req = post(
             url=Config.ADD_USER_URL,
             data={
-                "userId": user_id,
-                "referralerUserId": referraler
+                "userId": int(user_id),
+                "referralerUserId": int(referraler)
             }
         )
 
