@@ -29,22 +29,17 @@ class UserApi:
             result = req.json()
             if (str(result["result"]) == "0"):
 
-                ...
+                return True
 
-            elif (str(result["result"]) == "1"):
+        return False
 
-                ...
-
-            else:
-
-                ...
-
-        else:
-
-            raise ConnectionError("Error in send request to API")
+    # for get user information(balance/configs/...)
+    @staticmethod
+    async def get_user_information(user_id) -> dict | bool:
+        ...
 
     # for get user type , example : manual, seller and ...
-    async def get_user_type(self, user_id: int) -> str:
+    async def get_user_type(self, user_id: int) -> str | bool:
 
         if (not str(user_id).isnumeric()):
 
@@ -67,15 +62,4 @@ class UserApi:
                 del result
                 return self.type_response[str(user_type)]
 
-            elif (str(result["status"]) == "1"):
-
-                ...
-
-            else:
-
-                # TODO: handle this session error
-                ...
-
-        else:
-
-            raise ConnectionError("Error in send request to API")
+        return False
