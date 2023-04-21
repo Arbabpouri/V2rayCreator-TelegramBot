@@ -7,7 +7,7 @@ from modules.requests_to_api import APIS
 from modules.functions.payment_link import create_payment_link
 from modules.buttons import TextButtons, UrlButtons
 
-async def get_informatios(event: Message) -> "This function is for handler":
+async def get_informatios(event: Message) -> None:
 
     text = str(event.message.message)
     limit = Limit.LIMIT[str(event.sender_id)]
@@ -15,8 +15,25 @@ async def get_informatios(event: Message) -> "This function is for handler":
 
         if (text.isnumeric()):
 
-            seller = True
-            Price = Config.MIN_USER_SHARJ if seller is False else Config.MIN_SELLER_SHARJ
+            seller = await APIS.UserApi.get_user_type(event.sender_id)
+
+            # if (seller == 3):
+            #
+            #     status = await APIS.UserApi.add_user(event.sender_id)
+            #
+            #     if (status is False):
+            #
+            #         await client.send_message(event.sender_id, "")
+            #         del status
+            #         del seller
+            #         del limit
+            #         del text
+            #         del Limit.LIMIT[str(event.sender_id)]
+            #         return None
+            # del Limit.LIMIT[str(event.sender_id)], text, link, Price
+
+
+            Price = Config.MIN_USER_SHARJ if (seller == 1) else Config.MIN_SELLER_SHARJ
             if (int(text) >= Price):
 
                 await client.send_message(
@@ -31,8 +48,8 @@ async def get_informatios(event: Message) -> "This function is for handler":
                     Strings.created_payment_link(text),
                     buttons= UrlButtons.payment_link(link)
                 )
-                text, link, Price = 0, 0, 0
-                del Limit.LIMIT[str(event.sender_id)]
+
+                del Limit.LIMIT[str(event.sender_id)], text, link, Price
 
             else:
 

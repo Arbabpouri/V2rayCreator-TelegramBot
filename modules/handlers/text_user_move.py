@@ -1,7 +1,6 @@
 from config import client, Strings
 from telethon.custom import Message
-from modules import TextButtunsString, TextButtons, UrlButtons
-
+from modules import TextButtunsString, TextButtons, UrlButtons, APIS
 
 async def user_move(event: Message) -> None:
     text = str(event.message.message)
@@ -9,6 +8,7 @@ async def user_move(event: Message) -> None:
     # this is session for /start and send main menu
     if (text == "/start"):
 
+        await APIS.UserApi.add_user(event.sender_id)
         await client.send_message(
             event.chat_id,
             Strings.start_menu(event.chat.first_name, event.sender_id),
@@ -36,6 +36,7 @@ async def user_move(event: Message) -> None:
 
     # this is session for show configs
     elif (text == TextButtunsString.MY_SUBSCRIPTIONS):
+
         print(event.message.message)
         print(event.message.message)
 
