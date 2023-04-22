@@ -22,7 +22,7 @@ class ApiConfig:
                 if (str(result["resultCode"]) == "ye"):  # Todo this session
                     with open(r"./config/token.txt", "w+") as file:
                         file.write(str(result["jwtToken"]))
-                        return True
+                    return True
 
                 else:
                     print(
