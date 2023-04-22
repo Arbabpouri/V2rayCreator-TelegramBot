@@ -7,7 +7,6 @@ class ApiConfig:
 
     @staticmethod
     async def get_token() -> None | bool:
-
         req = post(
             url=Config.TOKEN,
             data={
