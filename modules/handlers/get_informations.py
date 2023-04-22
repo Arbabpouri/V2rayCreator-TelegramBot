@@ -15,11 +15,10 @@ async def get_informatios(event: Message) -> None:
     if (limit["part"] == Step.GET_CUSTOM_CHARGE):
         if (not text.isnumeric()):
             await client.send_message(event.chat_id, Strings.NOT_NUMBER)
-
         else:
             user_type = await APIS.UserApi.get_user_type(event.sender_id)
             # if user founded
-            if (seller != 3):
+            if (user_type != 3):
                 Price = Config.MIN_USER_CHARGE if (user_type == 1) else Config.MIN_SELLER_CHARGE
                 if (int(text) >= Price):
                     await client.send_message(
@@ -53,3 +52,6 @@ async def get_informatios(event: Message) -> None:
             #         del Limit.LIMIT[str(event.sender_id)]
             #         return None
             #         del Limit.LIMIT[str(event.sender_id)], text, link, Price
+            
+    elif (limit["part"] == ""):
+        pass

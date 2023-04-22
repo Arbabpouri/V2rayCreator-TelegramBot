@@ -1,5 +1,3 @@
-from os import mkdir
-from os.path import exists
 from config import Config
 from requests import post
 from json import loads
@@ -17,15 +15,22 @@ class ApiConfig:
                 "password": Config.PASSWORD,
             }
         )
-        result = loads(req.content)
-        if (req.status_code == 200 and str(req["status_code"]) == "0"):
-            del req
-            
-            
-            
+        if (req.status_code == 200):
+            result = loads(req.content)
+            if (str(result["status_code"]) == "0"):
+                result = result["result"]
+                if (str(result["resultCode"]) == "ye"):  # Todo this session
+                    with open(r"./config/token.txt", "w+") as file:
+                        file.write(str(result["jwtToken"]))
+                        return True
+
+                else:
+                    print(
+                        "Error : {}".format(
+                            "Username is wrong" if (str(result["resultCode"]) == "0") else "Password is wrong" if
+                            (str(result["resultCode"]) == "1") else "Server Error"
+                        )
+                    )
+                    exit()
 
         return False
-
-
-        # with open(r"./config/token.txt", "w+") as file:
-        #     ...
