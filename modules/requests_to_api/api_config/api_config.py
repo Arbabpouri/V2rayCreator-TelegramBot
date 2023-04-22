@@ -17,8 +17,10 @@ class ApiConfig:
         )
         if (req.status_code == 200):
             result = loads(req.content)
+
             if (str(result["status_code"]) == "0"):
                 result = result["result"]
+
                 if (str(result["resultCode"]) == "ye"):  # Todo this session
                     with open(r"./config/token.txt", "w+") as file:
                         file.write(str(result["jwtToken"]))
@@ -32,5 +34,7 @@ class ApiConfig:
                         )
                     )
                     exit()
+            else:
+                pass
 
         return False
