@@ -12,35 +12,38 @@ class ApiConfig:
 
     @staticmethod
     async def get_token() -> None | bool:
+
         data = Data()
         req = post(
             url=Config.TOKEN,
             data=data.get_token
         )
+
         if (req.status_code != 200):
             del (data, req)
             return False
         
         result = loads(req.content)
         status_code = int(result["status_code"])
+
         if (status_code == 0):
             result = result["result"]
-            result_code = result["resultCode"]
+            result_code = int(result["resultCode"])
 
-            if (str(result["resultCode"]) == "ye"):  # Todo this session
+            if (result_code == 0):  # Todo this session
                 with open(r"./config/token.txt", "w+") as file:
                     file.write(str(result["jwtToken"]))
+                del (data, result, status_code, result_code)
                 return True
 
             else:
                 print(
                     "Error : {}".format(
-                        "Username is wrong" if (str(result["resultCode"]) == "0") else "Password is wrong" if 
-                        (str(result["resultCode"]) == "1") else "Server Error"
+                        "Username is wrong" if (result_code == 1) else "Password is wrong" if 
+                        (result_code == 2) else "Server Error"
                     )
                 )
                 exit()
-        else:
-            pass
 
-        
+        del (data, result, status_code)
+        return False

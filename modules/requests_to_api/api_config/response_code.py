@@ -1,3 +1,6 @@
-from enum import IntEnum
+from enum import IntEnum, unique
 
 
+@unique
+class Response(IntEnum):
+    pass

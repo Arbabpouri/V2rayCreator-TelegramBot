@@ -10,7 +10,10 @@ class Data:
     @property
     def get_token(self) -> Dict[str, str]:
         '''
-            
+            example : {
+                "username": "admin",
+                "password": "password"
+            }
         '''
         return {
             "username": self.user_name,
