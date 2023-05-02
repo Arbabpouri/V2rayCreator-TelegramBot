@@ -1,3 +1,0 @@
-
-class V2rayApi:
-    ...
