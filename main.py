@@ -1,6 +1,7 @@
 from config import client, Config
 from modules import user_move, referral_handler, inline_set_part, get_informatios
 from telethon.events import NewMessage, CallbackQuery
+from telethon import Button
 from modules import Limit, APIS
 
 
@@ -9,7 +10,6 @@ if __name__ == "__main__":
     try:
 
         with open(r"./config/token.txt", "r") as file:
-
             Config.TOKEN = str(file.read())
         print("Token received")
         # for move user to different sessions
