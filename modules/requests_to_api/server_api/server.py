@@ -5,12 +5,11 @@ from modules.requests_to_api.json_to_object import GetAllConfigTypes
 from modules.requests_to_api.data_for_send import Data
 
 
-Limiter = set({})
 
 class V2Ray:
-    
+
     def __init__(self) -> None:
-        pass
+        self.limit = 0
 
 
     @property
@@ -21,7 +20,8 @@ class V2Ray:
             pass
 
         elif (req.status_code == 401):
-            if ():
+
+            if (self.limit == 0):
                 pass
             else:
                 pass
@@ -29,4 +29,3 @@ class V2Ray:
         else:
             del req
             return False
-        
