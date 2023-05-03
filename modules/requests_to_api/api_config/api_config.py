@@ -2,7 +2,8 @@ from config import Config
 from requests import post
 from json import loads
 from modules.requests_to_api.data_for_send import Data
-from modules.requests_to_api.response_code import ResponseCode, ResponseResult
+from modules.requests_to_api.response_code import ResponseCode
+from modules.requests_to_api.json_to_object import GetToken
 
 
 class ApiConfig:
@@ -11,7 +12,7 @@ class ApiConfig:
         pass
 
 
-    @staticmethod
+    @property
     async def get_token() -> None | bool:
 
         data = Data()
@@ -21,26 +22,19 @@ class ApiConfig:
             del (data, req)
             return False
         
-        result = loads(req.content)
-        status_code = int(result["status_code"])
+        result = GetToken(**loads(req.content))
 
-        if (status_code == ResponseCode.SUCSESS):
-            result = result["result"]
-            result_code = int(result["resultCode"])
+        if (result.status == ResponseCode.SUCSESS):
 
-            if (result_code):
-                with open(r"./config/token.txt", "w+") as file:
-                    file.write(str(result["jwtToken"]))
-                del (data, result, status_code, result_code, file)
-                return True
-
-            else:
-                print(
-                    "Error : {}".format("Username is wrong" if (result_code == ResponseResult.USERNAME_ERROR) else \
-                                        "Password is wrong" if (result_code == ResponseResult.PASSWORD_ERROR) else "Server Error")
-                )
-                exit()
+            with open(r"./config/token.txt", "w+") as file:
+                file.write(result.result.jwtToken)
+            del (data, result)
+            return True
 
         else:
-            del (data, result, status_code)
-            return False
+            print(
+                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.USERNAME_ERROR) else \
+                                    "Password is wrong" if (result.status == ResponseCode.PASSWORD_ERROR) else result.message)
+            )
+            exit()
+
