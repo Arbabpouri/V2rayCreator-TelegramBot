@@ -12,46 +12,35 @@ async def get_informatios(event: Message) -> None:
     limit = Limit.LIMIT[str(event.sender_id)]
 
     # get number for payment link for create custom charge
-    if (limit["part"] == Step.GET_CUSTOM_CHARGE):
-        if (not text.isnumeric()):
-            await client.send_message(event.chat_id, Strings.NOT_NUMBER)
-        else:
-            user_type = await APIS.UserApi.get_user_type(event.sender_id)
-            # if user founded
-            if (user_type != 3):
-                Price = Config.MIN_USER_CHARGE if (user_type == 1) else Config.MIN_SELLER_CHARGE
-                if (int(text) >= Price):
-                    await client.send_message(
-                        event.chat_id,
-                        Strings.WAITING,
-                        buttons=TextButtons.start_menu(event.sender_id)
-                    )
-                    await asyncio.sleep(0.5)
-                    link = create_payment_link(event.sender_id, int(text))
-                    await client.send_message(
-                        event.chat_id,
-                        Strings.created_payment_link(text),
-                        buttons=UrlButtons.payment_link(link)
-                    )
-                    del Limit.LIMIT[str(event.sender_id)], text, link, Price
+    match(limit["part"]):
 
-                else:
-                    await client.send_message(event.chat_id, Strings.low_price(Price))
+        case (Step.GET_CUSTOM_CHARGE):
+    
+            if (not text.isnumeric()):
+                await client.send_message(event.chat_id, Strings.NOT_NUMBER)
 
-            # user not found
             else:
-                status = await APIS.UserApi.add_user(event.sender_id)
+                text = int(text)
+                user_type = await APIS.user_api(event.sender_id).get_user_type
+                # if user founded
+                if (user_type != 2):
+                    Price = Config.MIN_USER_CHARGE if (user_type == 0) else Config.MIN_SELLER_CHARGE
+                    if (text >= Price):
+                        await client.send_message(
+                            event.chat_id,
+                            Strings.WAITING,
+                            buttons=TextButtons.start_menu(event.sender_id)
+                        )
+                        await asyncio.sleep(0.5)
+                        link = create_payment_link(event.sender_id, text)
+                        await client.send_message(
+                            event.chat_id,
+                            Strings.created_payment_link(text),
+                            buttons=UrlButtons.payment_link(link)
+                        )
+                        del (Limit.LIMIT[str(event.sender_id)], text, link, Price)
 
-            #     if (status is False):
-            #
-            #         await client.send_message(event.sender_id, "")
-            #         del status
-            #         del seller
-            #         del limit
-            #         del text
-            #         del Limit.LIMIT[str(event.sender_id)]
-            #         return None
-            #         del Limit.LIMIT[str(event.sender_id)], text, link, Price
-            
-    elif (limit["part"] == ""):
-        pass
+                    else:
+                        await client.send_message(event.chat_id, Strings.low_price(Price))
+
+    

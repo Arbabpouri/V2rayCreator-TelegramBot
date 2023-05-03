@@ -8,16 +8,18 @@ from modules.handlers.step import Step
 async def inline_set_part(event: CallbackQuery.Event) -> None:
 
     data = bytes(event.data).decode()
-    if (data == InlineButtonsData.CUSTOM_CHARGE):
+    match(data):
 
-        await client.send_message(
-            event.chat_id,
-            Strings.GET_CUSTOM_SHARJ
-        )
+        case (InlineButtonsData.CUSTOM_CHARGE):
 
-        Limit.LIMIT[str(event.sender_id)] = {
-            "part": Step.GET_CUSTOM_SHARJ
-        }
+            await client.send_message(
+                event.chat_id,
+                Strings.GET_CUSTOM_SHARJ
+            )
 
-    elif data == "":
-        ...
+            Limit.LIMIT[str(event.sender_id)] = {
+                "part": Step.GET_CUSTOM_SHARJ
+            }
+
+        case _:
+            pass
