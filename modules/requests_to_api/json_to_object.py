@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import List
 
 # UserType and UserTypeResult classes are for the data received from the user type api
 class UserTypeResult(BaseModel):
@@ -26,3 +26,23 @@ class GetToken(BaseModel):
     status: int
     message: str
     result: GetTokenResult = None
+
+
+# GetAllConfigTypes and GetAllConfigTypesList and GetAllConfigTypesResult classes are for the data received from the get all configs types api
+class GetAllConfigTypesResult(BaseModel):
+    id: int
+    title: str
+    numberOfUsers: int
+    activeTime: int
+    maxTraffic: int
+    priceForManualUsers: int
+    priceForSellerUsers: int
+
+class GetAllConfigTypesList(BaseModel):
+    configTypes: List[GetAllConfigTypesResult]
+
+class GetAllConfigTypes(BaseModel):
+    status: int
+    message: str
+    result: GetAllConfigTypesList = None
+
