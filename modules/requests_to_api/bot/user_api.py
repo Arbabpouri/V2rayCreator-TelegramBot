@@ -2,7 +2,7 @@ from requests import post
 from config import Config
 from json import loads
 from typing import Optional
-from modules.requests_to_api.bot.data import Data
+from modules.requests_to_api import Data
 
 
 
@@ -25,10 +25,12 @@ class UserApi:
         data = Data(user_id=self.user_id, referraler=int(referraler))
         req = post(url=Config.ADD_USER_URL, data=data.add_user)
         result = loads(req.content)
+        
         if (req.status_code == 200) and str(result["result"]) == "0":
-            del (data, referraler, req, result)
+            del (data, req, result)
             return True
-
+        
+        del (data, req, result)
         return False
 
 
@@ -38,27 +40,33 @@ class UserApi:
         '''
 
 
-    def get_user_type(self) -> str | bool | ValueError: 
-        ''''
+    def get_user_type(self) -> str | bool | ValueError:
+        '''
             for get user type , example : manual, seller and ...
         '''
+
         if (not str(self.user_id).isnumeric()):
             raise ValueError("user_id must be integer")
         
         data = Data(user_id=self.user_id)
         req = post(url=Config.GET_USER_TYPE_URL, data=data.userId)
-        if (req.status_code == 200):
-            result = loads(req.content)
-            result_code = str(result["status"])
-            if (result_code == "0"):
-                del (req, data, result_code)
-                return str(result["result"]["type"])
 
-            #  TODO complet this session
-            elif (result_code == "1"):
-                add_user = self.add_user(user_id=self.user_id)
-                if (add_user):
-                    del (req, data, add_user, result_code)
-                    self.get_user_type(user_id=self.user_id)
+        if (req.status_code != 200):
+            return False
+        
+        result = loads(req.content)
+        result_code = str(result["status"])
 
-        return False
+        if (result_code == "0"):
+            del (req, data, result_code)
+            return str(result["result"]["type"])
+
+        #  TODO complet this session
+        elif (result_code == "1"):
+            add_user = self.add_user(user_id=self.user_id)
+            if (add_user):
+                del (req, data, add_user, result_code)
+                self.get_user_type(user_id=self.user_id)
+
+        else:
+            return False
