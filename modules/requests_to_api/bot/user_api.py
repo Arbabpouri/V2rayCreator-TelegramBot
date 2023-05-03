@@ -2,7 +2,8 @@ from requests import post
 from config import Config
 from json import loads
 from typing import Optional
-from modules.requests_to_api import Data
+from modules.requests_to_api.data_for_send import Data
+from modules.requests_to_api.response_code import ResponseCode, ResponseResult
 
 
 
