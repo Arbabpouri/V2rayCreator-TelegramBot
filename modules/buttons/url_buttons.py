@@ -1,23 +1,43 @@
 from telethon import Button
-from . import UrlButtonsString, InlineButtonsData, InlineButtonsString
+from typing import List
+from modules.buttons.inline_buttons import InlineButtonsData, InlineButtonsString
 from config import Config
 from modules.functions import create_payment_link
+
+
+
+class UrlButtonsString:
+
+    SUPPORT = "📞 ارتباط با ادمین 📞"
+    REFERRAL = "💢 لینک زیر مجموعه گیری 💢"
+    CLICK_ME = "📍 کلیک کنید 📍"
+
+    @staticmethod
+    def shop(price: int) -> str:
+        return f"🔋 {int(price):,} تومان 💸"
+
 
 
 class UrlButtons:
 
     SUPPORT = [[Button.url(UrlButtonsString.SUPPORT, "https://t.me/{}".format(Config.ADMIN_USERNAME))]]
+    
+
+    def __init__(self) -> None:
+        pass
+
 
     @staticmethod
-    def referral(user_id: int) -> list:
+    def referral(user_id: int) -> List[Button]:
         return [
             [
                 Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={user_id}")
             ],
         ]
 
+
     @staticmethod
-    def shop(user_id: int, seller: bool) -> list:
+    def shop(user_id: int, seller: bool) -> List[Button]:
 
         price = Config.USER_CHARGE if not seller else Config.SELLER_CHARGE
 
@@ -47,8 +67,9 @@ class UrlButtons:
 
         return buttons
 
+
     @staticmethod
-    def payment_link(link) -> list:
+    def payment_link(link) -> List[Button]:
         return [
             [
                 Button.url(UrlButtonsString.CLICK_ME, link)

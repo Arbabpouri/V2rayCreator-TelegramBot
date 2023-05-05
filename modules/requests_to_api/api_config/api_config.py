@@ -13,7 +13,12 @@ class ApiConfig:
 
 
     @property
-    async def get_token() -> None | bool:
+    def get_token(self) -> bool:
+        """
+            request to api for get jwt token for send token in headers
+            if successful : write jwt token in config/token.txt
+            else : return error type and exit in application
+        """
 
         data = Data()
         req = post(url=Config.TOKEN, data=data.get_token)
@@ -38,3 +43,10 @@ class ApiConfig:
             )
             exit()
 
+    @property
+    def get_prices_limit(self):
+        '''
+            request to api for get price limit
+            manual users and seller users have bin diffrent price limit , so you need to find the price limit for each
+        '''
+        pass

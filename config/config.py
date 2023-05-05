@@ -3,6 +3,7 @@ class Config:
     API_ID = 3359959  # Telegram Api ID , you can get it from telegram website
     API_HASH = "fc809b5d42bdac477f9ac9b56383a699"  # Telegram Api Hash , you can get it from telegram website
     BOT_TOKEN = "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8"   # Bot Token,you can get it from @BotFather
+    ADMIN_USERNAME = "" # Admin Username without @ , example: SirSardar
     BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     SESSION_NAME = "bot"  # string
     USER_CHARGE = [50000, 100000, 150000, 200000]  # T
@@ -21,3 +22,6 @@ class Config:
     ADD_USER_URL = r"{}/".format(API_URL)  # this is url for add user
     GET_ALL_CONFIG_URL = r"{}/".format(API_URL)  # this is url for get all config
     GET_USER_TYPE_URL = r"{}/".format(API_URL)  # this is url for get user type
+
+def __check_config() -> bool:
+    pass
