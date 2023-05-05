@@ -1,1 +1,2 @@
-#⏳ soon . . .
+# This is bot for create and ... V2ray config (vmess/vless)
+# This bot using a api for database and create v2ray and ...
