@@ -1,8 +1,8 @@
 from config import client, Strings
 from modules.buttons import InlineButtonsData
-from modules.handlers.limiter import Limit
+from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
-from modules.handlers.step import Step
+
 
 
 async def inline_set_part(event: CallbackQuery.Event) -> None:
