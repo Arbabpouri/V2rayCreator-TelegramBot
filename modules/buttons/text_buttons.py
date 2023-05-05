@@ -21,7 +21,7 @@ class TextButtons:
     @staticmethod
     def start_menu(user_id: int) -> List[Button]:
 
-        if not str(user_id).isnumeric():
+        if (not str(user_id).isnumeric()):
             raise ValueError("user_id argument not a number")
 
         return [

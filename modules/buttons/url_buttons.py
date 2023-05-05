@@ -29,49 +29,51 @@ class UrlButtons:
 
     @staticmethod
     def referral(user_id: int) -> List[Button]:
+        """
+        
+        """
+
         return [
             [
-                Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={user_id}")
+                Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={user_id}"),
             ],
         ]
 
 
     @staticmethod
-    def shop(user_id: int, seller: bool) -> List[Button]:
+    def shop(user_id: int, min_price: int) -> List[Button]:
+        """
 
-        price = Config.USER_CHARGE if not seller else Config.SELLER_CHARGE
-
-        buttons = []
-        for i in range(0, len(price) - 1, 2):
-
-            buttons.append(
-                [
-                    Button.url(UrlButtonsString.shop(price[i]), create_payment_link(user_id, price[i])),
-                    Button.url(UrlButtonsString.shop(price[i + 1]), create_payment_link(user_id, price[i + 1]))
-                ]
-            )
-
-        if len(price) % 2 != 0:
-
-            buttons.append(
-                [
-                    Button.url(UrlButtonsString.shop(price[-1]), create_payment_link(user_id, price[-1]))
-                ]
-            )
-
-        buttons.append(
+        """
+        
+        if (not str(user_id).isnumeric() or not str(min_price).isnumeric()):
+            raise ValueError("user_id/min_price argument must be number")
+        
+        user_id = int(user_id)
+        price = int(min_price)
+        buttons = [
+            [
+                Button.url(UrlButtonsString.shop(price), create_payment_link(user_id, price)),
+                Button.url(UrlButtonsString.shop(price * 2), create_payment_link(user_id, price * 2)),
+            ],
+            [
+                Button.url(UrlButtonsString.shop(price * 3), create_payment_link(user_id, price * 3)),
+                Button.url(UrlButtonsString.shop(price * 4), create_payment_link(user_id, price * 4)),
+            ],
             [
                 Button.inline(InlineButtonsString.CUSTOM_CHARGE, InlineButtonsData.CUSTOM_CHARGE)
-            ]
-        )
+            ],
+        ]
 
+        del (user_id, price)
         return buttons
 
 
     @staticmethod
     def payment_link(link) -> List[Button]:
-        return [
-            [
-                Button.url(UrlButtonsString.CLICK_ME, link)
-            ]
-        ]
+
+        """
+            
+        """
+
+        return [[Button.url(UrlButtonsString.CLICK_ME, link)]]
