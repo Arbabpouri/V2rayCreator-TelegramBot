@@ -17,12 +17,29 @@ class TextButtunsString(StrEnum):
     ONLINE_CHARGE = "🌐 شارژ آنلاین"
     OFFLINE_CHARGE = "💳 کارت به کارت"
     BACK_TO_START_MENU = "🔙 منوی اصلی 🔙"
+    CANCEl_GET = "❌ لغو عملیات ❌"
 
 
 class TextButtons:
 
+    CANCEL_GET = [Button.text(TextButtunsString.CANCEl_GET, resize=True, single_use=True)]
+
+    SELECT_CHARGE = [
+            [
+                Button.text(TextButtunsString.ONLINE_CHARGE, resize=True, single_use=True),
+                Button.text(TextButtunsString.OFFLINE_CHARGE, resize=True, single_use=True)
+            ],
+            [
+                Button.text(TextButtunsString.BACK_TO_START_MENU, resize=True, single_use=True)
+            ]
+        ]       
+
+
     @staticmethod
     def start_menu(user_id: int) -> List[Button]:
+        """
+        
+        """
 
         if (not str(user_id).isnumeric()):
             raise ValueError("user_id argument not a number")
@@ -48,14 +65,4 @@ class TextButtons:
         ]
 
     
-    @staticmethod
-    def select_charge() -> List[Button]:
-        return [
-            [
-                Button.text(TextButtunsString.ONLINE_CHARGE, resize=True, single_use=True),
-                Button.text(TextButtunsString.OFFLINE_CHARGE, resize=True, single_use=True)
-            ],
-            [
-                Button.text(TextButtunsString.BACK_TO_START_MENU, resize=True, single_use=True)
-            ]
-        ]
+

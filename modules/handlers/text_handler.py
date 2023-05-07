@@ -69,6 +69,14 @@ class TextHandlers:
             # this is session for show charge buttons
             case (TextButtunsString.SHOP):
 
+                await client.send_message(
+                    event.chat_id,
+                    Strings.SELECT_CHARGE,
+                    buttons=TextButtons().SELECT_CHARGE
+                )
+
+            # this is session for online charge
+            case (TextButtunsString.ONLINE_CHARGE):
                 user_type = await APIS.user_api(user_id=event.sender_id).get_user_type
                 await client.send_message(
                     event.chat_id,
@@ -76,6 +84,14 @@ class TextHandlers:
                     buttons=UrlButtons.shop(event.sender_id, user_type)
                 )
                 del user_type
+
+            # this is session for offline charge
+            case (TextButtunsString.OFFLINE_CHARGE):
+                await client.send_message(
+                    event.chat_id,
+                    Strings.GET_CUSTOM_CHARGE,
+                    # buttons=
+                )
 
             # this is session for send referral link to user
             case (TextButtunsString.REFERRAL):
@@ -116,7 +132,7 @@ class TextHandlers:
         # get number for payment link for create custom charge
         match(limit["part"]):
 
-            case (Step.GET_CUSTOM_CHARGE):
+            case (Step.GET_CUSTOM_CHARGE_ONLINE):
         
                 if (not text.isnumeric()):
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
