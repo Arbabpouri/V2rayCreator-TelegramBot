@@ -12,7 +12,7 @@ class Strings:
     WAITING = "⏳ لطفا منتظر بمانید "
     SELECT_CHARGE = "⁉ به چه روشی میخواهید حساب خود را شارژ کنید؟"
     SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
-
+    DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
 
     @staticmethod
     def send_evidence(price: int) -> str:
@@ -25,22 +25,17 @@ class Strings:
             f"بنام : {Config.CARD_HOLDER}"
         )
 
-
-
     @staticmethod
     def start_menu(name: str, user_id: int) -> str:
         return f"👋 سلام [{name}](tg://user?id={user_id}) عزیز به ربات خوش اومدی , از منوی زیر انتخاب کن ❤️"
-
 
     @staticmethod
     def get_user_id(user_id: int) -> str:
         return "🔹 آیدی عددی شما :  <code>{}</code>".format(user_id)
 
-
     @staticmethod
     def low_price(price: int) -> str:
         return f"❌مقدار وارد شده کم است , حداقل مقدار شارژ برای شما {int(price):,} تومان است ❌"
-
 
     @staticmethod
     def referral(user_id: int) -> str:
@@ -51,11 +46,9 @@ class Strings:
             f"https://t.me/{Config.BOT_USERNAME}?start={user_id}"
         )
 
-
     @staticmethod
     def created_payment_link(price: int) -> str:
         return f"🏧 لینک پرداخت شما به مبلغ {int(price):,} تومان اماده شد , روی دکمه زیر کلیک کرده تا به صفحه هدایت شوید ♻️"
-
 
     @staticmethod
     def account(user_id: int) -> str:

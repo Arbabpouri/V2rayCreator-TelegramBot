@@ -137,65 +137,47 @@ class TextHandlers:
 
             #this session for get custom charge
             case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_ONLINE):
-        
                 if (not str(event.message.message).isnumeric()):
-
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
-
                 else:
-
                     text = int(event.message.message)
                     user_type = await APIS.user_api(event.sender_id).get_user_type
-                    
                     Price = Config.MIN_USER_CHARGE if (user_type == 0) else Config.MIN_SELLER_CHARGE
                     if (text >= Price):
-
                         if (limit["part"] == Step.GET_CUSTOM_CHARGE_ONLINE):
-
                             await client.send_message(
                                 event.chat_id,
                                 Strings.WAITING,
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
-
                             await sleep(0.5)
                             link = create_payment_link(event.sender_id, text)
-
                             await client.send_message(
                                 event.chat_id,
                                 Strings.created_payment_link(text),
                                 buttons=UrlButtons.payment_link(link)
                             )
-
                             del (Limit.LIMIT[str(event.sender_id)], text, link, Price, user_type)
-
                         else:
-
                             Limit.LIMIT[str(event.sender_id)] = {
                                 "part": Step.GET_EVIDENCE,
                                 "price": int(event.message.message)
                             }
-
                             await client.send_message(
                                 event.chat_id,
                                 Strings.send_evidence,
                                 buttons=InlineButtons.CANCEL_GET
                             )
-
                             del (text, user_type, Price)
-                            
                     else:
-
                         await client.send_message(event.chat_id, Strings.low_price(Price))
 
             # this session for get deposit documents
             case (Step.GET_EVIDENCE):
-
                 del Limit.LIMIT[str(event.sender_id)]
-
                 await client.send_message(
                     event.chat_id,
-                    "",
+                    Strings.DOCUMENTS_RECEIVED,
                     buttons=TextButtons.start_menu(event.sender_id)
                 )
                 uuid = str(uuid1())
@@ -216,7 +198,6 @@ class TextHandlers:
                         )
                     except:
                         pass
-
                 del (uuid, buttons)
 
 
