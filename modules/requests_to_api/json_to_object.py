@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import List
 
+
+
 # UserType and UserTypeResult classes are for the data received from the user type api
 class UserTypeResult(BaseModel):
     type: int
@@ -45,4 +47,3 @@ class GetAllConfigTypes(BaseModel):
     status: int
     message: str
     result: GetAllConfigTypesList = None
-

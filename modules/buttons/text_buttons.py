@@ -14,6 +14,9 @@ class TextButtunsString(StrEnum):
     SUPPORT = "☎️  پشتیبانی ☎️"
     SHOP = "🛒 فروشگاه"
     GET_USER_ID = "📍 شناسه کاربری 📍"
+    ONLINE_CHARGE = "🌐 شارژ آنلاین"
+    OFFLINE_CHARGE = "💳 کارت به کارت"
+    BACK_TO_START_MENU = "🔙 منوی اصلی 🔙"
 
 
 class TextButtons:
@@ -42,4 +45,17 @@ class TextButtons:
             [
                 Button.text(TextButtunsString.SUPPORT, resize=True, single_use=True),
             ],
+        ]
+
+    
+    @staticmethod
+    def select_charge() -> List[Button]:
+        return [
+            [
+                Button.text(TextButtunsString.ONLINE_CHARGE, resize=True, single_use=True),
+                Button.text(TextButtunsString.OFFLINE_CHARGE, resize=True, single_use=True)
+            ],
+            [
+                Button.text(TextButtunsString.BACK_TO_START_MENU, resize=True, single_use=True)
+            ]
         ]

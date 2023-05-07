@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 from requests import post
 from json import loads
 from config import Config
@@ -25,10 +25,14 @@ class V2Ray:
         if (req.status_code == 200):
 
             result = GetAllConfigTypes(loads(req.content))
+
             if (result.status == ResponseCode.SUCSESS):
+
                 del req
                 return result.result.configTypes
+            
             else:
+
                 del (req, result)
                 return False
             
@@ -46,3 +50,12 @@ class V2Ray:
         else:
             del req
             return False
+        
+
+    def create_config(self, user_id, admin: Optional[bool]=False):
+        """
+        
+        """
+        
+        pass
+    

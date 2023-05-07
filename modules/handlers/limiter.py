@@ -1,8 +1,10 @@
-from enum import StrEnum
+from enum import IntEnum
 
 class Limit:
     LIMIT = {}
 
 
-class Step(StrEnum):
-    GET_CUSTOM_CHARGE = "Get-Custom-Sharj"
+class Step(IntEnum):
+    GET_CUSTOM_CHARGE_ONLINE = 0
+    GET_CUSTOM_CHARGE_OFFLINE = 1
+    

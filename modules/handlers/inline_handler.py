@@ -14,11 +14,11 @@ async def inline_set_part(event: CallbackQuery.Event) -> None:
 
             await client.send_message(
                 event.chat_id,
-                Strings.GET_CUSTOM_SHARJ
+                Strings.GET_CUSTOM_CHARGE
             )
 
             Limit.LIMIT[str(event.sender_id)] = {
-                "part": Step.GET_CUSTOM_SHARJ
+                "part": Step.GET_CUSTOM_CHARGE_ONLINE
             }
 
         case _:

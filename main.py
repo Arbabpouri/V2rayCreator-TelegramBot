@@ -1,5 +1,5 @@
 from config import client, Config
-from modules import user_move, inline_set_part, get_informatios
+from modules import TextHandlers, inline_set_part, get_informatios
 from telethon.events import NewMessage, CallbackQuery
 from telethon import Button
 from modules import Limit, APIS
@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
         # for move user to different sessions
         client.add_event_handler(
-            user_move,
+            TextHandlers.user_move,
             NewMessage(
                 func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
             )
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
         # for get information , example : get custom price for charge or etc
         client.add_event_handler(
-            get_informatios,
+            TextHandlers.get_informatios,
             NewMessage(
                 func=lambda e: e.is_private and str(e.sender_id) in list(Limit.LIMIT.keys())
             )
