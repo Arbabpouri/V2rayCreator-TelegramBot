@@ -1,5 +1,5 @@
 from telethon import Button
-from typing import *
+from typing import List, Optional, Dict
 from enum import StrEnum
 
 
@@ -7,41 +7,28 @@ from enum import StrEnum
 class InlineButtonsString(StrEnum):
     BUY_CONFIG = ""
     CUSTOM_CHARGE = "💎 مبلغ دلخواه 💎"
+    CANCEL_GET = "❌ لغو عملیات ❌"
 
-
-class InlineButtonsData:
-    CUSTOM_CHARGE = "CUSTOM-CHARGE"
-
-
-    @staticmethod
-    def select_server(name: str) -> str:
-        return "Server-{}".format(name)
-
-
-    @staticmethod
-    def select_plan(date, traffic) -> str:
-        return "Plan-{}-{}".format(traffic, date)
-
-
-    @staticmethod
-    def select_config(name) -> str:
-        return "Config-{}".format(name)
-
-
-    @staticmethod
-    def change_protocol(server_name: str, from_server: str, to_server: str) -> str:
-        return "ChangeProtocol-{}-{}-{}".format(server_name, from_server, to_server)
-
-
-    @staticmethod
-    def change_server_from(from_server: str) -> str:
-        return "ChangeServerFrom-{}".format(from_server)
-
-
-    @staticmethod
-    def change_server_to(to_server: str) -> str:
-        return "ChangeServerTo-{}".format(to_server)
 
 
 class InlineButtons:
-    pass
+    CANCEL_GET = [[Button.inline(InlineButtonsString.CANCEL_GET, "CANCEl-GET")]]
+
+
+    @staticmethod
+    def accept_admin_documents(
+        name: str,
+        user_id: str,
+        user_name: str,
+        price: str
+    ) -> List[Button]:
+        
+        data = 0
+
+        return [
+            [Button.inline("💎 Name"), Button.inline(str(name))],
+            [Button.inline("💎 User Name"), Button.inline(str(user_name))],
+            [Button.inline("💎 User ID"), Button.inline(str(user_id))],
+            [Button.inline("💎 Price"), Button.inline(f"{int(price):,} تومان")],
+            [Button.inline("✅ تایید کردن", data["acc"]), Button.inline("❌ رد کردن", data["reject"])]
+        ]

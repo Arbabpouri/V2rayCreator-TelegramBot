@@ -3,13 +3,16 @@ class Config:
     API_ID = 3359959  # Telegram Api ID , you can get it from telegram website
     API_HASH = "fc809b5d42bdac477f9ac9b56383a699"  # Telegram Api Hash , you can get it from telegram website
     BOT_TOKEN = "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8"   # Bot Token,you can get it from @BotFather
-    ADMIN_USERNAME = "" # Admin Username without @ , example: SirSardar
+    ADMIN_USERNAME = ""  # Admin Username without @ , example: SirSardar . ** for supporter **
+    ADMINS_USER_ID = []  # Admins user id for send deposit documents 
     BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     SESSION_NAME = "bot"  # string
     USER_CHARGE = [50000, 100000, 150000, 200000]  # T
     SELLER_CHARGE = [500000, 1000000, 1500000, 2000000]  # T
     MIN_USER_CHARGE = 25000  # T , for min charge by manual user
     MIN_SELLER_CHARGE = 500000  # T , for min charge by seller user
+    CARD_NUMBER = "1234 5678 9876 5432"
+    CARD_HOLDER = "علی مومنی"
 
     # API Config
     PAYMENT_DOMAIN = "127.0.0.1"  # payment url for buy

@@ -11,6 +11,20 @@ class Strings:
     NOT_NUMBER = "❌مقدار ارسالی شما  به صورت عددی نیست , لطفا **به صورت عدد لاتین** ارسال کنید. ❌"
     WAITING = "⏳ لطفا منتظر بمانید "
     SELECT_CHARGE = "⁉ به چه روشی میخواهید حساب خود را شارژ کنید؟"
+    SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
+
+
+    @staticmethod
+    def send_evidence(price: int) -> str:
+        """
+        
+        """
+        return (
+            f"➕ لطفا به شماره کارت زیر مبلغ {price} تومان واریز کنید و عکس فیش واریزی را ارسال کنید"
+            f"شماره کارت : \n {Config.CARD_NUMBER}"
+            f"بنام : {Config.CARD_HOLDER}"
+        )
+
 
 
     @staticmethod

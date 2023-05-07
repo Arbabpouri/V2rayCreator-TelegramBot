@@ -4,21 +4,26 @@ from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
 
 
+class InlineHandlers:
 
-async def inline_set_part(event: CallbackQuery.Event) -> None:
+    @staticmethod
+    async def inline_set_part(event: CallbackQuery.Event) -> None:
 
-    data = bytes(event.data).decode()
-    match(data):
+        data = bytes(event.data).decode()
+        match(data):
 
-        case (InlineButtonsData.CUSTOM_CHARGE):
+            case ("CUSTOM-CHARGE"):
 
-            await client.send_message(
-                event.chat_id,
-                Strings.GET_CUSTOM_CHARGE,
-                buttons=TextButtons.CANCEL_GET
-            )
+                await client.send_message(
+                    event.chat_id,
+                    Strings.GET_CUSTOM_CHARGE,
+                    buttons=TextButtons.CANCEL_GET
+                )
 
-            Limit.LIMIT[str(event.sender_id)] = {"part": Step.GET_CUSTOM_CHARGE_ONLINE}
+                Limit.LIMIT[str(event.sender_id)] = {"part": Step.GET_CUSTOM_CHARGE_ONLINE}
 
-        case _:
-            pass
+            case _:
+                pass
+    
+
+    
