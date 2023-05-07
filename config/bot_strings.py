@@ -13,6 +13,11 @@ class Strings:
     SELECT_CHARGE = "⁉ به چه روشی میخواهید حساب خود را شارژ کنید؟"
     SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
     DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
+    BAD_DOCUMENTS = ""
+
+    @staticmethod
+    def bad_documents():
+        pass
 
     @staticmethod
     def send_evidence(price: int) -> str:

@@ -1,5 +1,5 @@
 from config import client, Config
-from modules import TextHandlers, inline_set_part, get_informatios
+from modules import TextHandlers, InlineHandlers
 from telethon.events import NewMessage, CallbackQuery
 from telethon import Button
 from modules import Limit, APIS
@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
         # for set part
         client.add_event_handler(
-            inline_set_part,
+            InlineHandlers.inline_set_part(),
             CallbackQuery(
                 func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
             )
