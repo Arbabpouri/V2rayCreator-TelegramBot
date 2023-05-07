@@ -1,6 +1,6 @@
 from asyncio import sleep
 from telethon.custom import Message
-from modules.functions.payment_link import create_payment_link
+from modules.tools.payment_link import create_payment_link
 from config import client, Strings, Config
 from modules import TextButtunsString, TextButtons, UrlButtons,InlineButtons, APIS
 from modules.handlers.limiter import Limit, Step

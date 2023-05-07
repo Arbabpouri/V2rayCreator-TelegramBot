@@ -20,15 +20,14 @@ class InlineButtons:
         name: str,
         user_id: str,
         user_name: str,
-        price: str
+        price: str,
+        uuid: str
     ) -> List[Button]:
         
-        data = 0
-
         return [
             [Button.inline("💎 Name"), Button.inline(str(name))],
             [Button.inline("💎 User Name"), Button.inline(str(user_name))],
             [Button.inline("💎 User ID"), Button.inline(str(user_id))],
             [Button.inline("💎 Price"), Button.inline(f"{int(price):,} تومان")],
-            [Button.inline("✅ تایید کردن", data["acc"]), Button.inline("❌ رد کردن", data["reject"])]
+            [Button.inline("✅ تایید کردن", f"acc-{uuid}"), Button.inline("❌ رد کردن", f"reject-{uuid}")]
         ]

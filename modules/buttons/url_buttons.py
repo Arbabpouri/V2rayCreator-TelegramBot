@@ -2,7 +2,7 @@ from telethon import Button
 from typing import List
 from modules.buttons.inline_buttons import InlineButtonsData, InlineButtonsString
 from config import Config
-from modules.functions import create_payment_link
+from modules.tools import create_payment_link
 
 
 
