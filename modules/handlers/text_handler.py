@@ -1,9 +1,11 @@
 from asyncio import sleep
 from telethon.custom import Message
-from modules.tools.payment_link import create_payment_link
+from telethon.types import PeerUser
+from modules import create_payment_link, OfflineChargeData
 from config import client, Strings, Config
 from modules import TextButtunsString, TextButtons, UrlButtons,InlineButtons, APIS
 from modules.handlers.limiter import Limit, Step
+from uuid import uuid1
 
 
 class TextHandlers:
@@ -196,23 +198,28 @@ class TextHandlers:
                     "",
                     buttons=TextButtons.start_menu(event.sender_id)
                 )
-
+                uuid = str(uuid1())
                 buttons = InlineButtons.accept_admin_documents(
                     name=str(event.chat.first_name),
                     user_id=str(event.sender_id),
                     user_name="ندارد" if (event.chat.user_name is None) else str(event.chat.user_name),
-                    price=limit["price"]
+                    price=limit["price"],
+                    uuid=uuid
                 )
-
-                try:
-                    for admin in Config.ADMINS_USER_ID:
-                        client.send_message(
-
+                OfflineChargeData(uuid).write(event.sender_id, limit["price"])
+                for admin in Config.ADMINS_USER_ID:
+                    try:
+                        await client.send_message(
+                            PeerUser(admin),
+                            event.message,
+                            buttons=buttons
                         )
+                    except:
+                        pass
 
-                except:
-                    pass
-        
+                del (uuid, buttons)
+
+
 
 
 
