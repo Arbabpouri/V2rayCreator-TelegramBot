@@ -12,6 +12,7 @@ if (exists("./config/data.json") is False):
 
 class OfflineChargeData:
     
+    
     def __init__(self, id: int) -> None:
         self.id = id
     
@@ -21,20 +22,24 @@ class OfflineChargeData:
             data = loads(file.read())
             data[str(self.id)] = {
                 "user_id": user_id,
-                "price": price
+                "price": price,
+                "enable": True,
+                "status": "Waiting",
+                "by": None
             }
             file.truncate()
             file.write(dumps(data, indent=4))
             file.close()
-
         return True
             
 
-    def delete(self) -> bool:
+    def delete(self, admin_user_id: int, status: str) -> bool:
         with open("./config/data.json", "a+") as file:
             data: dict = loads(file.read())
             if (str(self.id) in list(data.keys())):
-                del data[str(self.id)]
+                data[str(self.id)]["enable"] = False
+                data[str(self.id)]["status"] = str(status)
+                data[str(self.id)]["by"] = admin_user_id
                 file.truncate()
                 file.write(dumps(data, indent=4))
                 file.close()
