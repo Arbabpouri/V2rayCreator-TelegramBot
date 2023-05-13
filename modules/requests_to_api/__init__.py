@@ -1,5 +1,5 @@
-from .bot import UserApi
-from .server_api import V2Ray
+from .user_api import UserApi
+from .server import V2Ray
 from .api_config import ApiConfig
 
 
