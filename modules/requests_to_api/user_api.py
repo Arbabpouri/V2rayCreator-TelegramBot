@@ -9,7 +9,6 @@ from modules.requests_to_api import APIS
 
 
 
-Limiter = set({})
 
 class UserApi:
 
@@ -30,33 +29,32 @@ class UserApi:
             raise ValueError("referraler argument is not a number")
         
         data = Data(user_id=self.user_id, referraler=int(referraler))
-        req = post(url=Config.ADD_USER_URL, data=data.add_user)
-        
-        if (req.status_code == 200):
-            result = AddUser(**loads(req.content))
+        for i in range(2):
 
-            if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXISTS]):
-                del (data, req, result)
-                return True
+            req = post(url=Config.ADD_USER_URL, data=data.add_user)
             
-            del (data, req, result)
-            return False
-        
-        elif (req.status_code == 401):
+            if (req.status_code == 200):
+                result = AddUser(**loads(req.content))
 
-            if (self.user_id not in Limiter):
-                del (data, req)
-                Limiter.add(self.user_id)
+                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXISTS]):
+                    del (data, req, result)
+                    return True
+                
+                del (data, req, result)
+                return False
+            
+            elif (req.status_code == 401):
+
+                del req
                 APIS.config_api().get_token
-                self.add_user
 
             else:
-                del (data, req)
+            
+                del (data, req, result)
                 return False
-
-        else:
         
-            del (data, req, result)
+        else:
+            del (data, req)
             return False
 
 
@@ -68,45 +66,48 @@ class UserApi:
 
 
     @property
-    def get_user_type(self) -> str | bool | ValueError:
+    def get_user_type(self) -> str | bool:
         '''
             for get user type , example : manual, seller and ...
         '''
-        
         data = Data(user_id=self.user_id)
-        req = post(url=Config.GET_USER_TYPE_URL, data=data.userId)
+        i = 0
+        while (i < 2):
 
-        if (req.status_code == 200):        
-            result = UserType(**loads(req.content))
+            req = post(url=Config.GET_USER_TYPE_URL, data=data.userId)
 
-            if (result.status == ResponseCode.SUCSESS):
-                del (req, data)
-                return str(result.result.type)
+            if (req.status_code == 200):        
+                result = UserType(**loads(req.content))
 
-            elif (result.status == ResponseCode.USER_NOT_FOUND):
-                add_user = self.add_user(user_id=self.user_id)
+                if (result.status == ResponseCode.SUCSESS):
+                    del (req, data)
+                    return str(result.result.type)
 
-                if (add_user):
-                    del (req, data, add_user, result)
-                    self.get_user_type
+                elif (result.status == ResponseCode.USER_NOT_FOUND):
+                    add_user = self.add_user(user_id=self.user_id)
+
+                    if (add_user):
+                        del (req, data, add_user, result)
+                        continue
+                    else:
+                        del (req, add_user, result)
+                        i += 1
+                        continue
+
                 else:
-                    del (req, data, add_user, result)
+                    del (req, data, result)
                     return False
+            
+            elif (req.status_code == 401):
+                
+                del req
+                i += 1
+                APIS.config_api().get_token
 
             else:
-                del (req, data, result)
+                del (data, req)
                 return False
         
-        elif (req.status_code == 401):
-            if (self.user_id not in Limiter):
-                del (data, req)
-                Limiter.add(self.user_id)
-                APIS.config_api().get_token
-                self.get_user_type
-            else:
-                del (data, req)
-                return False
-
-        else:
-            del (data, req)
-            return False
+        
+        del (req, data)
+        return False

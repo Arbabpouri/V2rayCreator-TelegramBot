@@ -10,9 +10,6 @@ from modules.requests_to_api.response_code import ResponseCode
 
 class V2Ray:
 
-    def __init__(self) -> None:
-        self.limit = 0
-
 
     @property
     def get_all_config_types(self) -> bool | List[Dict[str, str | int]]:
@@ -20,36 +17,36 @@ class V2Ray:
             request to api for get all config types
             return a list from the items in shop
         '''
-        req = post(url=Config.GET_ALL_CONFIG_URL, headers=0)
-        
-        if (req.status_code == 200):
+        i = 0
+        while (i < 2):
 
-            result = GetAllConfigTypes(loads(req.content))
-
-            if (result.status == ResponseCode.SUCSESS):
-
-                del req
-                return result.result.configTypes
+            req = post(url=Config.GET_ALL_CONFIG_URL, headers=0)
             
-            else:
+            if (req.status_code == 200):
 
-                del (req, result)
-                return False
-            
-        elif (req.status_code == 401):
-            self.limit += 1
+                result = GetAllConfigTypes(loads(req.content))
 
-            if (self.limit == 0):
+                if (result.status == ResponseCode.SUCSESS):
+
+                    del req
+                    return result.result.configTypes
                 
+                else:
+
+                    del (req, result)
+                    return False
+                
+            elif (req.status_code == 401):
+               
                 del req
-                self.get_all_config_types
+                i += 1
 
             else:
+                del req
                 return False
-
-        else:
-            del req
-            return False
+            
+        del req
+        return False
         
 
     def create_config(self, user_id, admin: Optional[bool]=False):
