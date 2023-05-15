@@ -63,4 +63,20 @@ class Data:
         }
 
     
-    
+    def balance_increase(self, price) -> Dict[str, int]:
+        """_summary_
+
+        Args:
+            price (_type_): _description_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            Dict[str, int]: _description_
+        """
+
+        return {
+            "userId": self.user_id,
+            "price": int(price)
+        }

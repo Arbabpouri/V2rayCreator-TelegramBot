@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 
@@ -52,3 +52,11 @@ class GetAllConfigTypes(BaseModel):
 #
 class GetUserConfigTypes(BaseModel):
     pass
+
+
+class OfflineCharge(BaseModel):
+    user_id: int
+    price: int
+    enable: bool
+    status: str
+    by: Optional[str] = None

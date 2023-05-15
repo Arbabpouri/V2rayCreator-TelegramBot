@@ -77,6 +77,7 @@ class OfflineChargeData:
                 file.close()
                 return False
     
+    
     def read(self) -> bool | Dict[str, str | int | bool]:
         """_summary_
 

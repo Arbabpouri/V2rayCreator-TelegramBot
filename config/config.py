@@ -17,7 +17,7 @@ class Config:
     # API Config
     PAYMENT_DOMAIN = "127.0.0.1"  # payment url for buy
     API_URL = "0.0.0.0"  # this is url for requesting
-    TOKEN = ""
+    TOKEN = "" # jwt token for send in header
     USERNAME = ""  # username for login to api for get token
     PASSWORD = ""  # password for login to api for get token
     GET_TOKEN_URL = r"{}/".format(API_URL)  # this is url for get token for request to api
@@ -25,6 +25,7 @@ class Config:
     ADD_USER_URL = r"{}/".format(API_URL)  # this is url for add user
     GET_ALL_CONFIG_URL = r"{}/".format(API_URL)  # this is url for get all config
     GET_USER_TYPE_URL = r"{}/".format(API_URL)  # this is url for get user type
+    BALANCE_INCREASE = r"{}/".format(API_URL)  # this is url for balance increase
 
 def __check_config() -> bool:
     pass

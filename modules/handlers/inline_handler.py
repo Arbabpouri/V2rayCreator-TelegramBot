@@ -3,6 +3,7 @@ from modules import TextButtons, OfflineChargeData, APIS
 from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
 from typing import NoReturn
+from modules.tools.models import OfflineCharge
 
 
 class InlineHandlers:
@@ -30,8 +31,12 @@ class InlineHandlers:
             delete = OfflineChargeData(data).delete(event.sender_id, "accepted")
             if (delete):
                 price = OfflineChargeData(data).read()
-                price = price["price"]
-
+                price = OfflineCharge(**price)
+                balance_increase = APIS.user_api(price.user_id).balance_increase()
+                if (balance_increase):
+                    pass
+                else:
+                    pass
             else:
                 pass
 
