@@ -2,7 +2,7 @@ from typing import List, Dict, Optional
 from requests import post
 from json import loads
 from config import Config
-from modules.requests_to_api.json_to_object import GetAllConfigTypes
+from modules.tools.models import GetAllConfigTypes
 from modules.requests_to_api.data_for_send import Data
 from modules.requests_to_api.response_code import ResponseCode
 

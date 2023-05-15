@@ -3,7 +3,7 @@ from requests import post
 from json import loads
 from modules.requests_to_api.data_for_send import Data
 from modules.requests_to_api.response_code import ResponseCode
-from modules.requests_to_api.json_to_object import GetToken
+from modules.tools.models import GetToken
 
 
 class ApiConfig:

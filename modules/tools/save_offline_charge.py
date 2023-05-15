@@ -1,8 +1,11 @@
 from json import loads, dumps
-from os.path import exists
+from os.path import isfile
+from typing import Dict
 
 
-if (exists("./config/data.json") is False):
+
+
+if (isfile("./config/data.json") is False):
     with open("./config/data.json", "a+") as file:
         file.write(
             dumps({}, indent=4)
@@ -14,11 +17,26 @@ class OfflineChargeData:
     
     
     def __init__(self, id: int) -> None:
+        """_summary_
+
+        Args:
+            id (int): _description_
+        """
         self.id = id
+        self.path = "./config/data.json"
     
 
     def write(self, user_id: int, price: int) -> bool:
-        with open("./config/data.json", "a+") as file:
+        """_summary_
+
+        Args:
+            user_id (int): _description_
+            price (int): _description_
+
+        Returns:
+            bool: _description_
+        """
+        with open(self.path, "a+") as file:
             data = loads(file.read())
             data[str(self.id)] = {
                 "user_id": user_id,
@@ -34,9 +52,20 @@ class OfflineChargeData:
             
 
     def delete(self, admin_user_id: int, status: str) -> bool:
-        with open("./config/data.json", "a+") as file:
+        """_summary_
+
+        Args:
+            admin_user_id (int): _description_
+            status (str): _description_
+
+        Returns:
+            bool: _description_
+        """
+        with open(self.path, "a+") as file:
             data: dict = loads(file.read())
-            if (str(self.id) in list(data.keys())):
+            if (str(self.id) in list(data.keys())
+                and data[str(self.id)]["enable"]):
+
                 data[str(self.id)]["enable"] = False
                 data[str(self.id)]["status"] = str(status)
                 data[str(self.id)]["by"] = admin_user_id
@@ -47,3 +76,21 @@ class OfflineChargeData:
             else:
                 file.close()
                 return False
+    
+    def read(self) -> bool | Dict[str, str | int | bool]:
+        """_summary_
+
+        Returns:
+            bool | Dict[str, str | int | bool]: _description_
+        """
+
+        with open(self.path, "a+") as file:
+            data: dict = loads(file.read())
+            file.close()
+
+        if (str(self.id) in list(data.keys())):    
+            return data[str(self.id)]
+        return False
+
+
+

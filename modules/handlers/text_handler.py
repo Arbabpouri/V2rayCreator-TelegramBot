@@ -135,7 +135,7 @@ class TextHandlers:
         # get number for payment link for create custom charge
         match(limit["part"]):
 
-            #this session for get custom charge
+            #this session for get custom charge number
             case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_ONLINE):
                 if (not str(event.message.message).isnumeric()):
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
@@ -165,7 +165,7 @@ class TextHandlers:
                             }
                             await client.send_message(
                                 event.chat_id,
-                                Strings.send_evidence,
+                                Strings.send_evidence(price=Limit.LIMIT[str(event.sender_id)]["price"]),
                                 buttons=InlineButtons.CANCEL_GET
                             )
                             del (text, user_type, Price)
