@@ -47,3 +47,8 @@ class GetAllConfigTypes(BaseModel):
     status: int
     message: str
     result: GetAllConfigTypesList = None
+
+
+#
+class GetUserConfigTypes(BaseModel):
+    pass

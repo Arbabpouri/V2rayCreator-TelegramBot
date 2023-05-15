@@ -84,7 +84,7 @@ class UserApi:
                     return str(result.result.type)
 
                 elif (result.status == ResponseCode.USER_NOT_FOUND):
-                    add_user = self.add_user(user_id=self.user_id)
+                    add_user = self.add_user()
 
                     if (add_user):
                         del (req, data, add_user, result)
