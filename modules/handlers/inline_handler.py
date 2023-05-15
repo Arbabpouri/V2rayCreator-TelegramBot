@@ -25,25 +25,51 @@ class InlineHandlers:
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> NoReturn:
-        data = bytes(event.data).decode()
-        if (data.startswith("acc-")):
-            data = data.replace("acc-", "")
-            delete = OfflineChargeData(data).delete(event.sender_id, "accepted")
+
+        callback_data = bytes(event.data).decode()
+        if (callback_data.startswith("acc-")):
+
+            id = callback_data.replace("acc-", "")
+            delete = OfflineChargeData(id).delete(event.sender_id, "accepted")
             if (delete):
-                price = OfflineChargeData(data).read()
+
+                data = OfflineChargeData(id).read()
                 price = OfflineCharge(**price)
                 balance_increase = APIS.user_api(price.user_id).balance_increase()
                 if (balance_increase):
-                    pass
+
+                    await client.send_message(
+                        event.chat_id,
+                        "s"
+                    )
+
                 else:
-                    pass
+                    
+                    await client.send_message(
+                        event.chat_id,
+                        "s"
+                    )
+                
+                del (callback_data, id, delete, data, price, balance_increase)
+                return
+                
             else:
+
+                await client.send_message(
+                    event.chat_id,
+                    "s"
+                )
+                del (callback_data, id, delete)
+
+        elif (callback_data.startswith("reject-")):
+
+            id = callback_data.replace("reject-", "")
+            delete = OfflineChargeData(id).delete(event.sender_id, "failed")
+            if (delete):
+
                 pass
 
-        elif (data.startswith("reject-")):
-            data = data.replace("reject-", "")
-            delete = OfflineChargeData(data).delete(event.sender_id, "failed")
-            if (delete):
-                pass
             else:
+
                 pass
+        

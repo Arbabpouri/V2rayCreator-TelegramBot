@@ -13,6 +13,14 @@ from modules.requests_to_api import APIS
 class UserApi:
 
     def __init__(self, user_id: int) -> None:
+        """_summary_
+
+        Args:
+            user_id (int): _description_
+
+        Raises:
+            ValueError: _description_
+        """
         
         if (not str(user_id).isnumeric()):
             raise ValueError("User id must be numeric")
@@ -21,8 +29,16 @@ class UserApi:
 
     def add_user(self, referraler: Optional[int] = 0) -> bool | ValueError:
         """
-            for add user to database
-            referraler must be integer
+        for add user to database
+
+        Args:
+            referraler (Optional[int], optional): _description_. Defaults to 0.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            bool | ValueError: _description_
         """
         
         if (not str(referraler).isnumeric()):
@@ -57,25 +73,46 @@ class UserApi:
             del (data, responsive)
             return False
 
-
+    # TODO : this function 
     def balance_increase(self, price: int) -> bool:
-        """_summary_
+        """
+        for balance increase in database 
 
         Args:
-            price (int): _description_
+            price (int): this argument for balance increase in database
 
         Returns:
-            bool: _description_
+            bool: successful or unsuccessful
         """
 
-        if (not str(price).isnumeric()):
-            raise ValueError("price must be an integer")
+        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
         
         data = Data(self.user_id).balance_increase(int(price))
         count = 0
         while (count < 2):
-            responsive = post(url=Config.BALANCE_INCREASE, data="", headers=Config.TOKEN)
 
+            responsive = post(url=Config.BALANCE_INCREASE, data="", headers=Config.TOKEN)
+            if (responsive.status_code == 200):
+
+                result = loads(responsive.content)
+                if ():
+
+                    pass
+
+                else:
+
+                    pass
+                
+            elif (responsive.status_code == 401):
+                
+                del responsive
+                count += 1
+                APIS.config_api().get_token
+
+            else:
+
+                del (data, responsive, count)
+                return False
 
     @property
     def get_user_information(self) -> int | bool | ValueError:
@@ -87,15 +124,20 @@ class UserApi:
     @property
     def get_user_type(self) -> str | bool:
         """
-            for get user type , example : manual, seller and ...
+        for get user type , example : manual, seller and ...
+
+        Returns:
+            str | bool: _description_
         """
+
         data = Data(user_id=self.user_id)
         count = 0
         while (count < 2):
 
             responsive = post(url=Config.GET_USER_TYPE_URL, data=data.userId)
 
-            if (responsive.status_code == 200):        
+            if (responsive.status_code == 200):
+
                 result = UserType(**loads(responsive.content))
 
                 if (result.status == ResponseCode.SUCSESS):
@@ -124,9 +166,9 @@ class UserApi:
                 APIS.config_api().get_token
 
             else:
+
                 del (data, responsive)
                 return False
-        
         
         del (responsive, data)
         return False
