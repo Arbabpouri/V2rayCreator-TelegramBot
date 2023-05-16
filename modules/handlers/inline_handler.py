@@ -34,7 +34,8 @@ class InlineHandlers:
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> NoReturn:
-        """_summary_
+        """
+        acc or reject by admin
 
         Args:
             event (CallbackQuery.Event): _description_
