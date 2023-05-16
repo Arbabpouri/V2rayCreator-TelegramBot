@@ -27,7 +27,7 @@ class UserApi:
         self.user_id = int(user_id)
 
 
-    def add_user(self, referraler: Optional[int] = 0) -> bool | ValueError:
+    def add_user(self, referraler: Optional[int] = 0) -> bool:
         """
         for add user to database
 
@@ -115,7 +115,7 @@ class UserApi:
                 return False
 
     @property
-    def get_user_information(self) -> int | bool | ValueError:
+    def get_user_information(self) -> int | bool:
         """
             for get user information(balance/configs/...)
         """

@@ -11,6 +11,15 @@ class InlineHandlers:
 
     @staticmethod
     async def inline_set_part(event: CallbackQuery.Event) -> NoReturn:
+        """_summary_
+
+        Args:
+            event (CallbackQuery.Event): _description_
+
+        Returns:
+            NoReturn: _description_
+        """
+        
         data = bytes(event.data).decode()
         if (data == "CUSTOM-CHARGE"):
             await client.send_message(
@@ -25,6 +34,14 @@ class InlineHandlers:
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> NoReturn:
+        """_summary_
+
+        Args:
+            event (CallbackQuery.Event): _description_
+
+        Returns:
+            NoReturn: _description_
+        """
 
         callback_data = bytes(event.data).decode()
         if (callback_data.startswith("acc-")):
