@@ -4,7 +4,7 @@ from json import loads
 from typing import Optional
 from modules.requests_to_api.data_for_send import Data
 from modules.requests_to_api.response_code import ResponseCode
-from modules.tools.models import UserType, AddUser
+from modules.models.models import UserType, AddUser
 from modules.requests_to_api import APIS
 
 

@@ -3,7 +3,7 @@ from modules import TextButtons, OfflineChargeData, APIS
 from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
 from typing import NoReturn
-from modules.tools.models import OfflineCharge
+from modules.models.models import OfflineCharge
 
 
 class InlineHandlers:
