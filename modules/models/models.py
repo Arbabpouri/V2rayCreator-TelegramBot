@@ -54,9 +54,17 @@ class GetUserConfigTypes(BaseModel):
     pass
 
 
+
+
+
+#
 class OfflineCharge(BaseModel):
     user_id: int
     price: int
     enable: bool
     status: str
     by: Optional[str] = None
+
+
+
+

@@ -8,6 +8,7 @@ from modules.models.models import GetToken
 
 class ApiConfig:
 
+
     def __init__(self) -> None:
         pass
 
@@ -43,10 +44,14 @@ class ApiConfig:
             )
             exit()
 
+
     @property
     def get_prices_limit(self):
-        '''
+        """
             request to api for get price limit
             manual users and seller users have bin diffrent price limit , so you need to find the price limit for each
-        '''
+        """
+        
         pass
+
+    

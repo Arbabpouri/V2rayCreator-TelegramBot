@@ -12,6 +12,25 @@ from modules.requests_to_api import APIS
 
 class UserApi:
 
+
+    def __new__(cls, user_id):
+        """_summary_
+
+        Args:
+            user_id (_type_): _description_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            _type_: _description_
+        """
+
+        if (not str(user_id).isnumeric()):
+            raise ValueError("User id must be numeric")
+        return super().__new__(cls, user_id)
+
+
     def __init__(self, user_id: int) -> None:
         """_summary_
 
@@ -21,9 +40,7 @@ class UserApi:
         Raises:
             ValueError: _description_
         """
-        
-        if (not str(user_id).isnumeric()):
-            raise ValueError("User id must be numeric")
+
         self.user_id = int(user_id)
 
 
