@@ -1,2 +1,2 @@
-from .respons import *
-from .send_data import *
+from .api_respons import *
+from .api_send_data import *
