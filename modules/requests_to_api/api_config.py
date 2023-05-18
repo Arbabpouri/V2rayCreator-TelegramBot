@@ -1,5 +1,5 @@
 from config import Config
-from requests import post
+from requests import (post, get, put, delete)
 from json import loads
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
@@ -17,24 +17,26 @@ class ApiConfig:
     @property
     def get_token(self) -> bool:
         """
-            request to api for get jwt token for send token in headers
+            responsiveuest to api for get jwt token for send token in headers
             if successful : write jwt token in config/token.txt
             else : return error type and exit in application
         """
 
         data = Data()
-        req = post(url=self.Urls.TOKEN, data=data.get_token)
+        responsive = post(url=self.Urls.TOKEN, data=data.get_token)
 
-        if (req.status_code != 200):
-            del (data, req)
+        if (responsive.status_code != 200):
+            del (data, responsive)
             return False
         
-        result = GetToken(**loads(req.content))
+        result = GetToken(**loads(responsive.content))
 
         if (result.status == ResponseCode.SUCSESS):
 
             with open(r"./config/token.txt", "w+") as file:
-                file.write(result.result.jwtToken)
+                file.write(f"bearer {result.result.jwtToken}")
+                
+            ApiUrls.TOKEN = f"bearer {result.result.jwtToken}"
             del (data, result)
             return True
 
@@ -49,7 +51,7 @@ class ApiConfig:
     @property
     def get_prices_limit(self):
         """
-            request to api for get price limit
+            responsiveuest to api for get price limit
             manual users and seller users have bin diffrent price limit , so you need to find the price limit for each
         """
         

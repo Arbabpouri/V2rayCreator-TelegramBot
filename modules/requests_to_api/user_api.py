@@ -1,4 +1,4 @@
-from requests import post
+from requests import (post, put, delete, get)
 from config import Config
 from json import loads
 from typing import Optional

@@ -36,3 +36,8 @@ class ChangeServer(BaseModel):
 #
 class RenewalConfig(BaseModel):
     configId: int
+
+
+#
+class Headers(BaseModel):
+    Authorization: str
