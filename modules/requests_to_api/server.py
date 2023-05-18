@@ -4,7 +4,10 @@ from json import loads
 from modules.models.api_respons import (GetAllConfigTypes,
                                         GetAllConfigTypesResult,
                                         AddNewConfig,
-                                        AddNewConfigResult)
+                                        AddNewConfigResult,
+                                        ChangeProtocol, ChangeProtocolResult,
+                                        ChangeServer,
+                                        ChangeServerResult)
 
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
@@ -20,7 +23,7 @@ class V2Ray:
 
 
     @property
-    def get_all_config_types(self) -> bool | List[Dict[str, str | int]]:
+    def get_all_config_types(self) -> bool | List[GetAllConfigTypesResult]:
         '''
             responsiveuest to api for get all config types
             return a list from the items in shop
@@ -58,18 +61,42 @@ class V2Ray:
         
 
     def add_new_config(self, user_id, server_id, config_type_id, protocol, 
-                       is_flree: Optional[bool]=False) -> AddNewConfigResult:
+                       is_free: Optional[bool]=False) -> AddNewConfigResult | bool:
         """
         
         """
         
         for i in range(2):
-            data = Data(user_id=int(user_id))
+            data = Data(user_id=int(user_id)).add_new_config(server_id=int(server_id),
+                                                             config_type_id=int(config_type_id),
+                                                             protocol=str(protocol),
+                                                             is_free=bool(is_free))
+            
             responsive = post(url=self.Urls.ADD_NEW_CONFIG,
                               data=data,
                               headers=Data.headers)
             
-            # if 
+            if (responsive.status_code == 200):
+
+                result = AddNewConfig(**loads(responsive.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+                    
+                    pass
+
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    pass
+
+
+
+            elif (responsive.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
     
 
     def get_config(self, config_id: int) -> List[GetAllConfigTypesResult]:
@@ -111,10 +138,82 @@ class V2Ray:
                 pass
 
 
-    
+    def chenge_protocol(self, config_id: int) -> ChangeProtocolResult | int:
+        """_summary_
+
+        Args:
+            config_id (int): _description_
+
+        Returns:
+            ChangeProtocolResult: _description_
+        """
+
+        i = 0
+        while (i < 2):
+
+            responsive = put(url=self.Urls.change_protocol(int(config_id)),
+                             headers=Data.headers)
+            
+            if (responsive.status_code == 200):
+
+                result = ChangeProtocol(**loads(responsive.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    pass
+
+                else:
+
+                    del responsive
+                    return result.status
+
+            elif (responsive.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
 
 
+    def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int:
+        """_summary_
 
+        Args:
+            config_id (int): _description_
+            target_server_id (int): _description_
+
+        Returns:
+            ChangeServerResult | int: _description_
+        """
+        
+        i = 0
+        while (i < 2):
+            data = Data().change_server(int(config_id), int(target_server_id))
+            responsive = put(url=self.Urls.CHANGE_SERVER,
+                             data=data,
+                             headers=Data.headers)
+            
+            if (responsive.status_code == 200):
+
+                result = ChangeServer(**loads(responsive.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    pass
+
+                else:
+
+                    del responsive
+                    return result.status
+
+            elif (responsive.status_code == 401):
+                
+                pass
+
+            else:
+
+                pass
 
 
 

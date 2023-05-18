@@ -14,6 +14,7 @@ class ApiUrls:
         self.GET_SETTINGS = fr"{self.API_URL}/api/Settings/GetSettings"  #
         self.HANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  # 
         self.RENEWAL_CONFIG = fr"{self.API_URL}/api/Configs/RenewalConfig"  # 
+        self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  #
     
     
     def get_user_type(self, user_id) -> str:

@@ -3,7 +3,9 @@ from config import Config
 from modules.models.api_send_data import (AddNewUser,
                                           UserId,
                                           LogIn,
-                                          Headers)
+                                          Headers,
+                                          AddNewConfig,
+                                          ChangeServer)
 from modules.requests_to_api.urls import ApiUrls
 
 
@@ -88,3 +90,42 @@ class Data:
             "userId": self.user_id,
             "price": int(price)
         }
+
+
+    def add_new_config(self, server_id: int, config_type_id: int,
+                        protocol: str, is_free: bool) -> Dict[str, str | int]:
+        """_summary_
+
+        Args:
+            server_id (int): _description_
+            config_type_id (int): _description_
+            protocol (str): _description_
+            is_free (bool): _description_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            Dict[str, str | int]: _description_
+        """
+        
+        data = AddNewConfig(userId=int(self.user_id), serverId=int(server_id),
+                            protocol=str(protocol), isFree=bool(is_free))
+        
+        return data.dict()
+
+
+    def change_server(self, config_id: int, target_server_id: int) -> Dict[str, int]:
+        """_summary_
+
+        Args:
+            config_id (int): _description_
+            target_server_id (int): _description_
+
+        Returns:
+            Dict[str, int]: _description_
+        """
+
+        data = ChangeServer(configId=int(config_id), targeterverId=int(target_server_id))
+        return data.dict()
+

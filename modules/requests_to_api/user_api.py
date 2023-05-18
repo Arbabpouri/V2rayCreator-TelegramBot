@@ -205,8 +205,9 @@ class UserApi:
         Returns:
             List[GetUserConfigsResult]: _description_
         """
-
-        for i in range(2):
+        
+        i = 0
+        while (i < 2):
             
             responsive = get(url=self.Urls.get_user_configs(self.user_id),
                              headers=Data.headers)
@@ -217,13 +218,16 @@ class UserApi:
                 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    break
 
-                # elif (result.status == ResponseCode.)
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    pass
 
                 else:
 
-                    pass
+                    del responsive
+                    return result.status
             
             elif (responsive.status_code == 401):
 
