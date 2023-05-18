@@ -92,6 +92,7 @@ class UserApi:
             del (data, responsive)
             return False
 
+
     # TODO : this function 
     def balance_increase(self, price: int) -> bool:
         """
@@ -132,6 +133,7 @@ class UserApi:
 
                 del (data, responsive, count)
                 return False
+
 
     @property
     def get_user_information(self) -> int | bool:
