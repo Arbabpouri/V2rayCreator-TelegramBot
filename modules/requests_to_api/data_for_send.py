@@ -1,5 +1,8 @@
 from typing import Optional, Dict
 from config import Config
+from modules.models.api_send_data import (AddNewUser,
+                                          UserId,
+                                          LogIn,)
 
 
 class Data:
@@ -23,12 +26,12 @@ class Data:
             }
         """
 
-        # if ()
+        if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be a number")
+
+        data = AddNewUser(userId=int(self.user_id),
+                          referralerUserId=int(self.referraler))
         
-        return {
-            "userId": int(self.user_id),
-            "referralerUserId": int(self.referraler)
-        }
+        return data.dict()
     
 
     @property
@@ -39,12 +42,11 @@ class Data:
                 "userId": 123456789
             }
         """
+        if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be a number")
 
-        # if ()
+        data = UserId(userId=int(self.userId))
 
-        return {
-            "userId": int(self.user_id)
-        }
+        return data.dict()
     
     
     @property
@@ -56,13 +58,11 @@ class Data:
                 "password": "password"
             }
         """
-
-        return {
-            "username": Config.USERNAME,
-            "password": Config.PASSWORD,
-        }
+        data = LogIn(username=Config.PASSWORD, password=Config.PASSWORD)
+        return data.dict()
 
     
+    #TODO: this function should completely
     def balance_increase(self, price) -> Dict[str, int]:
         """_summary_
 

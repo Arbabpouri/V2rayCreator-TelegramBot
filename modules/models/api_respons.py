@@ -237,4 +237,3 @@ class GetUserInfo(BaseModel):
     status: int
     message: str
     result: Optional[GetUserInfoResult] = None
-

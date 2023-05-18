@@ -1,10 +1,9 @@
-from typing import Optional, Dict
-from config import Config
+from typing import Optional
 from pydantic import BaseModel
 
 
 #
-class AddUser(BaseModel):
+class AddNewUser(BaseModel):
     userId: int
     referralerUserId: int
 
@@ -21,8 +20,19 @@ class LogIn(BaseModel):
 
 
 #
-# class 
+class AddNewConfig(BaseModel):
+    userId: int
+    serverId: int
+    protocol: str
+    isFree: Optional[bool] = False
 
 
 #
-# class
+class ChangeServer(BaseModel):
+    configId: int
+    targeterverId: int
+
+
+#
+class RenewalConfig(BaseModel):
+    configId: int
