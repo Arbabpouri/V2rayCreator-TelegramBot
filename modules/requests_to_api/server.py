@@ -4,7 +4,7 @@ from json import loads
 from config import Config
 from modules.models.models import GetAllConfigTypes
 from modules.requests_to_api.data_for_send import Data
-from modules.requests_to_api.response_code import ResponseCode
+from modules.enums.response_code import ResponseCode
 
 
 
