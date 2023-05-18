@@ -20,12 +20,24 @@ class Config:
     TOKEN = "" # jwt token for send in header
     USERNAME = ""  # username for login to api for get token
     PASSWORD = ""  # password for login to api for get token
-    GET_TOKEN_URL = r"{}/".format(API_URL)  # this is url for get token for request to api
-    GET_USER_URL = r"{}/".format(API_URL)   # this is url for get user
-    ADD_USER_URL = r"{}/".format(API_URL)  # this is url for add user
-    GET_ALL_CONFIG_URL = r"{}/".format(API_URL)  # this is url for get all config
-    GET_USER_TYPE_URL = r"{}/".format(API_URL)  # this is url for get user type
-    BALANCE_INCREASE = r"{}/".format(API_URL)  # this is url for balance increase
+    GET_TOKEN = r"{}/api/Auth/LogIn".format(API_URL)  # this is url for get token for request to api
+    GET_USER_TYPE = r"{}/api/Users/GetUserType".format(API_URL)   # this is url for get user
+    ADD_NEW_USER = r"{}/api/Users/AddNewUser".format(API_URL)  # this is url for add user
+    GET_ALL_CONFIG_TYPES = r"{}/api/ConfigTypes/GetAllConfigTypes".format(API_URL)  # this is url for get all config
+    GET_USER_TYPE = r"{}/api/Users/GetUserType".format(API_URL)  # this is url for get user type
+    GET_USER_INFO = r"{}/api/Users/GetUserInfo".format(API_URL)
+    BALANCE_INCREASE = r"{}/".format(API_URL)  # this is url for balance increase TODO
+    GET_CONFIG_WITH_ID = r"{}/api/Configs/GetConfig".format(API_URL)
+    GET_USER_CONFIGS = r"{}api/Configs/GetUserConfigs".format(API_URL)
+    ADD_NEW_CONFIG = r"{}/api/Configs/AddNewConfig".format(API_URL)
+    CHANGE_PROTOCOL = r"{}/api/Configs/ChangeProtocol".format(API_URL)
+    CHANGE_SERVER = r"{}/api/Configs/ChangeServer".format(API_URL)
+    RENEWAL_CONFIG = r"{}/api/Configs/RenewalConfig".format(API_URL)
+    DELETE_CONFIG = r"{}/api/Configs/DeleteConfig".format(API_URL)
+    GET_ALL_SERVERS = r"{}/api/Servers/GetAllServers".format(API_URL)
+    GET_SETTINGS = r"{}/api/Settings/GetSettings".format(API_URL)
+
+
 
 def __check_config() -> bool:
     pass
