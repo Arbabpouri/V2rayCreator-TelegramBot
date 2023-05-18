@@ -2,7 +2,9 @@ from typing import Optional, Dict
 from config import Config
 from modules.models.api_send_data import (AddNewUser,
                                           UserId,
-                                          LogIn,)
+                                          LogIn,
+                                          Headers)
+from modules.requests_to_api.urls import ApiUrls
 
 
 class Data:
@@ -14,6 +16,12 @@ class Data:
         """
         self.user_id = user_id
         self.referraler = referraler
+        self.Urls = ApiUrls()
+
+
+    @property
+    def headers(self) -> Dict[str, str]:
+        return Headers(Authorization=self.Urls.TOKEN)
 
 
     @property

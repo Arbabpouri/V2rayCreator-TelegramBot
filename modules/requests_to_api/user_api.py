@@ -1,10 +1,13 @@
 from requests import (post, put, delete, get)
 from config import Config
 from json import loads
-from typing import Optional
+from typing import Optional, List
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
-from modules.models.api_respons import UserType, AddUser
+from modules.models.api_respons import (UserType,
+                                        AddUser,
+                                        GetUserConfigs,
+                                        GetUserConfigsResult)
 from modules.requests_to_api import APIS
 from modules.requests_to_api.urls import ApiUrls
 
@@ -193,3 +196,40 @@ class UserApi:
         
         del (responsive, data)
         return False
+
+    
+    @property
+    def get_user_configs(self) -> List[GetUserConfigsResult]:
+        """_summary_
+
+        Returns:
+            List[GetUserConfigsResult]: _description_
+        """
+
+        for i in range(2):
+            
+            responsive = get(url=self.Urls.get_user_configs(self.user_id),
+                             headers=Data.headers)
+            
+            if (responsive.status_code == 200):
+
+                result = GetUserConfigs(**loads(responsive.content))
+                
+                if (result.status == ResponseCode.SUCSESS):
+
+                    pass
+
+                # elif (result.status == ResponseCode.)
+
+                else:
+
+                    pass
+            
+            elif (responsive.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
+    
