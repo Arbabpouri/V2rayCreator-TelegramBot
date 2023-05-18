@@ -6,6 +6,7 @@ from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.models.api_respons import UserType, AddUser
 from modules.requests_to_api import APIS
+from modules.requests_to_api.urls import ApiUrls
 
 
 
@@ -42,6 +43,7 @@ class UserApi:
         """
 
         self.user_id = int(user_id)
+        self.Urls = ApiUrls()
 
 
     def add_user(self, referraler: Optional[int] = 0) -> bool:
@@ -64,12 +66,12 @@ class UserApi:
         data = Data(user_id=self.user_id, referraler=int(referraler))
         for i in range(2):
 
-            responsive = post(url=Config.ADD_USER_URL, data=data.add_user)
+            responsive = post(url=self.Urls.ADD_NEW_USER, data=data.add_user)
             
             if (responsive.status_code == 200):
                 result = AddUser(**loads(responsive.content))
 
-                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXISTS]):
+                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
                     del (data, responsive, result)
                     return True
                 
@@ -108,7 +110,7 @@ class UserApi:
         count = 0
         while (count < 2):
 
-            responsive = post(url=Config.BALANCE_INCREASE, data="", headers=Config.TOKEN)
+            responsive = post(url=self.Urls.BALANCE_INCREASE, data="", headers=Config.TOKEN)
             if (responsive.status_code == 200):
 
                 result = loads(responsive.content)
@@ -151,7 +153,7 @@ class UserApi:
         count = 0
         while (count < 2):
 
-            responsive = post(url=Config.GET_USER_TYPE_URL, data=data.userId)
+            responsive = post(url=self.Urls.get_user_type(self.user_id), data=data.userId)
 
             if (responsive.status_code == 200):
 

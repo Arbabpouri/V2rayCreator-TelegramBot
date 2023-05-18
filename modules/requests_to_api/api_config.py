@@ -4,13 +4,14 @@ from json import loads
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.models.api_respons import GetToken
+from modules.requests_to_api.urls import ApiUrls
 
 
 class ApiConfig:
 
 
     def __init__(self) -> None:
-        pass
+        self.Urls = ApiUrls()
 
 
     @property
@@ -22,7 +23,7 @@ class ApiConfig:
         """
 
         data = Data()
-        req = post(url=Config.TOKEN, data=data.get_token)
+        req = post(url=self.Urls.TOKEN, data=data.get_token)
 
         if (req.status_code != 200):
             del (data, req)
@@ -39,8 +40,8 @@ class ApiConfig:
 
         else:
             print(
-                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.USERNAME_ERROR) else \
-                                    "Password is wrong" if (result.status == ResponseCode.PASSWORD_ERROR) else result.message)
+                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.ADMIN_NOT_FOUND) else \
+                                    "Password is wrong" if (result.status == ResponseCode.ADMIN_WRONG_PASSWORD) else result.message)
             )
             exit()
 

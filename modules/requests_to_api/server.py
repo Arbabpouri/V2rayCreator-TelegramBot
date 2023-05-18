@@ -5,10 +5,14 @@ from config import Config
 from modules.models.api_respons import GetAllConfigTypes
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
+from modules.requests_to_api.urls import ApiUrls
 
 
 
 class V2Ray:
+
+    def __init__(self) -> None:
+        self.Urls = ApiUrls()
 
 
     @property
@@ -20,7 +24,7 @@ class V2Ray:
         i = 0
         while (i < 2):
 
-            req = post(url=Config.GET_ALL_CONFIG_URL, headers=0)
+            req = post(url=self.Urls.GET_ALL_CONFIG_TYPES, headers=0)
             
             if (req.status_code == 200):
 
