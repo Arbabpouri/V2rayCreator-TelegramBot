@@ -5,7 +5,8 @@ from modules.models.api_send_data import (AddNewUser,
                                           LogIn,
                                           Headers,
                                           AddNewConfig,
-                                          ChangeServer)
+                                          ChangeServer,
+                                          RenewalConfig)
 from modules.requests_to_api.urls import ApiUrls
 
 
@@ -129,3 +130,16 @@ class Data:
         data = ChangeServer(configId=int(config_id), targeterverId=int(target_server_id))
         return data.dict()
 
+
+    def config_id(self, config_id: int) -> Dict[str, int]:
+        """_summary_
+
+        Args:
+            cinfig_id (int): _description_
+
+        Returns:
+            Dict[str, int]: _description_
+        """
+
+        data = RenewalConfig(configId=int(config_id))
+        return data.dict()

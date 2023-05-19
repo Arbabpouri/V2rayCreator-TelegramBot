@@ -1,16 +1,18 @@
 from typing import List, Dict, Optional
 from requests import (post, get, put, delete)
 from json import loads
-from modules.models.api_respons import (GetAllConfigTypes,
+from modules.models.api_response import (GetAllConfigTypes,
                                         GetAllConfigTypesResult,
                                         AddNewConfig,
                                         AddNewConfigResult,
                                         ChangeProtocol, ChangeProtocolResult,
                                         ChangeServer,
-                                        ChangeServerResult)
+                                        ChangeServerResult,
+                                        RenewalConfig,
+                                        RenewalConfigResult)
 
 from modules.requests_to_api.data_for_send import Data
-from modules.enums.response_code import ResponseCode
+from modules.enums.response_code import responseeCode
 from modules.requests_to_api.urls import ApiUrls
 
 
@@ -25,38 +27,38 @@ class V2Ray:
     @property
     def get_all_config_types(self) -> bool | List[GetAllConfigTypesResult]:
         '''
-            responsiveuest to api for get all config types
+            responseuest to api for get all config types
             return a list from the items in shop
         '''
         i = 0
         while (i < 2):
 
-            responsive = post(url=self.Urls.GET_ALL_CONFIG_TYPES, headers=0)
+            response = post(url=self.Urls.GET_ALL_CONFIG_TYPES, headers=0)
             
-            if (responsive.status_code == 200):
+            if (response.status_code == 200):
 
-                result = GetAllConfigTypes(loads(responsive.content))
+                result = GetAllConfigTypes(loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS):
+                if (result.status == responseeCode.SUCSESS):
 
-                    del responsive
+                    del response
                     return result.result.configTypes
                 
                 else:
 
-                    del (responsive, result)
+                    del (response, result)
                     return False
                 
-            elif (responsive.status_code == 401):
+            elif (response.status_code == 401):
                
-                del responsive
+                del response
                 i += 1
 
             else:
-                del responsive
+                del response
                 return False
             
-        del responsive
+        del response
         return False
         
 
@@ -72,25 +74,25 @@ class V2Ray:
                                                              protocol=str(protocol),
                                                              is_free=bool(is_free))
             
-            responsive = post(url=self.Urls.ADD_NEW_CONFIG,
+            response = post(url=self.Urls.ADD_NEW_CONFIG,
                               data=data,
-                              headers=Data.headers)
+                              headers=Data().headers)
             
-            if (responsive.status_code == 200):
+            if (response.status_code == 200):
 
-                result = AddNewConfig(**loads(responsive.content))
+                result = AddNewConfig(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS):
+                if (result.status == responseeCode.SUCSESS):
                     
                     pass
 
-                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+                elif (result.status == responseeCode.USER_DOES_NOT_EXIST):
 
                     pass
 
 
 
-            elif (responsive.status_code == 401):
+            elif (response.status_code == 401):
 
                 pass
 
@@ -111,17 +113,17 @@ class V2Ray:
         
         for i in range(2):
 
-            responsive = get(url=self.Urls.get_config_with_id(config_id),
-                             headers=Data.headers)
+            response = get(url=self.Urls.get_config_with_id(config_id),
+                             headers=Data().headers)
             
-            if (responsive.status_code == 200):
+            if (response.status_code == 200):
 
-                result = GetAllConfigTypes(**loads(responsive.content))
-                if (result.status == ResponseCode.SUCSESS):
+                result = GetAllConfigTypes(**loads(response.content))
+                if (result.status == responseeCode.SUCSESS):
 
                     pass
 
-                elif (result.status == ResponseCode.CONFIG_DOES_NOT_EXIST):
+                elif (result.status == responseeCode.CONFIG_DOES_NOT_EXIST):
 
                     pass
 
@@ -129,7 +131,7 @@ class V2Ray:
 
                     pass
 
-            elif (responsive.status_code == 401):
+            elif (response.status_code == 401):
 
                 pass
 
@@ -148,26 +150,25 @@ class V2Ray:
             ChangeProtocolResult: _description_
         """
 
-        i = 0
-        while (i < 2):
+        for i in range(2):
 
-            responsive = put(url=self.Urls.change_protocol(int(config_id)),
-                             headers=Data.headers)
+            response = put(url=self.Urls.change_protocol(int(config_id)),
+                             headers=Data().headers)
             
-            if (responsive.status_code == 200):
+            if (response.status_code == 200):
 
-                result = ChangeProtocol(**loads(responsive.content))
+                result = ChangeProtocol(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS):
+                if (result.status == responseeCode.SUCSESS):
 
                     pass
 
                 else:
 
-                    del responsive
+                    del response
                     return result.status
 
-            elif (responsive.status_code == 401):
+            elif (response.status_code == 401):
 
                 pass
 
@@ -187,27 +188,27 @@ class V2Ray:
             ChangeServerResult | int: _description_
         """
         
-        i = 0
-        while (i < 2):
+        for i in range(2):
+
             data = Data().change_server(int(config_id), int(target_server_id))
-            responsive = put(url=self.Urls.CHANGE_SERVER,
+            response = put(url=self.Urls.CHANGE_SERVER,
                              data=data,
-                             headers=Data.headers)
+                             headers=Data().headers)
             
-            if (responsive.status_code == 200):
+            if (response.status_code == 200):
 
-                result = ChangeServer(**loads(responsive.content))
+                result = ChangeServer(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS):
+                if (result.status == responseeCode.SUCSESS):
 
                     pass
 
                 else:
 
-                    del responsive
-                    return result.status
+                    del response
+                    return result.status  # 120
 
-            elif (responsive.status_code == 401):
+            elif (response.status_code == 401):
                 
                 pass
 
@@ -216,7 +217,34 @@ class V2Ray:
                 pass
 
 
+    def renewal_config(self, config_id: int) -> RenewalConfigResult | int:
+        """_summary_
 
+        Args:
+            config_id (int): _description_
+
+        Returns:
+            RenewalConfigResult | int: _description_
+        """
+
+        for i in range(2):
+            
+            data = Data().config_id(int(config_id))
+            response = put(url=self.Urls.RENEWAL_CONFIG,
+                          data=data,
+                          headers=Data().headers)
+            
+            if (response.status_code == 200):
+
+                result = RenewalConfig(**loads(response.content))
+
+            elif (response.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
 
 
 

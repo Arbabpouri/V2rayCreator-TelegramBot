@@ -173,7 +173,7 @@ class ChangeServer(BaseModel):
 
 
 #
-class RenewakConfigResult(BaseModel):
+class RenewalConfigResult(BaseModel):
     name: str
     protocol: str
     serverName: str
@@ -187,10 +187,10 @@ class RenewakConfigResult(BaseModel):
     creationDate: str # TODO
     expiresDate: str # TODO
 
-class RenewakConfig(BaseModel):
+class RenewalConfig(BaseModel):
     status: int
     message: str
-    result: Optional[RenewakConfigResult] = None
+    result: Optional[RenewalConfigResult] = None
 
 
 #
