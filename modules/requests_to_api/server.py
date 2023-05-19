@@ -9,10 +9,12 @@ from modules.models.api_response import (GetAllConfigTypes,
                                         ChangeServer,
                                         ChangeServerResult,
                                         RenewalConfig,
-                                        RenewalConfigResult)
+                                        RenewalConfigResult,
+                                        DeleteConfig,
+                                        )
 
 from modules.requests_to_api.data_for_send import Data
-from modules.enums.response_code import responseeCode
+from modules.enums.response_code import ResponseCode
 from modules.requests_to_api.urls import ApiUrls
 
 
@@ -21,7 +23,8 @@ class V2Ray:
 
 
     def __init__(self) -> None:
-        self.Urls = ApiUrls()
+        self.urls = ApiUrls()
+        self.headers = self.headers
 
 
     @property
@@ -33,13 +36,14 @@ class V2Ray:
         i = 0
         while (i < 2):
 
-            response = post(url=self.Urls.GET_ALL_CONFIG_TYPES, headers=0)
+            response = post(url=self.urls.GET_ALL_CONFIG_TYPES,
+                            headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = GetAllConfigTypes(loads(response.content))
 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
                     del response
                     return result.result.configTypes
@@ -74,19 +78,19 @@ class V2Ray:
                                                              protocol=str(protocol),
                                                              is_free=bool(is_free))
             
-            response = post(url=self.Urls.ADD_NEW_CONFIG,
+            response = post(url=self.urls.ADD_NEW_CONFIG,
                               data=data,
-                              headers=Data().headers)
+                              headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = AddNewConfig(**loads(response.content))
 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
                     
                     pass
 
-                elif (result.status == responseeCode.USER_DOES_NOT_EXIST):
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     pass
 
@@ -113,17 +117,17 @@ class V2Ray:
         
         for i in range(2):
 
-            response = get(url=self.Urls.get_config_with_id(config_id),
-                             headers=Data().headers)
+            response = get(url=self.urls.get_config_with_id(config_id),
+                             headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = GetAllConfigTypes(**loads(response.content))
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
                     pass
 
-                elif (result.status == responseeCode.CONFIG_DOES_NOT_EXIST):
+                elif (result.status == ResponseCode.CONFIG_DOES_NOT_EXIST):
 
                     pass
 
@@ -152,21 +156,19 @@ class V2Ray:
 
         for i in range(2):
 
-            response = put(url=self.Urls.change_protocol(int(config_id)),
-                             headers=Data().headers)
+            response = put(url=self.urls.change_protocol(int(config_id)),
+                             headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = ChangeProtocol(**loads(response.content))
 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
                     pass
 
-                else:
-
-                    del response
-                    return result.status
+                del response
+                return result.status
 
             elif (response.status_code == 401):
 
@@ -191,22 +193,20 @@ class V2Ray:
         for i in range(2):
 
             data = Data().change_server(int(config_id), int(target_server_id))
-            response = put(url=self.Urls.CHANGE_SERVER,
+            response = put(url=self.urls.CHANGE_SERVER,
                              data=data,
-                             headers=Data().headers)
+                             headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = ChangeServer(**loads(response.content))
 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
                     pass
 
-                else:
-
-                    del response
-                    return result.status  # 120
+                del response
+                return result.status  # 120
 
             elif (response.status_code == 401):
                 
@@ -230,13 +230,20 @@ class V2Ray:
         for i in range(2):
             
             data = Data().config_id(int(config_id))
-            response = put(url=self.Urls.RENEWAL_CONFIG,
+            response = put(url=self.urls.RENEWAL_CONFIG,
                           data=data,
-                          headers=Data().headers)
+                          headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = RenewalConfig(**loads(response.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    pass
+         
+                del response
+                return result.status  # 41, 120, 122, 131
 
             elif (response.status_code == 401):
 
@@ -247,8 +254,59 @@ class V2Ray:
                 pass
 
 
+    def delete_config(self, config_id: int) -> DeleteConfig | int:
+        """_summary_
+
+        Args:
+            config_id (int): _description_
+
+        Returns:
+            DeleteConfig | int: _description_
+        """
+
+        for i in range(2):
+
+            response = delete(url=self.urls.delete_config(int(config_id)),
+                              headers=self.headers)
+            
+            if (response.status_code == 200):
+
+                result = DeleteConfig(**loads(response.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    pass
+                
+                del response
+                return result.status  # 120, 132
+
+            elif (response.status_code == 401):
+                
+                pass
+
+            else:
+
+                pass
 
 
+    @property
+    def get_all_servers(self):
 
+        for i in range(2):
 
+            response = get(url=self.urls.GET_ALL_SERVERS,
+                           headers=self.headers)
+            
+            if (response.status_code == 200):
 
+                result = ...
+
+            elif (response.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
+
+                

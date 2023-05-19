@@ -3,7 +3,7 @@ from config import Config
 from json import loads
 from typing import Optional, List
 from modules.requests_to_api.data_for_send import Data
-from modules.enums.response_code import responseeCode
+from modules.enums.response_code import ResponseCode
 from modules.models.api_response import (UserType,
                                         AddUser,
                                         GetUserConfigs,
@@ -46,7 +46,8 @@ class UserApi:
         """
 
         self.user_id = int(user_id)
-        self.Urls = ApiUrls()
+        self.urls = ApiUrls()
+        self.headers = self.headers
 
 
     def add_user(self, referraler: Optional[int] = 0) -> bool:
@@ -69,12 +70,14 @@ class UserApi:
         data = Data(user_id=self.user_id, referraler=int(referraler))
         for i in range(2):
 
-            response = post(url=self.Urls.ADD_NEW_USER, data=data.add_user)
+            response = post(url=self.urls.ADD_NEW_USER,
+                            data=data.add_user,
+                            headers=self.headers)
             
             if (response.status_code == 200):
                 result = AddUser(**loads(response.content))
 
-                if (result.status in [responseeCode.SUCSESS, responseeCode.USER_ALREADY_EXIST]):
+                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
                     del (data, response, result)
                     return True
                 
@@ -114,7 +117,9 @@ class UserApi:
         count = 0
         while (count < 2):
 
-            response = post(url=self.Urls.BALANCE_INCREASE, data="", headers=Config.TOKEN)
+            response = post(url=self.urls.BALANCE_INCREASE,
+                            data="",
+                            headers=self.headers)
             if (response.status_code == 200):
 
                 result = loads(response.content)
@@ -158,17 +163,17 @@ class UserApi:
         count = 0
         while (count < 2):
 
-            response = post(url=self.Urls.get_user_type(self.user_id), data=data.userId)
+            response = post(url=self.urls.get_user_type(self.user_id), data=data.userId)
 
             if (response.status_code == 200):
 
                 result = UserType(**loads(response.content))
 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
                     del (response, data)
                     return str(result.result.type)
 
-                elif (result.status == responseeCode.USER_NOT_FOUND):
+                elif (result.status == ResponseCode.USER_NOT_FOUND):
                     add_user = self.add_user()
 
                     if (add_user):
@@ -209,18 +214,18 @@ class UserApi:
         i = 0
         while (i < 2):
             
-            response = get(url=self.Urls.get_user_configs(self.user_id),
-                             headers=Data().headers)
+            response = get(url=self.urls.get_user_configs(self.user_id),
+                             headers=self.headers)
             
             if (response.status_code == 200):
 
                 result = GetUserConfigs(**loads(response.content))
                 
-                if (result.status == responseeCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
                     break
 
-                elif (result.status == responseeCode.USER_DOES_NOT_EXIST):
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     pass
 
