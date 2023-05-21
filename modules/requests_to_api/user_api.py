@@ -7,7 +7,9 @@ from modules.enums.response_code import ResponseCode
 from modules.models.api_response import (UserType,
                                         AddUser,
                                         GetUserConfigs,
-                                        GetUserConfigsResult)
+                                        GetUserConfigsResult,
+                                        GetUserInfo,
+                                        GetUserInfoResult)
 from modules.requests_to_api import APIS
 from modules.requests_to_api.urls import ApiUrls
 
@@ -76,12 +78,12 @@ class UserApi:
             
             if (response.status_code == 200):
                 result = AddUser(**loads(response.content))
+                del (data, response)
 
                 if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
-                    del (data, response, result)
+                    
                     return True
                 
-                del (data, response, result)
                 return False
             
             elif (response.status_code == 401):
@@ -95,6 +97,7 @@ class UserApi:
                 return False
         
         else:
+
             del (data, response)
             return False
 
@@ -143,12 +146,36 @@ class UserApi:
                 return False
 
 
-    @property
-    def get_user_information(self) -> int | bool:
+    def get_user_information(self, user_id: int) -> GetUserInfoResult | bool:
         """
             for get user information(balance/configs/...)
         """
 
+        for i in range(2):
+            
+            response = get(url=self.urls.get_user_info(int(user_id)),
+                           headers=self.headers)
+            
+            if (response.status_code == 200):
+
+                result = GetUserInfo(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result
+
+                else:
+
+                    pass
+
+            elif (response.status_code == 401):
+
+                pass
+
+            else:
+
+                pass
 
     @property
     def get_user_type(self) -> str | bool:

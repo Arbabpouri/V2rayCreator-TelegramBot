@@ -93,3 +93,29 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Configs/DeleteConfig?configId={config_id}"
+
+
+    def online_buy_config(self, user_id: int, server_id: int,
+                          config_type_id: int) -> str:
+        
+        """_summary_
+        """
+
+        return fr"{self.API_URL}/api/Gateway/GenOnlinePurchaseGateway"
+    
+
+    def online_charge(self, user_id: int, amount: float) -> str:
+        """_summary_
+
+        Args:
+            user_id (int): _description_
+            amount (float): _description_
+
+        Returns:
+            str: _description_
+        """
+
+        return fr"{self.API_URL}/api/Gateway/GenChargeGateway"
+
+
+

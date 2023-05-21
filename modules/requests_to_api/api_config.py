@@ -3,8 +3,11 @@ from requests import (post, get, put, delete)
 from json import loads
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
-from modules.models.api_response import GetToken
+from modules.models.api_response import (GetToken,
+                                         GetSettings,
+                                         GetSettingsResult)
 from modules.requests_to_api.urls import ApiUrls
+from modules.requests_to_api import APIS
 
 
 class ApiConfig:
@@ -52,21 +55,31 @@ class ApiConfig:
 
 
     @property
-    def get_prices_limit(self):
+    def get_prices_limit(self) -> GetSettingsResult | bool:
         """
             responseuest to api for get price limit
             manual users and seller users have bin diffrent price limit , so you need to find the price limit for each
         """
-        
-        pass
-
-    
-    def generate_online_payment_link(self, user_id: int, server_id: int, 
-                                     config_type_id: int) -> str:
-        
-        """_summary_
-        """
-
         for i in range(2):
+            
+            response = get(url=self.urls.GET_SETTINGS,
+                           headers=self.headers)
+            
+            if (response.status_code == 200):
 
-            response = get(url=self.urls)
+                result = GetSettings(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result
+
+            elif (response.status_code == 401):
+
+                del response
+                APIS.config_api().get_token
+
+            else:
+
+                del response
+                return False

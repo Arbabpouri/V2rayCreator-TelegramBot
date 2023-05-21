@@ -11,11 +11,14 @@ from modules.models.api_response import (GetAllConfigTypes,
                                         RenewalConfig,
                                         RenewalConfigResult,
                                         DeleteConfig,
+                                        GetAllServer,
+                                        GetAllServerResult
                                         )
 
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.requests_to_api.urls import ApiUrls
+from modules.requests_to_api import APIS
 
 
 
@@ -29,10 +32,12 @@ class V2Ray:
 
     @property
     def get_all_config_types(self) -> bool | List[GetAllConfigTypesResult]:
-        '''
-            responseuest to api for get all config types
-            return a list from the items in shop
-        '''
+        """_summary_
+
+        Returns:
+            bool | List[GetAllConfigTypesResult]: _description_
+        """
+
         i = 0
         while (i < 2):
 
@@ -42,15 +47,14 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = GetAllConfigTypes(loads(response.content))
+                del response
 
                 if (result.status == ResponseCode.SUCSESS):
-
-                    del response
+                    
                     return result.result.configTypes
                 
                 else:
 
-                    del (response, result)
                     return False
                 
             elif (response.status_code == 401):
@@ -59,17 +63,24 @@ class V2Ray:
                 i += 1
 
             else:
+
                 del response
                 return False
-            
-        del response
-        return False
         
 
     def add_new_config(self, user_id, server_id, config_type_id, protocol, 
                        is_free: Optional[bool]=False) -> AddNewConfigResult | bool:
-        """
-        
+        """_summary_
+
+        Args:
+            user_id (_type_): _description_
+            server_id (_type_): _description_
+            config_type_id (_type_): _description_
+            protocol (_type_): _description_
+            is_free (Optional[bool], optional): _description_. Defaults to False.
+
+        Returns:
+            AddNewConfigResult | bool: _description_
         """
         
         for i in range(2):
@@ -85,24 +96,29 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = AddNewConfig(**loads(response.content))
+                del response
 
                 if (result.status == ResponseCode.SUCSESS):
                     
-                    pass
+                    return result.result
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
-                    pass
+                    add_user = APIS.user_api(int(user_id)).add_user()
 
+                    if (not add_user):
 
+                        del (add_user, result)
+                        return False
 
             elif (response.status_code == 401):
 
-                pass
+                APIS().config_api().get_token
 
             else:
 
-                pass
+                del response
+                return False
     
 
     def get_config(self, config_id: int) -> List[GetAllConfigTypesResult]:
@@ -290,7 +306,7 @@ class V2Ray:
 
 
     @property
-    def get_all_servers(self):
+    def get_all_servers(self) -> List[GetAllServerResult]:
 
         for i in range(2):
 
@@ -299,14 +315,23 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = ...
+                result = GetAllServer(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result.servers
+
+                else:
+                    
+                    pass
 
             elif (response.status_code == 401):
 
-                pass
+                del response
 
             else:
 
                 pass
-
+            
                 

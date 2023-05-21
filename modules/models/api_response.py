@@ -211,7 +211,7 @@ class GetAllServerList(BaseModel):
     servers: Optional[List[GetAllServerResult]] = None
 
 class GetAllServer(BaseModel):
-    statis: int
+    status: int
     message: str
     result: Optional[GetAllServerList] = None
 
