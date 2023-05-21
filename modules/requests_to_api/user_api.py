@@ -89,7 +89,8 @@ class UserApi:
             elif (response.status_code == 401):
 
                 del response
-                APIS.config_api().get_token
+                APIS().config_api().get_token
+                continue
 
             else:
             
@@ -147,8 +148,13 @@ class UserApi:
 
 
     def get_user_information(self, user_id: int) -> GetUserInfoResult | bool:
-        """
-            for get user information(balance/configs/...)
+        """_summary_
+
+        Args:
+            user_id (int): _description_
+
+        Returns:
+            GetUserInfoResult | bool: _description_
         """
 
         for i in range(2):
@@ -165,17 +171,29 @@ class UserApi:
 
                     return result.result
 
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+                    
+                    add_user = self.add_user()
+
+                    if (not add_user):
+
+                        del add_user
+                        return False
+                
                 else:
 
-                    pass
+                    return False
 
             elif (response.status_code == 401):
 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
-
-                pass
+                
+                del response
+                return False
 
     @property
     def get_user_type(self) -> str | bool:
@@ -200,18 +218,18 @@ class UserApi:
                     del (response, data)
                     return str(result.result.type)
 
-                elif (result.status == ResponseCode.USER_NOT_FOUND):
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
                     add_user = self.add_user()
 
-                    if (add_user):
-                        del (response, data, add_user, result)
-                        continue
-                    else:
-                        del (response, add_user, result)
-                        count += 1
-                        continue
+                    if (not add_user):
+                        del (response, add_user, result, data)
+                        return False
+                    
+                    continue
 
                 else:
+
                     del (response, data, result)
                     return False
             
@@ -220,6 +238,7 @@ class UserApi:
                 del response
                 count += 1
                 APIS.config_api().get_token
+                continue
 
             else:
 
@@ -231,7 +250,7 @@ class UserApi:
 
     
     @property
-    def get_user_configs(self) -> List[GetUserConfigsResult]:
+    def get_user_configs(self) -> List[GetUserConfigsResult] | bool | int:
         """_summary_
 
         Returns:
@@ -247,25 +266,35 @@ class UserApi:
             if (response.status_code == 200):
 
                 result = GetUserConfigs(**loads(response.content))
+                del response
                 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    break
+                    return result.result
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
-                    pass
-
+                    add_user = APIS().config_api().get_token
+                    
+                    if (not add_user):
+                        
+                        del (add_user, result)
+                        return False
+                    
                 else:
 
                     del response
-                    return result.status
+                    return result.status  # 100, 32
             
             elif (response.status_code == 401):
 
-                pass
+                i += 1
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
     

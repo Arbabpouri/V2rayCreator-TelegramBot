@@ -73,11 +73,14 @@ class ApiConfig:
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result.result
+                
+                return False
 
             elif (response.status_code == 401):
 
                 del response
-                APIS.config_api().get_token
+                APIS().config_api().get_token
+                continue
 
             else:
 

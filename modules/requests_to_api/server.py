@@ -31,7 +31,7 @@ class V2Ray:
 
 
     @property
-    def get_all_config_types(self) -> bool | List[GetAllConfigTypesResult]:
+    def get_all_config_types(self) -> List[GetAllConfigTypesResult] | bool:
         """_summary_
 
         Returns:
@@ -53,14 +53,13 @@ class V2Ray:
                     
                     return result.result.configTypes
                 
-                else:
-
-                    return False
+                return False
                 
             elif (response.status_code == 401):
                
                 del response
-                i += 1
+                APIS().config_api().get_token
+                continue
 
             else:
 
@@ -110,10 +109,17 @@ class V2Ray:
 
                         del (add_user, result)
                         return False
+                
+                else:
+
+                    del response
+                    return result.status  # 32, 110, 100, 41, 102, 130
 
             elif (response.status_code == 401):
 
+                del response
                 APIS().config_api().get_token
+                continue
 
             else:
 
@@ -121,7 +127,7 @@ class V2Ray:
                 return False
     
 
-    def get_config(self, config_id: int) -> List[GetAllConfigTypesResult]:
+    def get_config(self, config_id: int) -> List[GetAllConfigTypesResult] | int | bool:
         """_summary_
 
         Args:
@@ -139,28 +145,27 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = GetAllConfigTypes(**loads(response.content))
+                del response
+
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    return result.result
 
-                elif (result.status == ResponseCode.CONFIG_DOES_NOT_EXIST):
-
-                    pass
-
-                else:
-
-                    pass
+                return result.status  # 120
 
             elif (response.status_code == 401):
 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
 
 
-    def chenge_protocol(self, config_id: int) -> ChangeProtocolResult | int:
+    def chenge_protocol(self, config_id: int) -> ChangeProtocolResult | int | bool:
         """_summary_
 
         Args:
@@ -181,21 +186,24 @@ class V2Ray:
 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    return result.result
 
                 del response
-                return result.status
+                return result.status  # 120, 121, 130
 
             elif (response.status_code == 401):
 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
 
 
-    def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int:
+    def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int | bool:
         """_summary_
 
         Args:
@@ -216,24 +224,27 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = ChangeServer(**loads(response.content))
+                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    return result.result
 
-                del response
-                return result.status  # 120
+                return result.status  # 100, 102, 120, 121, 130
 
             elif (response.status_code == 401):
                 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
 
 
-    def renewal_config(self, config_id: int) -> RenewalConfigResult | int:
+    def renewal_config(self, config_id: int) -> RenewalConfigResult | int | bool:
         """_summary_
 
         Args:
@@ -253,24 +264,27 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = RenewalConfig(**loads(response.content))
+                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    return result.result
          
-                del response
                 return result.status  # 41, 120, 122, 131
 
             elif (response.status_code == 401):
 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
 
 
-    def delete_config(self, config_id: int) -> DeleteConfig | int:
+    def delete_config(self, config_id: int) -> bool | int:
         """_summary_
 
         Args:
@@ -288,25 +302,28 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = DeleteConfig(**loads(response.content))
+                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
-                    pass
+                    return True
                 
-                del response
                 return result.status  # 120, 132
 
             elif (response.status_code == 401):
                 
-                pass
+                del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
 
 
     @property
-    def get_all_servers(self) -> List[GetAllServerResult]:
+    def get_all_servers(self) -> List[GetAllServerResult] | bool:
 
         for i in range(2):
 
@@ -322,16 +339,17 @@ class V2Ray:
 
                     return result.result.servers
 
-                else:
-                    
-                    pass
+                return False
 
             elif (response.status_code == 401):
 
                 del response
+                APIS().config_api().get_token
+                continue
 
             else:
 
-                pass
+                del response
+                return False
             
                 
