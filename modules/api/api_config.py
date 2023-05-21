@@ -1,11 +1,11 @@
 from requests import (post, get)
 from json import loads
-from modules.requests_to_api.data_for_send import Data
+from modules.api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.models.api_response import (GetToken,
                                          GetSettings,
                                          GetSettingsResult)
-from modules.requests_to_api.urls import ApiUrls
+from modules.api.urls import ApiUrls
 
 
 class ApiConfig:

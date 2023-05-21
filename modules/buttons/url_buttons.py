@@ -2,7 +2,7 @@ from telethon import Button
 from typing import List
 from modules.buttons.inline_buttons import InlineButtonsString
 from config import Config
-from modules.requests_to_api.urls import ApiUrls
+from modules.api.urls import ApiUrls
 
 
 

@@ -1,7 +1,7 @@
 from config import client, Strings
 from modules.buttons import TextButtons
 from modules.tools.save_offline_charge import OfflineChargeData
-from modules.requests_to_api.APIS import APIS
+from modules.api.APIS import APIS
 from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
 from typing import NoReturn

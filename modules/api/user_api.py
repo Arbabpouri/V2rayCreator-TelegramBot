@@ -2,7 +2,7 @@ from requests import (post, put, delete, get)
 from config import Config
 from json import loads
 from typing import Optional, List
-from modules.requests_to_api.data_for_send import Data
+from modules.api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.models.api_response import (UserType,
                                         AddUser,
@@ -10,8 +10,8 @@ from modules.models.api_response import (UserType,
                                         GetUserConfigsResult,
                                         GetUserInfo,
                                         GetUserInfoResult)
-from modules.requests_to_api.api_config import ApiConfig
-from modules.requests_to_api.urls import ApiUrls
+from modules.api.api_config import ApiConfig
+from modules.api.urls import ApiUrls
 
 
 

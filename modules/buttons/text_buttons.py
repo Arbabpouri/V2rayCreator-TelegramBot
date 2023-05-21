@@ -1,5 +1,5 @@
 from telethon import Button
-from modules.requests_to_api.APIS import APIS
+from modules.api.APIS import APIS
 from typing import List
 from enum import StrEnum
 

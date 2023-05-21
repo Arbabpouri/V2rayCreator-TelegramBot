@@ -15,10 +15,10 @@ from modules.models.api_response import (GetAllConfigTypes,
                                         GetAllServerResult
                                         )
 
-from modules.requests_to_api.data_for_send import Data
+from modules.api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
-from modules.requests_to_api.urls import ApiUrls
-from modules.requests_to_api.api_config import ApiConfig
+from modules.api.urls import ApiUrls
+from modules.api.api_config import ApiConfig
 
 
 

@@ -7,7 +7,7 @@ from modules.models.api_send_data import (AddNewUser,
                                           AddNewConfig,
                                           ChangeServer,
                                           RenewalConfig)
-from modules.requests_to_api.urls import ApiUrls
+from modules.api.urls import ApiUrls
 
 
 class Data:

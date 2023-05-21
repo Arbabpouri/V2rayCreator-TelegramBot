@@ -1,6 +1,6 @@
-from modules.requests_to_api.user_api import UserApi
-from modules.requests_to_api.server import V2Ray
-from modules.requests_to_api.api_config import ApiConfig
+from modules.api.user_api import UserApi
+from modules.api.server import V2Ray
+from modules.api.api_config import ApiConfig
 
 
 class APIS:

@@ -2,8 +2,8 @@ from config import client
 from modules.handlers import TextHandlers, InlineHandlers
 from telethon.events import NewMessage, CallbackQuery
 from modules.handlers.limiter import Limit
-from modules.requests_to_api.APIS import APIS
-from modules.requests_to_api.urls import ApiUrls
+from modules.api.APIS import APIS
+from modules.api.urls import ApiUrls
 
 
 print('Imported')
