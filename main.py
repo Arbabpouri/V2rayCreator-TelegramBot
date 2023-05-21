@@ -1,8 +1,9 @@
-from config import client, Config
-from modules import TextHandlers, InlineHandlers
+from config import client
+from modules.handlers import TextHandlers, InlineHandlers
 from telethon.events import NewMessage, CallbackQuery
-from telethon import Button
-from modules import Limit, APIS
+from modules.handlers.limiter import Limit
+from modules.requests_to_api.APIS import APIS
+from modules.requests_to_api.urls import ApiUrls
 
 
 print('Imported')
@@ -10,7 +11,8 @@ if __name__ == "__main__":
     try:
 
         with open(r"./config/token.txt", "r") as file:
-            Config.TOKEN = str(file.read())
+            ApiUrls().TOKEN = str(file.read())
+            file.close()
         print("Token received")
 
         # for move user to different sessions
@@ -42,7 +44,7 @@ if __name__ == "__main__":
 
     except FileNotFoundError:
 
-        APIS.config_api().get_token
+        APIS().config_api().get_token
         print("Please re run")
         exit()
 

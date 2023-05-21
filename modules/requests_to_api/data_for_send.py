@@ -19,12 +19,12 @@ class Data:
         """
         self.user_id = user_id
         self.referraler = referraler
-        self.Urls = ApiUrls()
+        self.urls = ApiUrls()
 
 
     @property
     def headers(self) -> Dict[str, str]:
-        return Headers(Authorization=self.Urls.TOKEN)
+        return Headers(Authorization=self.urls.TOKEN)
 
 
     @property

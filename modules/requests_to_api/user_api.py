@@ -10,7 +10,7 @@ from modules.models.api_response import (UserType,
                                         GetUserConfigsResult,
                                         GetUserInfo,
                                         GetUserInfoResult)
-from modules.requests_to_api import APIS
+from modules.requests_to_api.api_config import ApiConfig
 from modules.requests_to_api.urls import ApiUrls
 
 
@@ -89,7 +89,7 @@ class UserApi:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -187,7 +187,7 @@ class UserApi:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -274,7 +274,7 @@ class UserApi:
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
-                    add_user = APIS().config_api().get_token
+                    add_user = ApiConfig().get_token
                     
                     if (not add_user):
                         
@@ -290,7 +290,7 @@ class UserApi:
 
                 i += 1
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:

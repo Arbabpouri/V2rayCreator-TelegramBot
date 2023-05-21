@@ -1,8 +1,8 @@
 from telethon import Button
 from typing import List
-from modules.buttons.inline_buttons import InlineButtonsData, InlineButtonsString
+from modules.buttons.inline_buttons import InlineButtonsString
 from config import Config
-from modules.tools import create_payment_link
+from modules.requests_to_api.urls import ApiUrls
 
 
 
@@ -53,18 +53,9 @@ class UrlButtons:
         price = int(min_price)
         buttons = [
             [
-                Button.url(UrlButtonsString.shop(price), create_payment_link(user_id, price)),
-                Button.url(UrlButtonsString.shop(price * 2), create_payment_link(user_id, price * 2)),
-            ],
-            [
-                Button.url(UrlButtonsString.shop(price * 3), create_payment_link(user_id, price * 3)),
-                Button.url(UrlButtonsString.shop(price * 4), create_payment_link(user_id, price * 4)),
-            ],
-            [
-                Button.inline(InlineButtonsString.CUSTOM_CHARGE, InlineButtonsData.CUSTOM_CHARGE)
+                Button.inline(InlineButtonsString.CUSTOM_CHARGE, "CUSTOM-CHARGE")
             ],
         ]
-
         del (user_id, price)
         return buttons
 

@@ -18,7 +18,7 @@ from modules.models.api_response import (GetAllConfigTypes,
 from modules.requests_to_api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.requests_to_api.urls import ApiUrls
-from modules.requests_to_api import APIS
+from modules.requests_to_api.api_config import ApiConfig
 
 
 
@@ -58,7 +58,7 @@ class V2Ray:
             elif (response.status_code == 401):
                
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -118,7 +118,7 @@ class V2Ray:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -156,7 +156,7 @@ class V2Ray:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -194,7 +194,7 @@ class V2Ray:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -235,7 +235,7 @@ class V2Ray:
             elif (response.status_code == 401):
                 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -275,7 +275,7 @@ class V2Ray:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -313,7 +313,7 @@ class V2Ray:
             elif (response.status_code == 401):
                 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -344,7 +344,7 @@ class V2Ray:
             elif (response.status_code == 401):
 
                 del response
-                APIS().config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
