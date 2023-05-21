@@ -139,7 +139,7 @@ class UserApi:
                 
                 del response
                 count += 1
-                APIS.config_api().get_token
+                ApiConfig().get_token
 
             else:
 
@@ -237,7 +237,7 @@ class UserApi:
                 
                 del response
                 count += 1
-                APIS.config_api().get_token
+                ApiConfig().get_token
                 continue
 
             else:
@@ -257,8 +257,8 @@ class UserApi:
             List[GetUserConfigsResult]: _description_
         """
         
-        i = 0
-        while (i < 2):
+        count = 0
+        while (count < 2):
             
             response = get(url=self.urls.get_user_configs(self.user_id),
                              headers=self.headers)
@@ -288,7 +288,7 @@ class UserApi:
             
             elif (response.status_code == 401):
 
-                i += 1
+                count += 1
                 del response
                 ApiConfig().get_token
                 continue
