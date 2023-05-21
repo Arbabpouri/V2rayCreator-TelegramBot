@@ -19,6 +19,7 @@ from modules.api.data_for_send import Data
 from modules.enums.response_code import ResponseCode
 from modules.api.urls import ApiUrls
 from modules.api.api_config import ApiConfig
+from modules.api.APIS import APIS
 
 
 
@@ -351,5 +352,9 @@ class V2Ray:
 
                 del response
                 return False
+            
+        else:
+            del response
+            return False
             
                 

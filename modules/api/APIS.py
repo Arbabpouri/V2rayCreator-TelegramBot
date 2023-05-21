@@ -15,7 +15,7 @@ class APIS:
         return V2Ray()
     
 
+    
     @staticmethod
     def config_api() -> ApiConfig:
         return ApiConfig()
-    

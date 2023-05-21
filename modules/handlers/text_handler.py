@@ -6,6 +6,8 @@ from config import client, Strings, Config
 from modules import TextButtunsString, TextButtons, UrlButtons,InlineButtons
 from modules.handlers.limiter import Limit, Step
 from uuid import uuid1
+from modules.api.APIS import APIS
+from modules.api.urls import ApiUrls
 
 
 class TextHandlers:
@@ -50,7 +52,7 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.BUY_CONFIG,
-
+                    buttons=InlineButtons(event.sender_id).select_server()
                 )
 
             # this is session for show accounts information
@@ -151,7 +153,7 @@ class TextHandlers:
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
                             await sleep(0.5)
-                            link = create_payment_link(event.sender_id, text)
+                            link = ApiUrls().online_charge(int(event.sender_id), float(text))
                             await client.send_message(
                                 event.chat_id,
                                 Strings.created_payment_link(text),

@@ -7,8 +7,28 @@ from telethon.events import CallbackQuery
 from typing import NoReturn
 from modules.models.api_response import OfflineCharge
 
-
+# TODO
 class InlineHandlers:
+
+
+    @staticmethod
+    async def inline_move(event: CallbackQuery.Event) -> NoReturn:
+        """_summary_
+
+        Args:
+            event (CallbackQuery.Event): _description_
+
+        Returns:
+            NoReturn: _description_
+        """
+
+        data = bytes(event.data).decode()
+        
+        if (data == "BACK-TO-HOME"):
+
+            await client.send_message(entity=event.chat_id,
+                                      message=Strings.BACKED_TO_HOME,
+                                      buttons=TextButtons.start_menu(event.sender_id))
 
 
     @staticmethod
@@ -32,6 +52,17 @@ class InlineHandlers:
             Limit.LIMIT[str(event.sender_id)] = {
                 "part": Step.GET_CUSTOM_CHARGE_ONLINE
             }
+            del data
+
+        elif (data.startswith("SERVER-")):
+            
+            data = data.replace("SERVER-", "").split("-")
+            user_id, server_id = data[0], data[1]
+
+            await event.edit(message="",
+                             buttons=[])
+            
+            del data
 
 
     @staticmethod
