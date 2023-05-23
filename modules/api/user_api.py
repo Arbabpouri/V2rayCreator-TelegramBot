@@ -147,7 +147,8 @@ class UserApi:
                 return False
 
 
-    def get_user_information(self, user_id: int) -> GetUserInfoResult | bool:
+    @property
+    def get_user_information(self) -> GetUserInfoResult | bool:
         """_summary_
 
         Args:
@@ -159,7 +160,7 @@ class UserApi:
 
         for i in range(2):
             
-            response = get(url=self.urls.get_user_info(int(user_id)),
+            response = get(url=self.urls.get_user_info(int(self.user_id)),
                            headers=self.headers)
             
             if (response.status_code == 200):
@@ -196,7 +197,7 @@ class UserApi:
                 return False
 
     @property
-    def get_user_type(self) -> str | bool:
+    def get_user_type(self) -> int | bool:
         """
         for get user type , example : manual, seller and ...
 
@@ -216,7 +217,7 @@ class UserApi:
 
                 if (result.status == ResponseCode.SUCSESS):
                     del (response, data)
-                    return str(result.result.type)
+                    return int(result.result.type)
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 

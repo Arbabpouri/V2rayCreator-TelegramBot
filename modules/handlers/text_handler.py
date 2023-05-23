@@ -52,7 +52,7 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.BUY_CONFIG,
-                    buttons=InlineButtons(event.sender_id).select_server()
+                    buttons=InlineButtons(event.sender_id).select_server
                 )
 
             # this is session for show accounts information
@@ -129,6 +129,7 @@ class TextHandlers:
                 
             case _:
                 pass
+
 
     @staticmethod
     async def get_informatios(event: Message) -> None:

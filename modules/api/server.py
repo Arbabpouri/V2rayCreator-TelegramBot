@@ -128,7 +128,7 @@ class V2Ray:
                 return False
     
 
-    def get_config(self, config_id: int) -> List[GetAllConfigTypesResult] | int | bool:
+    def get_config(self, config_id: int) -> List[GetAllConfigTypesResult] | int:
         """_summary_
 
         Args:
@@ -163,7 +163,7 @@ class V2Ray:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
 
 
     def chenge_protocol(self, config_id: int) -> ChangeProtocolResult | int | bool:
