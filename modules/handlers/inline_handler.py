@@ -4,16 +4,16 @@ from modules.tools.save_offline_charge import OfflineChargeData
 from modules.api.APIS import APIS
 from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
-from typing import NoReturn
 from modules.models.api_response import OfflineCharge
 from enums.response_code import ResponseCode
+from modules.enums.types import UserTypes
 
 # TODO
 class InlineHandlers:
         
 
     @staticmethod
-    async def user_move(event: CallbackQuery.Event) -> NoReturn:
+    async def user_move(event: CallbackQuery.Event) -> None:
         """_summary_
 
         Args:
@@ -68,21 +68,52 @@ class InlineHandlers:
 
             data = data.replace("SELECT-PROTOCOL-", "").split("-")  # data[0] is protocol, data[1] is server id, data[2] is config id
             protocol, server_id, config_id = data
-            balance = APIS.user_api(event.sender_id).get_user_information.balance
-            price = APIS.v2ray_api().get_config(int(config_id))
+            user_api = APIS.user_api(event.sender_id)
+            balance = user_api.get_user_information.balance
+            configs = APIS.v2ray_api().get_all_config_types
             
-            if (isinstance(price, int)):
+            if (isinstance(configs, int)):
 
-                pass
+                if (configs == ResponseCode.FAILURE):
+
+                    pass
+
+                else:
+
+                    pass
 
             else:
 
-                pass
+                for config in configs:
 
+                    if (int(config.id) == int(config.id)):
 
+                        user_type = user_api.get_user_type
+
+                        if (user_type != UserTypes.MARKETER):
+
+                            price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else config.priceForSellerUsers
+                            break
+
+                        else:
+
+                            await event.edit("s", buttons=[])
+                            return
+                
+                else:
+
+                    pass
+
+                if (balance >= price):
+                    
+                    pass
+
+                else:
+
+                    pass
 
     @staticmethod
-    async def acc_reject(event: CallbackQuery.Event) -> NoReturn:
+    async def acc_reject(event: CallbackQuery.Event) -> None:
         """
         acc or reject by admin
 

@@ -12,7 +12,9 @@ from modules.models.api_response import (GetAllConfigTypes,
                                         RenewalConfigResult,
                                         DeleteConfig,
                                         GetAllServer,
-                                        GetAllServerResult
+                                        GetAllServerResult,
+                                        GetConfig,
+                                        GetConfigResult
                                         )
 
 from modules.api.data_for_send import Data
@@ -32,11 +34,12 @@ class V2Ray:
 
 
     @property
-    def get_all_config_types(self) -> List[GetAllConfigTypesResult] | bool:
+    def get_all_config_types(self) -> List[GetAllConfigTypesResult] | int:
         """_summary_
 
         Returns:
-            bool | List[GetAllConfigTypesResult]: _description_
+            List[GetAllConfigTypesResult]: _description_
+            int: 1 -> Failur
         """
 
         i = 0
@@ -54,7 +57,7 @@ class V2Ray:
                     
                     return result.result.configTypes
                 
-                return False
+                return ResponseCode.FAILURE
                 
             elif (response.status_code == 401):
                
@@ -65,7 +68,7 @@ class V2Ray:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
         
 
     def add_new_config(self, user_id, server_id, config_type_id, protocol, 
@@ -128,14 +131,15 @@ class V2Ray:
                 return False
     
 
-    def get_config(self, config_id: int) -> List[GetAllConfigTypesResult] | int:
+    def get_config(self, config_id: int) -> GetConfigResult | int:
         """_summary_
 
         Args:
             config_id (int): _description_
 
         Returns:
-            List[GetAllConfigTypesResult]: _description_
+            GetConfigResult: _description_
+            int: 120 -> config does not exist , 1 -> Failur
         """
         
         for i in range(2):
@@ -145,7 +149,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = GetAllConfigTypes(**loads(response.content))
+                result = GetConfig(**loads(response.content))
                 del response
 
                 if (result.status == ResponseCode.SUCSESS):
