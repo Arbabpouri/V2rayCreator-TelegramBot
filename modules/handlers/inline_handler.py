@@ -1,12 +1,13 @@
-from config import client, Strings
+from config import client
+from config.bot_strings import Strings
 from modules.buttons import TextButtons, InlineButtons
 from modules.tools.save_offline_charge import OfflineChargeData
 from modules.api.APIS import APIS
 from modules.handlers.limiter import Limit, Step
 from telethon.events import CallbackQuery
 from modules.models.api_response import OfflineCharge
-from enums.response_code import ResponseCode
-from modules.enums.types import UserTypes
+from modules.enums import ResponseCode
+from modules.enums import UserTypes
 from config import Config
 
 # TODO
@@ -25,7 +26,7 @@ class InlineHandlers:
         """
         
         data = bytes(event.data).decode()
-        
+
         if (data == "CUSTOM-CHARGE"):
 
             await client.send_message(event.chat_id,

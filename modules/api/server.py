@@ -18,10 +18,11 @@ from modules.models.api_response import (GetAllConfigTypes,
                                         )
 
 from modules.api.data_for_send import Data
-from modules.enums.response_code import ResponseCode
+from modules.enums import ResponseCode
 from modules.api.urls import ApiUrls
 from modules.api.api_config import ApiConfig
-from modules.api.APIS import APIS
+from modules.api.user_api import UserApi
+from modules.api.api_config import ApiConfig
 
 
 
@@ -143,7 +144,7 @@ class V2Ray:
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
-                    add_user = APIS.user_api(int(user_id)).add_user()
+                    add_user = UserApi().user_api(int(user_id)).add_user()
 
                     if (not add_user):
 

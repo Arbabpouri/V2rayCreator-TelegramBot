@@ -31,3 +31,9 @@ class ResponseCode(IntEnum):
     UPDATE_CONFIG_PANEL_FAILURE = 131
     REMOVE_CONFIG_PANEL_FAILURE = 132
     TELEGRAM_SEND_MESSAGE_ERROR = 200
+
+@unique
+class UserTypes(IntEnum):
+    MANUAL = 0
+    SELLER = 1
+    MARKETER = 2

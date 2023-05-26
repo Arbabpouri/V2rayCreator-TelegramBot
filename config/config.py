@@ -12,8 +12,8 @@ class Config:
     CARD_HOLDER = "علی مومنی"
 
     # API Config
-    USERNAME = ""  # username for login to api for get token
-    PASSWORD = ""  # password for login to api for get token
+    USERNAME = "MellatVpnAccount"  # username for login to api for get token
+    PASSWORD = "AlienSardarMomeni2023"  # password for login to api for get token
 
 
 def __check_config() -> bool:

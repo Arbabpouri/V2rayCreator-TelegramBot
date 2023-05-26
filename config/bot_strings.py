@@ -1,5 +1,5 @@
-from config import Config
-from modules.enums.response_code import ResponseCode
+from config.config import Config
+from modules.enums import ResponseCode
 
 
 class Strings:

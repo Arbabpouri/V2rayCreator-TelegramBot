@@ -1,7 +1,7 @@
 from requests import (post, get)
 from json import loads
 from modules.api.data_for_send import Data
-from modules.enums.response_code import ResponseCode
+from modules.enums.enums import ResponseCode
 from modules.models.api_response import (GetToken,
                                          GetSettings,
                                          GetSettingsResult)
@@ -30,8 +30,8 @@ class ApiConfig:
                         verify=False)
 
         if (response.status_code != 200):
+            print(f"\n\n{response}\n\nApi has no response")
             del (data, response)
-            print("Api has no response")
             exit()
         
         result = GetToken(**loads(response.content))

@@ -3,7 +3,7 @@ from config import Config
 from json import loads
 from typing import Optional, List
 from modules.api.data_for_send import Data
-from modules.enums.response_code import ResponseCode
+from modules.enums.enums import ResponseCode
 from modules.models.api_response import (UserType,
                                         AddUser,
                                         GetUserConfigs,

@@ -1,5 +1,5 @@
 from telethon import TelegramClient
-from config import Config
+from config.config import Config
 
 try:
 

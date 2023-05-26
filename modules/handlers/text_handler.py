@@ -1,9 +1,10 @@
 from asyncio import sleep
 from telethon.custom import Message
 from telethon.types import PeerUser
-from modules.tools.save_offline_charge import OfflineChargeData
-from config import client, Strings, Config
-from modules import TextButtunsString, TextButtons, UrlButtons,InlineButtons
+from modules.tools import OfflineChargeData
+from config import client, Config
+from config.bot_strings import Strings
+from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineButtons)
 from modules.handlers.limiter import Limit, Step
 from uuid import uuid1
 from modules.api.APIS import APIS

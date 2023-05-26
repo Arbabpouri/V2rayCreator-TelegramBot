@@ -2,7 +2,7 @@ from telethon import Button
 from typing import List, Optional, Tuple
 from enum import StrEnum
 from modules.api.APIS import APIS
-from modules.enums.types import UserTypes
+from modules.enums import UserTypes
 from modules.models.api_response import GetAllConfigTypesResult
 
 
