@@ -1,4 +1,5 @@
 from config import Config
+from modules.enums.response_code import ResponseCode
 
 
 class Strings:
@@ -14,6 +15,15 @@ class Strings:
     SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
     DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
     BACKED_TO_HOME = "👋 به منوی اصلی بازگشتید"
+    RESPONSE_API_STRINGS = {
+        str(ResponseCode.USER_TYPE_ERROR): (""),
+        str(ResponseCode.CONFIG_DOES_NOT_EXIST): (""),
+        str(ResponseCode.SERVER_DOES_NOT_EXIST): (""),
+        str(ResponseCode.LOW_BALANCE): (""),
+        str(ResponseCode.SERVER_IS_FULL): (""),
+        str(ResponseCode.ADD_NEW_CONFIG_PANEL_FAILUR): (""),
+        str(ResponseCode.CONFIG_TYPE_NOT_FOUND): (""),
+    }
 
 
     @staticmethod

@@ -25,6 +25,7 @@ class InlineHandlers:
         """
         
         data = bytes(event.data).decode()
+        
         if (data == "CUSTOM-CHARGE"):
 
             await client.send_message(event.chat_id,
@@ -116,19 +117,17 @@ class InlineHandlers:
                     
                     if (isinstance(add_config, int)):
                         
-                        match(add_config):
+                        if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
 
-                            case "":
+                            text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
 
-                                pass
-
-                            case _:
-
-                                pass
+                        else:
+                            
+                            text = "error"
 
                     else:
 
-                        text = "ss"
+                        text = f"linket `{add_config.v2RayLink}`"
 
                     del (v2ray, add_config)
 
@@ -139,20 +138,18 @@ class InlineHandlers:
                                                             config_id=int(config_id))
 
                     if isinstance(payment_link, int):
+                        
+                        if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
 
-                        match (payment_link):
+                            text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
 
-                            case "":
-
-                                pass
-
-                            case _:
-
-                                pass
+                        else:
+                            
+                            text = "error"
                     
                     else:
 
-                        text = "s"
+                        text = f"linket: {payment_link.result}"
 
                     del (user_api, payment_link)
 
