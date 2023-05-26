@@ -237,3 +237,9 @@ class GetUserInfo(BaseModel):
     status: int
     message: str
     result: Optional[GetUserInfoResult] = None
+
+
+class PaymentLink(BaseModel):
+    status: int
+    message: str
+    result: str

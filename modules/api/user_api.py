@@ -9,7 +9,9 @@ from modules.models.api_response import (UserType,
                                         GetUserConfigs,
                                         GetUserConfigsResult,
                                         GetUserInfo,
-                                        GetUserInfoResult)
+                                        GetUserInfoResult,
+                                        PaymentLink)
+
 from modules.api.api_config import ApiConfig
 from modules.api.urls import ApiUrls
 
@@ -50,101 +52,6 @@ class UserApi:
         self.user_id = int(user_id)
         self.urls = ApiUrls()
         self.headers = self.headers
-
-
-    def add_user(self, referraler: Optional[int] = 0) -> bool:
-        """
-        for add user to database
-
-        Args:
-            referraler (Optional[int], optional): _description_. Defaults to 0.
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            bool | ValueError: _description_
-        """
-        
-        if (not str(referraler).isnumeric()):
-            raise ValueError("referraler argument is not a number")
-        
-        data = Data(user_id=self.user_id, referraler=int(referraler))
-        for i in range(2):
-
-            response = post(url=self.urls.ADD_NEW_USER,
-                            data=data.add_user,
-                            headers=self.headers)
-            
-            if (response.status_code == 200):
-                result = AddUser(**loads(response.content))
-                del (data, response)
-
-                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
-                    
-                    return True
-                
-                return False
-            
-            elif (response.status_code == 401):
-
-                del response
-                ApiConfig().get_token
-                continue
-
-            else:
-            
-                del (data, response, result)
-                return False
-        
-        else:
-
-            del (data, response)
-            return False
-
-
-    # TODO : this function 
-    def balance_increase(self, price: int) -> bool:
-        """
-        for balance increase in database 
-
-        Args:
-            price (int): this argument for balance increase in database
-
-        Returns:
-            bool: successful or unsuccessful
-        """
-
-        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
-        
-        data = Data(self.user_id).balance_increase(int(price))
-        count = 0
-        while (count < 2):
-
-            response = post(url=self.urls.BALANCE_INCREASE,
-                            data="",
-                            headers=self.headers)
-            if (response.status_code == 200):
-
-                result = loads(response.content)
-                if ():
-
-                    pass
-
-                else:
-
-                    pass
-                
-            elif (response.status_code == 401):
-                
-                del response
-                count += 1
-                ApiConfig().get_token
-
-            else:
-
-                del (data, response, count)
-                return False
 
 
     @property
@@ -195,6 +102,7 @@ class UserApi:
                 
                 del response
                 return False
+
 
     @property
     def get_user_type(self) -> int | bool:
@@ -299,3 +207,196 @@ class UserApi:
                 del response
                 return False
     
+
+    def online_buy_link(self, server_id: int, config_id: int) -> int | str:
+        """_summary_
+
+        Args:
+            server_id (int): _description_
+            config_id (int): _description_
+
+        Returns:
+            int | str: _description_
+            int -> 32, 42, 100, 102, 110
+            str -> link
+        """
+
+        for i in range(2):
+            response = get(url=self.urls.online_buy_config(user_id=int(self.user_id),
+                                                        server_id=int(server_id),
+                                                        config_type_id=int(config_id)))
+            
+            if (response.status_code == 200):
+
+                result = PaymentLink(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result
+                
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    self.add_user()
+
+                else:
+
+                    return result.status  # 32, 42, 100, 102, 110
+
+            elif (response.status_code == 401):
+
+                del response
+                ApiConfig().get_token
+
+            else:
+
+                del response
+                return ResponseCode.FAILURE
+        
+        else:
+
+            return ResponseCode.FAILURE
+    
+
+    def online_charge_link(self, amount: int) -> int | str:
+        """_summary_
+
+        Args:
+            amount (int): _description_
+
+        Returns:
+            int | str: _description_
+            int -> 32, 40, 42
+        """
+
+        if (not str(amount).isnumeric()):
+            raise ValueError("amount must be number")
+
+        for i in range(2):
+            response = get(url=self.urls.online_charge(user_id=int(self.user_id),
+                                                       amount=int(amount)))
+            
+            if (response.status_code == 200):
+
+                result = PaymentLink(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result
+                
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    self.add_user()
+
+                else:
+
+                    return result.status  # 32, 40, 42
+
+            elif (response.status_code == 401):
+
+                del response
+                ApiConfig().get_token
+
+            else:
+
+                del response
+                return ResponseCode.FAILURE
+        
+        else:
+
+            return ResponseCode.FAILURE                
+
+
+    def add_user(self, referraler: Optional[int] = 0) -> bool:
+        """
+        for add user to database
+
+        Args:
+            referraler (Optional[int], optional): _description_. Defaults to 0.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            bool | ValueError: _description_
+        """
+        
+        if (not str(referraler).isnumeric()):
+            raise ValueError("referraler argument is not a number")
+        
+        data = Data(user_id=self.user_id, referraler=int(referraler))
+        for i in range(2):
+
+            response = post(url=self.urls.ADD_NEW_USER,
+                            data=data.add_user,
+                            headers=self.headers)
+            
+            if (response.status_code == 200):
+                result = AddUser(**loads(response.content))
+                del (data, response)
+
+                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
+                    
+                    return True
+                
+                return False
+            
+            elif (response.status_code == 401):
+
+                del response
+                ApiConfig().get_token
+                continue
+
+            else:
+            
+                del (data, response, result)
+                return False
+        
+        else:
+
+            del (data, response)
+            return False
+        
+
+    def balance_increase(self, price: int) -> bool:
+        """
+        for balance increase in database 
+
+        Args:
+            price (int): this argument for balance increase in database
+
+        Returns:
+            bool: successful or unsuccessful
+        """
+
+        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
+        
+        data = Data(self.user_id).balance_increase(int(price))
+        count = 0
+        while (count < 2):
+
+            response = post(url=self.urls.BALANCE_INCREASE,
+                            data="",
+                            headers=self.headers)
+            if (response.status_code == 200):
+
+                result = loads(response.content)
+                if ():
+
+                    pass
+
+                else:
+
+                    pass
+                
+            elif (response.status_code == 401):
+                
+                del response
+                count += 1
+                ApiConfig().get_token
+
+            else:
+
+                del (data, response, count)
+                return False

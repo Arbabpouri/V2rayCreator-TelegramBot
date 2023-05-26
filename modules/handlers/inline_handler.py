@@ -7,6 +7,7 @@ from telethon.events import CallbackQuery
 from modules.models.api_response import OfflineCharge
 from enums.response_code import ResponseCode
 from modules.enums.types import UserTypes
+from config import Config
 
 # TODO
 class InlineHandlers:
@@ -41,12 +42,12 @@ class InlineHandlers:
                                       message=Strings.BACKED_TO_HOME,
                                       buttons=TextButtons.start_menu(event.sender_id))
 
-        elif (data.startswith("SERVER-")):
+        elif (data.startswith("SELECT-SERVER-")):
             
-            server_id = data.replace("SERVER-", "")  # data[0] is the server id
+            server_id = data.replace("SELECT-SERVER-", "")  # data[0] is the server id
             result, buttons = InlineButtons(event.sender_id).configs_for_sell(int(server_id))
                 
-            await event.edit(message="select config" if (result) else "na",
+            await event.edit(message="select config" if (result) else "not config",
                              buttons=buttons)
 
             del (data, buttons, server_id)
@@ -64,53 +65,99 @@ class InlineHandlers:
 
             del (data, server_id, config_id, price, buttons)
 
-        elif (data.startswith("SELECT-PROTOCOL-")):
+        elif (data.startswith("BUY-SELECT-PROTOCOL-")):
 
-            data = data.replace("SELECT-PROTOCOL-", "").split("-")  # data[0] is protocol, data[1] is server id, data[2] is config id
+            data = data.replace("BUY-SELECT-PROTOCOL-", "").split("-")  # data[0] is protocol, data[1] is server id, data[2] is config id
             protocol, server_id, config_id = data
             user_api = APIS.user_api(event.sender_id)
             balance = user_api.get_user_information.balance
             configs = APIS.v2ray_api().get_all_config_types
             
-            if (isinstance(configs, int)):
+            if (isinstance(configs, int) and
+                configs == ResponseCode.FAILURE):
 
-                if (configs == ResponseCode.FAILURE):
-
-                    pass
-
-                else:
-
-                    pass
+                await event.edit("get configs error", buttons=InlineButtons().BACK_TO_HOME)
 
             else:
 
                 for config in configs:
 
-                    if (int(config.id) == int(config.id)):
+                    if (int(config.id) == int(config_id)):
 
                         user_type = user_api.get_user_type
 
                         if (user_type != UserTypes.MARKETER):
 
-                            price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else config.priceForSellerUsers
+                            price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else \
+                                config.priceForSellerUsers
+                            
                             break
 
                         else:
 
-                            await event.edit("s", buttons=[])
+                            await event.edit("shoma bazaryabi nemituni bekhari", buttons=InlineButtons().BACK_TO_HOME)
                             return
                 
                 else:
 
-                    pass
+                    await event.edit("config not dound", buttons=InlineButtons().BACK_TO_HOME)
+                    return
+
+                text = ""
 
                 if (balance >= price):
                     
-                    pass
+                    v2ray = APIS.v2ray_api()
+                    add_config = v2ray.add_new_config(user_id=int(event.sender_id),
+                                                      server_id=int(server_id),
+                                                      config_type_id=int(config_id),
+                                                      protocol=protocol,
+                                                      is_free=False if (event.sender_id not in Config.ADMINS_USER_ID) else True)
+                    
+                    if (isinstance(add_config, int)):
+                        
+                        match(add_config):
+
+                            case "":
+
+                                pass
+
+                            case _:
+
+                                pass
+
+                    else:
+
+                        text = "ss"
+
+                    del (v2ray, add_config)
 
                 else:
 
-                    pass
+                    user_api = APIS.user_api(int(event.sender_id))
+                    payment_link = user_api.online_buy_link(server_id=int(server_id),
+                                                            config_id=int(config_id))
+
+                    if isinstance(payment_link, int):
+
+                        match (payment_link):
+
+                            case "":
+
+                                pass
+
+                            case _:
+
+                                pass
+                    
+                    else:
+
+                        text = "s"
+
+                    del (user_api, payment_link)
+
+                await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
+                del (text)
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:
@@ -170,4 +217,3 @@ class InlineHandlers:
             else:
 
                 pass
-        

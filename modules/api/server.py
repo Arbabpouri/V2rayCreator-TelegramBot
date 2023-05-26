@@ -71,19 +71,55 @@ class V2Ray:
                 return ResponseCode.FAILURE
         
 
-    def add_new_config(self, user_id, server_id, config_type_id, protocol, 
-                       is_free: Optional[bool]=False) -> AddNewConfigResult | bool:
+    @property
+    def get_all_servers(self) -> List[GetAllServerResult] | bool:
+
+        for i in range(2):
+
+            response = get(url=self.urls.GET_ALL_SERVERS,
+                           headers=self.headers)
+            
+            if (response.status_code == 200):
+
+                result = GetAllServer(**loads(response.content))
+                del response
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result.result.servers
+
+                return False
+
+            elif (response.status_code == 401):
+
+                del response
+                ApiConfig().get_token
+                continue
+
+            else:
+
+                del response
+                return False
+            
+        else:
+            del response
+            return False
+
+
+    def add_new_config(self, user_id: int, server_id: int, config_type_id: int, protocol: str, 
+                       is_free: Optional[bool]= False) -> AddNewConfigResult | int:
         """_summary_
 
         Args:
-            user_id (_type_): _description_
-            server_id (_type_): _description_
-            config_type_id (_type_): _description_
-            protocol (_type_): _description_
+            user_id (int): _description_
+            server_id (int): _description_
+            config_type_id (int): _description_
+            protocol (str): _description_
             is_free (Optional[bool], optional): _description_. Defaults to False.
 
         Returns:
-            AddNewConfigResult | bool: _description_
+            AddNewConfigResult | int: _description_
+            int - > 32, 110, 100, 41, 102, 130
         """
         
         for i in range(2):
@@ -112,7 +148,7 @@ class V2Ray:
                     if (not add_user):
 
                         del (add_user, result)
-                        return False
+                        return ResponseCode.FAILURE
                 
                 else:
 
@@ -325,40 +361,4 @@ class V2Ray:
 
                 del response
                 return False
-
-
-    @property
-    def get_all_servers(self) -> List[GetAllServerResult] | bool:
-
-        for i in range(2):
-
-            response = get(url=self.urls.GET_ALL_SERVERS,
-                           headers=self.headers)
-            
-            if (response.status_code == 200):
-
-                result = GetAllServer(**loads(response.content))
-                del response
-
-                if (result.status == ResponseCode.SUCSESS):
-
-                    return result.result.servers
-
-                return False
-
-            elif (response.status_code == 401):
-
-                del response
-                ApiConfig().get_token
-                continue
-
-            else:
-
-                del response
-                return False
-            
-        else:
-            del response
-            return False
-            
-                
+    

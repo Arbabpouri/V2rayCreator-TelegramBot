@@ -15,12 +15,11 @@ class InlineButtonsString(StrEnum):
 class InlineButtons:
 
 
-    CANCEL_GET = [[Button.inline("❌ لغو عملیات ❌", "CANCEl-GET")]]
-
-
     def __init__(self, user_id: Optional[int] | None = None) -> None:
         self.user_id = user_id
         self.v2ray = APIS.v2ray_api()
+        self.CANCEL_GET = [Button.inline("❌ لغو عملیات ❌", "CANCEl-GET")]
+        self.BACK_TO_HOME = [Button.inline("برگشت به خانه", "BACK-TO-HOME")]
 
 
     @property
@@ -47,7 +46,7 @@ class InlineButtons:
 
             buttons = [
                 [Button.inline("❌ سروری برای نمایش وجود ندارد ❌")],
-                [Button.inline("🔙 برگشت به منوی اصلی", "BACK-TO-HOME")]
+                self.BACK_TO_HOME
             ]
 
             return (False, buttons)
@@ -63,7 +62,7 @@ class InlineButtons:
             buttons.append(
                 [   
                     Button.inline(str(num)), 
-                    Button.inline(str(server.name), f"SERVER-{server.id}")
+                    Button.inline(str(server.name), f"SELECT-SERVER-{server.id}")
                 ]
             )
 
@@ -176,7 +175,7 @@ class InlineButtons:
         
         return [
             [
-                Button.inline("Vmess", f"SELECT-PROTOCOL-VMESS-{server_id}-{config_id}"),
-                Button.inline("Vless", f"SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
+                Button.inline("Vmess", f"BUY-SELECT-PROTOCOL-VMESS-{server_id}-{config_id}"),
+                Button.inline("Vless", f"BUY-SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
             ]
         ]

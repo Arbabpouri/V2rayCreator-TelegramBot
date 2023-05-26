@@ -13,9 +13,12 @@ from modules.api.urls import ApiUrls
 class Data:
 
 
-    def __init__(self, user_id: Optional[int] = None, referraler: Optional[int] = 0) -> None:
-        """
-            user id must be integer or None
+    def __init__(self, user_id: int | None = None, referraler: Optional[int] = 0) -> None:
+        """_summary_
+
+        Args:
+            user_id (Optional[int], optional): _description_. Defaults to None.
+            referraler (Optional[int], optional): _description_. Defaults to 0.
         """
         self.user_id = user_id
         self.referraler = referraler
@@ -73,7 +76,6 @@ class Data:
         return data.dict()
 
     
-    #TODO: this function should completely
     def balance_increase(self, price) -> Dict[str, int]:
         """_summary_
 
@@ -93,8 +95,8 @@ class Data:
         }
 
 
-    def add_new_config(self, server_id: int, config_type_id: int,
-                        protocol: str, is_free: bool) -> Dict[str, str | int]:
+    def add_new_config(self, server_id: int, protocol: str,
+                       is_free: bool) -> Dict[str, str | int]:
         """_summary_
 
         Args:
