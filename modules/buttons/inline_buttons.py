@@ -4,6 +4,8 @@ from enum import StrEnum
 from modules.api.APIS import APIS
 from modules.enums import UserTypes
 from modules.models.api_response import GetAllConfigTypesResult
+from modules.enums import ResponseCode
+from config.bot_strings import Strings
 
 
 
@@ -17,6 +19,7 @@ class InlineButtons:
 
     def __init__(self, user_id: Optional[int] | None = None) -> None:
         self.user_id = user_id
+        if (str(self.user_id).isnumeric()): self.user_api = APIS.user_api(int(user_id))
         self.v2ray = APIS.v2ray_api()
         self.CANCEL_GET = [Button.inline("❌ لغو عملیات ❌", "CANCEl-GET")]
         self.BACK_TO_HOME = [Button.inline("برگشت به خانه", "BACK-TO-HOME")]
@@ -26,23 +29,22 @@ class InlineButtons:
     def select_server(self) -> Tuple[bool, List[List[Button]]]:
         """_summary_
 
-        Args:
-            user_id (int): _description_
+        Raises:
+            ValueError: _description_
 
         Returns:
-            List[List[Button]]: _description_
+            Tuple[bool, List[List[Button]]]: _description_
         """
 
         if (not str(self.user_id).isnumeric()):
             raise ValueError("user_id must be integer")
 
         servers = self.v2ray.get_all_servers
-        user_api = APIS.user_api(int(self.user_id))
-        user_type = user_api.get_user_type
+        user_type = self.user_api.get_user_type
 
         if (servers is False or
             not servers or
-            user_api == UserTypes.MARKETER):
+            user_type == UserTypes.MARKETER):
 
             buttons = [
                 [Button.inline("❌ سروری برای نمایش وجود ندارد ❌")],
@@ -66,7 +68,7 @@ class InlineButtons:
                 ]
             )
 
-        del (servers, user_api, user_type)
+        del (servers, user_type)
         return (True, buttons)
 
 
@@ -76,13 +78,15 @@ class InlineButtons:
 
         Args:
             name (str): _description_
-            user_id (str): _description_
             user_name (str): _description_
             price (str): _description_
             uuid (str): _description_
 
+        Raises:
+            ValueError: _description_
+
         Returns:
-            List[List[Button]]: _description_
+            Tuple[bool, List[List[Button]]]: _description_
         """
 
         if (not str(self.user_id).isnumeric()):
@@ -100,6 +104,12 @@ class InlineButtons:
     def configs_for_sell(self, server_id: int) -> Tuple[bool, List[List[Button]]]:
         """_summary_
 
+        Args:
+            server_id (int): _description_
+
+        Raises:
+            ValueError: _description_
+
         Returns:
             Tuple[bool, List[List[Button]]]: _description_
         """
@@ -110,8 +120,7 @@ class InlineButtons:
             raise ValueError("user/server id must be a number, example: InlineButtons(123456).configs_for_sell(12345)")
 
         configs = self.v2ray.get_all_config_types
-        user_api = APIS.user_api(int(self.user_id))
-        user_type = user_api.get_user_type
+        user_type = self.user_api.get_user_type
     
         if (configs is False or
             user_type == UserTypes.MARKETER):
@@ -121,7 +130,7 @@ class InlineButtons:
                 [Button.inline("🔙 برگشت به لیست سرور ها", f"BACK-TO-SERVERS-{self.user_id}")]
             ]
 
-            del (configs, user_api, user_type)
+            del (configs, user_type)
             return (False, buttons)
         
         buttons = [
@@ -151,7 +160,7 @@ class InlineButtons:
                 ]
             )
         
-        del (configs, user_api, user_type)
+        del (configs, user_type)
         return (True, buttons)
 
 
@@ -161,7 +170,9 @@ class InlineButtons:
         Args:
             server_id (int): _description_
             config_id (int): _description_
-            price (int): _description_
+
+        Raises:
+            ValueError: _description_
 
         Returns:
             List[List[Button]]: _description_
@@ -179,3 +190,66 @@ class InlineButtons:
                 Button.inline("Vless", f"BUY-SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
             ]
         ]
+
+
+    @property
+    def user_configs(self) -> Tuple[str, List[List[Button]]]:
+        """_summary_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            Tuple[int: "Error code", List[List[Button]]]: _description_
+            
+        """
+        
+
+        if (str(self.user_id).isnumeric()): raise ValueError("user_id must be number, example: InlineButtons(123456).user_configs()")
+
+        configs = self.user_api.get_user_configs
+
+        if (isinstance(configs, int)):
+
+            message = Strings.RESPONSE_API_STRINGS[str(configs)] if (str(configs) in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+            del configs
+            return (message, self.BACK_TO_HOME)
+        
+        elif (not configs): 
+            
+            del configs
+            return (Strings.NOT_SERVICE, self.BACK_TO_HOME)
+
+        buttons = [
+            [
+                Button.inline(""),
+                Button.inline(""),
+                Button.inline(""),
+            ],
+        ]
+
+        for i in configs:
+            
+            buttons.append(
+                [
+                    Button.inline("", ""),
+                    Button.inline("", ""),
+                    Button.inline("", ""),
+                ],
+            )
+        
+        del configs
+        return (Strings.SERVICES, buttons)
+        
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,7 @@
 from config.config import Config
 from modules.enums import ResponseCode
+from modules.api.APIS import APIS
+
 
 
 class Strings:
@@ -15,6 +17,10 @@ class Strings:
     SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
     DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
     BACKED_TO_HOME = "👋 به منوی اصلی بازگشتید"
+    SERVICES = "سروریس های شما به شرح زیر است"
+    NOT_SERVICE = "شما سرویسی ندارید"
+    ERROR = ""
+
     RESPONSE_API_STRINGS = {
         str(ResponseCode.USER_TYPE_ERROR): (""),
         str(ResponseCode.CONFIG_DOES_NOT_EXIST): (""),
@@ -75,8 +81,14 @@ class Strings:
 
     @staticmethod
     def account(user_id: int) -> str:
+        user_api = APIS.user_api(int(user_id))
+        result = user_api.get_user_information
+        if (not result):
+            
+            return "به مشکل خورد مجدد امتحان کنید"
+
         return (
-            "salam {}"
+            f"balance : {result.balance}"
             "\n\n"
-            "khubi? "
+            f"user_id: {user_id}"
         ).format(user_id)

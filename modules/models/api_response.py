@@ -10,7 +10,7 @@ class UserTypeResult(BaseModel):
 class UserType(BaseModel):
     status: int
     message: str
-    result: UserTypeResult = None
+    result: UserTypeResult | None = None
 
 
 # AddUser class is for the data received from the add user api
@@ -27,7 +27,7 @@ class GetTokenResult(BaseModel):
 class GetToken(BaseModel):
     status: int
     message: str
-    result: GetTokenResult = None
+    result: GetTokenResult | None = None
 
 
 # GetAllConfigTypes and GetAllConfigTypesList and GetAllConfigTypesResult classes are for the data received from the get all configs types api
@@ -46,7 +46,7 @@ class GetAllConfigTypesList(BaseModel):
 class GetAllConfigTypes(BaseModel):
     status: int
     message: str
-    result: Optional[GetAllConfigTypesList] = None
+    result: Optional[GetAllConfigTypesList] | None = None
 
 
 #
@@ -55,7 +55,7 @@ class OfflineCharge(BaseModel):
     price: int
     enable: bool
     status: str
-    by: Optional[str] = None
+    by: Optional[str] | None = None
 
 
 
@@ -70,8 +70,8 @@ class GetConfigResult(BaseModel):
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str # TODO
-    expiresDate: str # TODO
+    creationDate: str 
+    expiresDate: str 
     clientUserId: int
     up: int
     down: int
@@ -80,7 +80,7 @@ class GetConfigResult(BaseModel):
 class GetConfig(BaseModel):
     status: int
     message: str
-    result: Optional[GetConfigResult] = None
+    result: Optional[GetConfigResult] | None = None
 
 
 #
@@ -94,8 +94,8 @@ class GetUserConfigsResult(BaseModel):
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str # TODO
-    expiresDate: str # TODO
+    creationDate: str 
+    expiresDate: str 
     clientUserId: int
     up: int
     down: int
@@ -105,7 +105,7 @@ class GetUserConfigsResult(BaseModel):
 class GetUserConfigs(BaseModel):
     status: int
     message: str
-    result: Optional[List[GetUserConfigsResult]] = None
+    result: Optional[List[GetUserConfigsResult]] | None = None
 
 
 #
@@ -118,14 +118,14 @@ class AddNewConfigResult(BaseModel):
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str # TODO
-    expiresDate: str # TODO
+    creationDate: str 
+    expiresDate: str 
 
 
 class AddNewConfig(BaseModel):
     status: int
     message: str
-    result: Optional[AddNewConfigResult] = None
+    result: Optional[AddNewConfigResult] | None = None
 
 
 #
@@ -140,14 +140,14 @@ class ChangeProtocolResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str # TODO
-    expiresDate: str # TODO
+    creationDate: str 
+    expiresDate: str 
 
 
 class ChangeProtocol(BaseModel):
     status: int
     message: str
-    result: Optional[ChangeProtocolResult] = None
+    result: Optional[ChangeProtocolResult] | None = None
 
 
 #
@@ -162,13 +162,12 @@ class ChangeServerResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str # TODO
-    expiresDate: str # TODO
-
+    creationDate: str 
+    expiresDate: str 
 class ChangeServer(BaseModel):
     status: int
     message: str
-    result: Optional[ChangeServerResult] = None
+    result: Optional[ChangeServerResult] | None = None
 
 
 
@@ -184,20 +183,20 @@ class RenewalConfigResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str # TODO
-    expiresDate: str # TODO
+    creationDate: str 
+    expiresDate: str 
 
 class RenewalConfig(BaseModel):
     status: int
     message: str
-    result: Optional[RenewalConfigResult] = None
+    result: Optional[RenewalConfigResult] | None = None
 
 
 #
 class DeleteConfig(BaseModel):
     status: int
     message: str
-    result: Optional[str] = None
+    result: Optional[str] | None = None
 
 
 #
@@ -208,7 +207,7 @@ class GetAllServerResult(BaseModel):
     activeConfigs: int
 
 class GetAllServerList(BaseModel):
-    servers: Optional[List[GetAllServerResult]] = None
+    servers: Optional[List[GetAllServerResult]] | None = None
 
 class GetAllServer(BaseModel):
     status: int
@@ -229,14 +228,14 @@ class GetSettings(BaseModel):
 #
 class GetUserInfoResult(BaseModel):
     balance: int
-    referralerUserId: Optional[int] = None
-    referrals: Optional[List[int]] = None
+    referralerUserId: Optional[int] | None = None
+    referrals: Optional[List[int]] | None = None
     precentage: int
 
 class GetUserInfo(BaseModel):
     status: int
     message: str
-    result: Optional[GetUserInfoResult] = None
+    result: Optional[GetUserInfoResult] | None = None
 
 
 class PaymentLink(BaseModel):

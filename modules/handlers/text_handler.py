@@ -17,6 +17,7 @@ class TextHandlers:
     @staticmethod
     async def user_move(event: Message) -> None:
         text = str(event.message.message)
+
         match(text):
 
             # this is session for referral
@@ -63,14 +64,17 @@ class TextHandlers:
                     event.chat_id,
                     Strings.account(event.sender_id),
                     buttons=TextButtons.start_menu(event.sender_id),
-                    parse_mode="html"
                 )
 
             # this is session for show configs
             case (TextButtunsString.MY_SUBSCRIPTIONS):
-                print(event.message.message)
-                print(event.message.message)
 
+                message, buttons = InlineButtons(int(event.sender_id)).user_configs
+                await client.send_message(event.chat_id,
+                                          message,
+                                          buttons=buttons)
+                del (message, buttons)
+                
             # this is session for show charge buttons
             case (TextButtunsString.SHOP):
 
@@ -127,7 +131,8 @@ class TextHandlers:
                     buttons=TextButtons.start_menu(event.sender_id),
                     parse_mode="html"
                 )
-                
+            
+            #
             case _:
                 pass
 

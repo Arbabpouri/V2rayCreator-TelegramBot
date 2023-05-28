@@ -159,11 +159,12 @@ class UserApi:
 
     
     @property
-    def get_user_configs(self) -> List[GetUserConfigsResult] | bool | int:
+    def get_user_configs(self) -> List[GetUserConfigsResult] | int:
         """_summary_
 
         Returns:
-            List[GetUserConfigsResult]: _description_
+            List[GetUserConfigsResult] | int: _description_
+            int -> 30, 32
         """
         
         count = 0
@@ -188,7 +189,7 @@ class UserApi:
                     if (not add_user):
                         
                         del (add_user, result)
-                        return False
+                        return ResponseCode.FAILURE
                     
                 else:
 
@@ -205,7 +206,7 @@ class UserApi:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
     
 
     def online_buy_link(self, server_id: int, config_id: int) -> int | str:
