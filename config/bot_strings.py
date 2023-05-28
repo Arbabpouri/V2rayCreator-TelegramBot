@@ -20,6 +20,7 @@ class Strings:
     SERVICES = "سروریس های شما به شرح زیر است"
     NOT_SERVICE = "شما سرویسی ندارید"
     ERROR = ""
+    CONFIG_DOES_NOT_EXIST = ""
 
     RESPONSE_API_STRINGS = {
         str(ResponseCode.USER_TYPE_ERROR): (""),

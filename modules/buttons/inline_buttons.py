@@ -6,6 +6,7 @@ from modules.enums import UserTypes
 from modules.models.api_response import GetAllConfigTypesResult
 from modules.enums import ResponseCode
 from config.bot_strings import Strings
+from datetime import datetime
 
 
 
@@ -71,6 +72,56 @@ class InlineButtons:
         del (servers, user_type)
         return (True, buttons)
 
+
+    @property
+    def user_configs(self) -> Tuple[str, List[List[Button]]]:
+        """_summary_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            Tuple[int: "Error code", List[List[Button]]]: _description_
+            
+        """
+        
+
+        if (str(self.user_id).isnumeric()): raise ValueError("user_id must be number, example: InlineButtons(123456).user_configs()")
+
+        configs = self.user_api.get_user_configs
+
+        if (isinstance(configs, int)):
+
+            message = Strings.RESPONSE_API_STRINGS[str(configs)] if (str(configs) in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+            del configs
+            return (message, self.BACK_TO_HOME)
+        
+        elif (not configs): 
+            
+            del configs
+            return (Strings.NOT_SERVICE, self.BACK_TO_HOME)
+
+        buttons = [
+            [
+                Button.inline("نام سرور"),
+                Button.inline("لوکیشن"),
+                Button.inline("مدیریت"),
+            ],
+        ]
+
+        for config in configs:
+            
+            buttons.append(
+                [
+                    Button.inline(str(config.name)),
+                    Button.inline(str(config.serverName)),
+                    Button.inline("مشاهده", f"SHOW-CONFIG-INFO-{config.id}"),
+                ],
+            )
+        
+        del configs
+        return (Strings.SERVICES, buttons)
+        
 
     def accept_admin_documents(self, name: str, user_name: str,
                                price: str, uuid: str) -> Tuple[bool, List[List[Button]]]:
@@ -178,8 +229,7 @@ class InlineButtons:
             List[List[Button]]: _description_
         """
 
-        if (not str(self.user_id).isnumeric() and
-            not str(server_id).isnumeric() and
+        if (not str(server_id).isnumeric() and
             not str(config_id).isnumeric()):
 
                 raise ValueError("user/server/config id must be a number, example: InlineButtons(123456).vmess_or_vless(12345, 123)")
@@ -192,64 +242,53 @@ class InlineButtons:
         ]
 
 
-    @property
-    def user_configs(self) -> Tuple[str, List[List[Button]]]:
-        """_summary_
+    def show_config(self, config_id: int) -> Tuple[int, List[List[Button]]]:
 
-        Raises:
-            ValueError: _description_
+        if (not str(config_id).isnumeric()): raise ValueError("config_id must be integer")
 
-        Returns:
-            Tuple[int: "Error code", List[List[Button]]]: _description_
+        config_inform = self.v2ray.get_config(int(config_id))
+        message = ""
+
+        if (isinstance(config_inform, int)):
             
-        """
-        
-
-        if (str(self.user_id).isnumeric()): raise ValueError("user_id must be number, example: InlineButtons(123456).user_configs()")
-
-        configs = self.user_api.get_user_configs
-
-        if (isinstance(configs, int)):
-
-            message = Strings.RESPONSE_API_STRINGS[str(configs)] if (str(configs) in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
-            del configs
+            message = Strings.RESPONSE_API_STRINGS[str(config_inform)] \
+                if (str(message) in Strings.RESPONSE_API_STRINGS.keys())\
+                else Strings.ERROR
+            
             return (message, self.BACK_TO_HOME)
-        
-        elif (not configs): 
-            
-            del configs
-            return (Strings.NOT_SERVICE, self.BACK_TO_HOME)
 
         buttons = [
             [
-                Button.inline(""),
-                Button.inline(""),
-                Button.inline(""),
+                Button.inline(f"name : {config_inform.name}"),  # config name
+                Button.inline(f"sv name: {config_inform.serverName}"),  # server name
+                Button.inline(f"protocol: {config_inform.protocol}"),  # protocol
             ],
+            [
+                Button.inline(f"usage: {config_inform.up + config_inform.down}"),  # up + down
+                Button.inline(f"max-traffic: {config_inform.maxTraffic}")  # max traffic
+            ],
+            [
+                Button.inline(f"upload: {config_inform.up}"),  # up
+                Button.inline(f"download: {config_inform.down}"),  # down
+            ],
+            [ 
+                Button.inline(f"activate time: {config_inform.activeDays}"),  # activate time
+                Button.inline(f"time: {datetime.now() - datetime.strftime(config_inform.expiresDate, '%Y-%m-%dT%H:%M:%S.%fZ')}")  # zaman baghi munde
+            ],
+            [
+                Button.inline(f"buy time: {config_inform.creationDate.replace('Z', '').replace('T', ' ')}"),  # zaman kharid
+                Button.inline(f"engheza time: {config_inform.expiresDate.replace('Z', '').replace('T', ' ')}"),  # zaman engheza
+            ],
+            [
+                Button.inline("فعال" if (config_inform.isEnable) else "غیر فعال"),  # status
+                Button.inline("تمدید کانفیگ", f"RENEWAL-CONFIG-{config_id}")  # renewal config
+            ],
+            [
+                Button.inline("تغییر سرور", f"CHANGE-SERVER-{config_id}"),  # change server
+                Button.inline("تغییر پروتوکل", f"CHANGE-PROTOCOL-{config_id}"),  # change protocol
+            ]
         ]
 
-        for i in configs:
-            
-            buttons.append(
-                [
-                    Button.inline("", ""),
-                    Button.inline("", ""),
-                    Button.inline("", ""),
-                ],
-            )
-        
-        del configs
-        return (Strings.SERVICES, buttons)
-        
-
-
-
-
-
-
-
-
-
-
+        return ("ok my bro", buttons)
 
 

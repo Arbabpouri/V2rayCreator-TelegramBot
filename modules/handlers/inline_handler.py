@@ -157,6 +157,46 @@ class InlineHandlers:
                 await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
                 del (text)
 
+        elif (data.startswith("SHOW-CONFIG-INFO")):
+
+            config_id = data.replace("SHOW-CONFIG-INFO-", "")
+
+            if (not str(config_id).isnumeric()):
+
+                await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
+                return
+
+            v2ray = APIS.v2ray_api()
+            config_info = v2ray.get_config(int(config_id))
+
+        elif (data.startswith("RENEWAL-CONFIG-")):
+
+            pass
+
+        elif (data.startswith("CHANGE-SERVER-")):
+
+            pass
+        
+        elif (data.startswith("CHANGE-PROTOCOL-")):
+
+            pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:
         """
