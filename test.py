@@ -1,12 +1,7 @@
-# from datetime import datetime
+from datetime import date, datetime, timedelta
 
-# time_str = '14:51:33.906765'
+a = datetime(2023, 2, 2)
+b = datetime(2022, 1, 1)
+c = a - b
 
-# time_obj = datetime.strptime(time_str, '%H:%M:%S.%f')
-# print(time_obj)
-
-
-from datetime import timedelta
-
-a = timedelta(seconds=3600000000000)
-print(a)
+print(c.max)

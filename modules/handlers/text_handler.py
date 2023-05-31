@@ -51,10 +51,12 @@ class TextHandlers:
             # this is session for select server for buy
             case (TextButtunsString.BUY_CONFIG):
 
+                message, buttons = InlineButtons(event.sender_id).select_server()
+
                 await client.send_message(
                     event.chat_id,
-                    Strings.BUY_CONFIG,
-                    buttons=InlineButtons(event.sender_id).select_server
+                    message,
+                    buttons=buttons
                 )
 
             # this is session for show accounts information

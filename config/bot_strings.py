@@ -19,6 +19,8 @@ class Strings:
     BACKED_TO_HOME = "👋 به منوی اصلی بازگشتید"
     SERVICES = "سروریس های شما به شرح زیر است"
     NOT_SERVICE = "شما سرویسی ندارید"
+    NOT_SERVER = ""
+    SELECT_SERVER = ""
     ERROR = ""
     CONFIG_DOES_NOT_EXIST = ""
 

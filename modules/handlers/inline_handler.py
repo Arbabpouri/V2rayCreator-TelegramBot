@@ -9,8 +9,14 @@ from modules.models.api_response import OfflineCharge
 from modules.enums import ResponseCode
 from modules.enums import UserTypes
 from config import Config
+from modules.models.api_response import (
+    ChangeProtocolResult,
+    ChangeServerResult,
+    RenewalConfigResult
+)
 
-# TODO
+
+
 class InlineHandlers:
         
 
@@ -29,9 +35,11 @@ class InlineHandlers:
 
         if (data == "CUSTOM-CHARGE"):
 
-            await client.send_message(event.chat_id,
-                                      Strings.GET_CUSTOM_CHARGE,
-                                      buttons=TextButtons.CANCEL_GET)
+            await client.send_message(
+                event.chat_id,
+                Strings.GET_CUSTOM_CHARGE,
+                buttons=TextButtons.CANCEL_GET
+            )
             
             Limit.LIMIT[str(event.sender_id)] = {
                 "part": Step.GET_CUSTOM_CHARGE_ONLINE
@@ -40,17 +48,21 @@ class InlineHandlers:
 
         elif (data == "BACK-TO-HOME"):
 
-            await client.send_message(entity=event.chat_id,
-                                      message=Strings.BACKED_TO_HOME,
-                                      buttons=TextButtons.start_menu(event.sender_id))
+            await client.send_message(
+                event.chat_id,
+                message=Strings.BACKED_TO_HOME,
+                buttons=TextButtons.start_menu(event.sender_id)
+            )
 
-        elif (data.startswith("SELECT-SERVER-")):
+        elif (data.startswith("BUY-SELECT-SERVER-")):
             
-            server_id = data.replace("SELECT-SERVER-", "")  # data[0] is the server id
+            server_id = data.replace("BUY-SELECT-SERVER-", "")  # data[0] is the server id
             result, buttons = InlineButtons(event.sender_id).configs_for_sell(int(server_id))
                 
-            await event.edit(message="select config" if (result) else "not config",
-                             buttons=buttons)
+            await event.edit(
+                "select config" if (result) else "not config",
+                buttons=buttons
+            )
 
             del (data, buttons, server_id)
 
@@ -95,10 +107,8 @@ class InlineHandlers:
                             
                             break
 
-                        else:
-
-                            await event.edit("shoma bazaryabi nemituni bekhari", buttons=InlineButtons().BACK_TO_HOME)
-                            return
+                        await event.edit("shoma bazaryabi nemituni bekhari", buttons=InlineButtons().BACK_TO_HOME)
+                        return
                 
                 else:
 
@@ -110,11 +120,14 @@ class InlineHandlers:
                 if (balance >= price):
                     
                     v2ray = APIS.v2ray_api()
-                    add_config = v2ray.add_new_config(user_id=int(event.sender_id),
-                                                      server_id=int(server_id),
-                                                      config_type_id=int(config_id),
-                                                      protocol=protocol,
-                                                      is_free=False if (event.sender_id not in Config.ADMINS_USER_ID) else True)
+
+                    add_config = v2ray.add_new_config(
+                        user_id=int(event.sender_id),
+                        server_id=int(server_id),
+                        config_type_id=int(config_id),
+                        protocol=protocol,
+                        is_free=False if (event.sender_id not in Config.ADMINS_USER_ID) else True
+                    )
                     
                     if (isinstance(add_config, int)):
                         
@@ -124,7 +137,7 @@ class InlineHandlers:
 
                         else:
                             
-                            text = "error"
+                            text = Strings.ERROR
 
                     else:
 
@@ -135,8 +148,10 @@ class InlineHandlers:
                 else:
 
                     user_api = APIS.user_api(int(event.sender_id))
-                    payment_link = user_api.online_buy_link(server_id=int(server_id),
-                                                            config_id=int(config_id))
+                    payment_link = user_api.online_buy_link(
+                        server_id=int(server_id),
+                        config_id=int(config_id)
+                    )
 
                     if isinstance(payment_link, int):
                         
@@ -166,36 +181,80 @@ class InlineHandlers:
                 await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
                 return
 
-            v2ray = APIS.v2ray_api()
-            config_info = v2ray.get_config(int(config_id))
+            message, buttons = InlineButtons(int(event.sender_id)).show_config(int(config_id))
+            await event.edit(message, buttons=buttons)
 
         elif (data.startswith("RENEWAL-CONFIG-")):
 
-            pass
+            config_id = data.replace("RENEWAL-CONFIG-")
+            v2ray = APIS.v2ray_api()
+            renewal = v2ray.renewal_config(int(config_id))
+
+            if (isinstance(renewal, int)): text = Strings.RESPONSE_API_STRINGS[str(change)] if (change in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+
+            elif (isinstance(renewal, RenewalConfigResult)): text = renewal.v2RayLink
+
+            else: text = Strings.ERROR
+
+            await event.edit(text)
+            del (config_id, v2ray, renewal, text)
+     
+        elif (data.startswith("CHANGE-PROTOCOL-")):
+
+            config_id = data.replace("CHANGE-PROTOCOL-", "")
+
+            if (not str(config_id).isnumeric()):
+                
+                await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
+                return
+            
+            v2ray = APIS.v2ray_api()
+            config = v2ray.change_protocol(int(config_id))
+
+            if (isinstance(config, int)): text = Strings.RESPONSE_API_STRINGS[str(change)] if (change in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+
+            elif (isinstance(config, ChangeProtocolResult)): text = config.v2RayLink
+
+            else: text = Strings.ERROR
+
+            await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
+            del (config_id, v2ray, config)
 
         elif (data.startswith("CHANGE-SERVER-")):
 
-            pass
-        
-        elif (data.startswith("CHANGE-PROTOCOL-")):
+            config_id = data.replace("CHANGE-SERVER-", "")
 
-            pass
+            if (not str(config_id).isnumeric()):
 
+                await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
+                return
+            
+            message, buttons = InlineButtons(int(event.sender_id)).select_server("CHANGE", int(config_id))
+            await event.edit(message, buttons)
+            del (message, buttons, config_id)
 
+        elif (data.startswith("CHANGE-SELECT-SERVER-")):
 
+            data = data.replace("CHANGE-SELECT-SERVER-", "").split("-")
+            server_id, config_id = data
 
+            if (not (str(server_id).isnumeric() or str(server_id).isnumeric())):
 
+                await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
+                return
+            
+            v2ray = APIS.v2ray_api()
+            change = v2ray.change_server(int(config_id), int(server_id))
 
+            if (isinstance(change, int)): text = Strings.RESPONSE_API_STRINGS[str(change)] if (change in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+            
+            elif (isinstance(config, ChangeServerResult)): text = change.v2RayLink
 
+            else: text = Strings.ERROR
 
-
-
-
-
-
-
-
-
+            await event.edit(text, InlineButtons().BACK_TO_HOME)
+            del (data, server_id, v2ray, change, text)
+                
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:

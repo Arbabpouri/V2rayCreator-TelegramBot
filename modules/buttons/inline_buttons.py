@@ -27,53 +27,6 @@ class InlineButtons:
 
 
     @property
-    def select_server(self) -> Tuple[bool, List[List[Button]]]:
-        """_summary_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            Tuple[bool, List[List[Button]]]: _description_
-        """
-
-        if (not str(self.user_id).isnumeric()):
-            raise ValueError("user_id must be integer")
-
-        servers = self.v2ray.get_all_servers
-        user_type = self.user_api.get_user_type
-
-        if (servers is False or
-            not servers or
-            user_type == UserTypes.MARKETER):
-
-            buttons = [
-                [Button.inline("❌ سروری برای نمایش وجود ندارد ❌")],
-                self.BACK_TO_HOME
-            ]
-
-            return (False, buttons)
-        
-        buttons = [
-            [
-                Button.inline("🔢 شماره"),
-                Button.inline("💢 نام سرور ")
-            ]
-        ]
-
-        for num, server in enumerate(servers):
-            buttons.append(
-                [   
-                    Button.inline(str(num)), 
-                    Button.inline(str(server.name), f"SELECT-SERVER-{server.id}")
-                ]
-            )
-
-        del (servers, user_type)
-        return (True, buttons)
-
-
-    @property
     def user_configs(self) -> Tuple[str, List[List[Button]]]:
         """_summary_
 
@@ -121,7 +74,63 @@ class InlineButtons:
         
         del configs
         return (Strings.SERVICES, buttons)
+   
+
+    def select_server(self, buy_or_change: Optional[str] = "BUY", config_id: int | None = None) -> Tuple[str, List[List[Button]]]:
+        """_summary_
+
+        Args:
+            buy_or_change (Optional[str], optional): _description_. Defaults to "BUY".
+            config_id (int | None, optional): _description_. Defaults to None.
+
+        Raises:
+            ValueError: _description_
+            ValueError: _description_
+            ValueError: _description_
+
+        Returns:
+            Tuple[str, List[List[Button]]]: _description_
+        """
+
+        if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be integer")
+        if (not isinstance(buy_or_change, str) or buy_or_change.upper() not in ["BUY", "CHANGE"]):
+            raise ValueError("buy_or_change must be string and buy_or_change in ['BUY', 'CHANGE'].")
+        if (buy_or_change.upper() == "CHANGE" and not str(config_id).isnumeric()):
+            raise ValueError("whene time set CHANGE should gave number for config_id")
+
+        servers = self.v2ray.get_all_servers
+        user_type = self.user_api.get_user_type
+
+        if (servers is False or
+            not servers or
+            user_type == UserTypes.MARKETER):
+
+            buttons = [
+                [Button.inline("❌ سروری برای نمایش وجود ندارد ❌")],
+                self.BACK_TO_HOME
+            ]
+
+            return (Strings.NOT_SERVER, buttons)
         
+        buttons = [
+            [
+                Button.inline("🔢 شماره"),
+                Button.inline("💢 نام سرور ")
+            ]
+        ]
+
+        config = f"-{config_id}" if (buy_or_change.upper() == 'CHANGE') else ''
+        for num, server in enumerate(servers):
+            buttons.append(
+                [   
+                    Button.inline(str(num)), 
+                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}{config}"),
+                ]
+            )
+
+        del (servers, user_type)
+        return (Strings.BUY_CONFIG, buttons)
+
 
     def accept_admin_documents(self, name: str, user_name: str,
                                price: str, uuid: str) -> Tuple[bool, List[List[Button]]]:
@@ -242,7 +251,7 @@ class InlineButtons:
         ]
 
 
-    def show_config(self, config_id: int) -> Tuple[int, List[List[Button]]]:
+    def show_config(self, config_id: int) -> Tuple[str, List[List[Button]]]:
 
         if (not str(config_id).isnumeric()): raise ValueError("config_id must be integer")
 

@@ -207,7 +207,7 @@ class V2Ray:
                 return ResponseCode.FAILURE
 
 
-    def chenge_protocol(self, config_id: int) -> ChangeProtocolResult | int | bool:
+    def change_protocol(self, config_id: int) -> ChangeProtocolResult | int:
         """_summary_
 
         Args:
@@ -242,10 +242,10 @@ class V2Ray:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
 
 
-    def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int | bool:
+    def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int:
         """_summary_
 
         Args:
@@ -283,7 +283,7 @@ class V2Ray:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
 
 
     def renewal_config(self, config_id: int) -> RenewalConfigResult | int | bool:
@@ -323,7 +323,7 @@ class V2Ray:
             else:
 
                 del response
-                return False
+                return ResponseCode.FAILURE
 
 
     def delete_config(self, config_id: int) -> bool | int:
