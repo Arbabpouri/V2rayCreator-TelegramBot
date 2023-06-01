@@ -31,7 +31,7 @@ class V2Ray:
 
     def __init__(self) -> None:
         self.urls = ApiUrls()
-        self.headers = self.headers
+        self.headers = Data().headers
 
 
     @property
@@ -51,7 +51,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = GetAllConfigTypes(loads(response.content))
+                result = GetAllConfigTypes(**loads(response.content))
                 del response
 
                 if (result.status == ResponseCode.SUCSESS):
@@ -362,4 +362,3 @@ class V2Ray:
 
                 del response
                 return False
-    
