@@ -28,6 +28,7 @@ class UrlButtons:
         self.user_id = user_id
 
 
+    @property
     def referral(self) -> List[Button]:
         """_summary_
 
@@ -37,7 +38,7 @@ class UrlButtons:
 
         return [
             [
-                Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={int(self.user_id)}"),
+                Button.url(UrlButtonsString.REFERRAL, f"https://t.me/{Config.BOT_USERNAME}?start={self.user_id}"),
             ],
         ]
 

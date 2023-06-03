@@ -2,6 +2,7 @@ from telethon import Button
 from modules.api.APIS import APIS
 from typing import List
 from enum import StrEnum
+from modules.enums import UserTypes
 
 
 
@@ -12,7 +13,7 @@ class TextButtunsString(StrEnum):
     ACCOUNT = "👤 حساب کاربری"
     REFERRAL = "🔗 زیرمجموعه گیری"
     SUPPORT = "☎️  پشتیبانی ☎️"
-    SHOP = "🛒 فروشگاه"
+    SHOP = "💳 شارژ حساب کاربری"
     GET_USER_ID = "📍 شناسه کاربری 📍"
     ONLINE_CHARGE = "🌐 شارژ آنلاین"
     OFFLINE_CHARGE = "💳 کارت به کارت"
@@ -37,12 +38,13 @@ class TextButtons:
 
     @staticmethod
     def start_menu(user_id: int) -> List[Button]:
-        """
-        
-        """
+
 
         if (not str(user_id).isnumeric()):
             raise ValueError("user_id argument not a number")
+        
+        user_api = APIS.user_api(int(user_id))
+        user_type = user_api.get_user_type
 
         return [
             [
@@ -58,7 +60,7 @@ class TextButtons:
             ],
             [
                 Button.text(TextButtunsString.REFERRAL, resize=True, single_use=True),
-            ] if (APIS.user_api(int(user_id)).get_user_type != 1) else [],
+            ] if (user_type != UserTypes.SELLER) else [],
             [
                 Button.text(TextButtunsString.SUPPORT, resize=True, single_use=True),
             ],

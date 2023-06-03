@@ -9,15 +9,15 @@ class UserTypeResult(BaseModel):
 
 class UserType(BaseModel):
     status: int
-    message: str
+    message: str | None = None
     result: UserTypeResult | None = None
 
 
 # AddUser class is for the data received from the add user api
 class AddUser(BaseModel):
     status: int
-    message: str
-    result: str
+    message: str | None = None
+    result: str | None = None
 
 
 # GetToken and GetTokenResult classes are for the data received from the get jwt token api
@@ -26,7 +26,7 @@ class GetTokenResult(BaseModel):
 
 class GetToken(BaseModel):
     status: int
-    message: str
+    message: str | None = None
     result: GetTokenResult | None = None
 
 
@@ -35,18 +35,18 @@ class GetAllConfigTypesResult(BaseModel):
     id: int
     title: str
     numberOfUsers: int
-    activeTime: int
+    activeDays: int
     maxTraffic: int
     priceForManualUsers: int
     priceForSellerUsers: int
 
 class GetAllConfigTypesList(BaseModel):
-    configTypes: List[GetAllConfigTypesResult]
+    configTypes: Optional[List[GetAllConfigTypesResult]] = []
 
 class GetAllConfigTypes(BaseModel):
     status: int
-    message: str
-    result: Optional[GetAllConfigTypesList] | None = None
+    message: str | None = None
+    result: GetAllConfigTypesList | None = None
 
 
 #
@@ -55,7 +55,7 @@ class OfflineCharge(BaseModel):
     price: int
     enable: bool
     status: str
-    by: Optional[str] | None = None
+    by: str | None = None
 
 
 
@@ -79,8 +79,8 @@ class GetConfigResult(BaseModel):
 
 class GetConfig(BaseModel):
     status: int
-    message: str
-    result: Optional[GetConfigResult] | None = None
+    message: str | None = None
+    result: GetConfigResult | None = None
 
 
 #
@@ -104,8 +104,8 @@ class GetUserConfigsResult(BaseModel):
 
 class GetUserConfigs(BaseModel):
     status: int
-    message: str
-    result: Optional[List[GetUserConfigsResult]] | None = None
+    message: str | None = None
+    result: Optional[List[GetUserConfigsResult]] = []
 
 
 #
@@ -124,8 +124,8 @@ class AddNewConfigResult(BaseModel):
 
 class AddNewConfig(BaseModel):
     status: int
-    message: str
-    result: Optional[AddNewConfigResult] | None = None
+    message: str | None = None
+    result: AddNewConfigResult | None = None
 
 
 #
@@ -146,8 +146,8 @@ class ChangeProtocolResult(BaseModel):
 
 class ChangeProtocol(BaseModel):
     status: int
-    message: str
-    result: Optional[ChangeProtocolResult] | None = None
+    message: str | None = None
+    result: ChangeProtocolResult | None = None
 
 
 #
@@ -166,8 +166,8 @@ class ChangeServerResult(BaseModel):
     expiresDate: str 
 class ChangeServer(BaseModel):
     status: int
-    message: str
-    result: Optional[ChangeServerResult] | None = None
+    message: str | None = None
+    result: ChangeServerResult | None = None
 
 
 
@@ -188,15 +188,15 @@ class RenewalConfigResult(BaseModel):
 
 class RenewalConfig(BaseModel):
     status: int
-    message: str
-    result: Optional[RenewalConfigResult] | None = None
+    message: str | None = None
+    result: RenewalConfigResult | None = None
 
 
 #
 class DeleteConfig(BaseModel):
     status: int
-    message: str
-    result: Optional[str] | None = None
+    message: str | None = None
+    result: str | None = None
 
 
 #
@@ -207,12 +207,12 @@ class GetAllServerResult(BaseModel):
     activeConfigs: int
 
 class GetAllServerList(BaseModel):
-    servers: Optional[List[GetAllServerResult]] | None = None
+    servers: List[GetAllServerResult] | None = None
 
 class GetAllServer(BaseModel):
     status: int
-    message: str
-    result: Optional[GetAllServerList] = None
+    message: str | None = None
+    result: GetAllServerList = None
 
 
 #
@@ -221,24 +221,24 @@ class GetSettingsResult(BaseModel):
 
 class GetSettings(BaseModel):
     status: int
-    message: str
-    result: Optional[GetSettingsResult]
+    message: str | None = None
+    result: GetSettingsResult |None = None
 
 
 #
 class GetUserInfoResult(BaseModel):
     balance: int
-    referralerUserId: Optional[int] | None = None
-    referrals: Optional[List[int]] | None = None
+    referralerUserId: Optional[int] = 0
+    referrals: Optional[List[int]] = []
     precentage: int
 
 class GetUserInfo(BaseModel):
     status: int
-    message: str
-    result: Optional[GetUserInfoResult] | None = None
+    message: str | None = None
+    result: GetUserInfoResult | None = None
 
 
 class PaymentLink(BaseModel):
     status: int
-    message: str
+    message: str | None = None
     result: str

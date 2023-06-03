@@ -21,24 +21,6 @@ from modules.api.urls import ApiUrls
 class UserApi:
 
 
-    def __new__(cls, user_id):
-        """_summary_
-
-        Args:
-            user_id (_type_): _description_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            _type_: _description_
-        """
-
-        if (not str(user_id).isnumeric()):
-            raise ValueError("User id must be numeric")
-        return super().__new__(cls, user_id)
-
-
     def __init__(self, user_id: int) -> None:
         """_summary_
 
@@ -49,9 +31,9 @@ class UserApi:
             ValueError: _description_
         """
 
-        self.user_id = int(user_id)
+        self.user_id = user_id
         self.urls = ApiUrls()
-        self.headers = self.headers
+        self.headers = Data().headers
 
 
     @property
@@ -67,13 +49,15 @@ class UserApi:
 
         for i in range(2):
             
-            response = get(url=self.urls.get_user_info(int(self.user_id)),
-                           headers=self.headers)
+            response = get(
+                url=self.urls.get_user_info(self.user_id),
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
                 result = GetUserInfo(**loads(response.content))
-                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -114,47 +98,52 @@ class UserApi:
         """
 
         data = Data(user_id=self.user_id)
-        count = 0
-        while (count < 2):
 
-            response = post(url=self.urls.get_user_type(self.user_id), data=data.userId)
+        for i in range(2):
 
-            if (response.status_code == 200):
+            try:
+                response = get(
+                    url=self.urls.get_user_type(self.user_id), 
+                    headers=self.headers,
+                    verify=False
+                )
 
-                result = UserType(**loads(response.content))
+                if (response.status_code == 200):
 
-                if (result.status == ResponseCode.SUCSESS):
-                    del (response, data)
-                    return int(result.result.type)
+                    result = UserType(**loads(response.content))
 
-                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+                    if (result.status == ResponseCode.SUCSESS):
 
-                    add_user = self.add_user()
+                        return int(result.result.type)
 
-                    if (not add_user):
-                        del (response, add_user, result, data)
+                    elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                        add_user = self.add_user()
+
+                        if (not add_user):
+                            return False
+                        
+                        continue
+
+                    else:
+
                         return False
+                
+                elif (response.status_code == 401):
                     
+                    ApiConfig().get_token
                     continue
 
                 else:
 
-                    del (response, data, result)
                     return False
-            
-            elif (response.status_code == 401):
                 
-                del response
-                count += 1
-                ApiConfig().get_token
+            except Exception as error:
+
+                print(error)
                 continue
 
-            else:
-
-                del (data, response)
-                return False
         
-        del (response, data)
         return False
 
     
@@ -169,44 +158,55 @@ class UserApi:
         
         count = 0
         while (count < 2):
-            
-            response = get(url=self.urls.get_user_configs(self.user_id),
-                             headers=self.headers)
-            
-            if (response.status_code == 200):
 
-                result = GetUserConfigs(**loads(response.content))
-                del response
+            try:
+            
+                response = get(
+                    url=self.urls.get_user_configs(self.user_id),
+                    headers=self.headers,
+                    verify=False
+                )
                 
-                if (result.status == ResponseCode.SUCSESS):
+                if (response.status_code == 200):
 
-                    return result.result
-
-                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
-
-                    add_user = ApiConfig().get_token
+                    result = GetUserConfigs(**loads(response.content))
+                    del response
                     
-                    if (not add_user):
+                    if (result.status == ResponseCode.SUCSESS):
+
+                        return result.result
+
+                    elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                        add_user = ApiConfig().get_token
                         
-                        del (add_user, result)
-                        return ResponseCode.FAILURE
-                    
+                        if (not add_user):
+                            
+                            del (add_user, result)
+                            return ResponseCode.FAILURE
+                        
+                    else:
+
+                        del response
+                        return result.status  # 30, 32
+                
+                elif (response.status_code == 401):
+
+                    count += 1
+                    del response
+                    ApiConfig().get_token
+                    continue
+
                 else:
 
                     del response
-                    return result.status  # 100, 32
-            
-            elif (response.status_code == 401):
-
+                    return ResponseCode.FAILURE
+            except Exception as error:
+                print(error)
                 count += 1
-                del response
-                ApiConfig().get_token
                 continue
 
-            else:
-
-                del response
-                return ResponseCode.FAILURE
+        return ResponseCode.FAILURE
     
 
     def online_buy_link(self, server_id: int, config_id: int) -> int | str:
@@ -223,9 +223,14 @@ class UserApi:
         """
 
         for i in range(2):
-            response = get(url=self.urls.online_buy_config(user_id=int(self.user_id),
-                                                        server_id=int(server_id),
-                                                        config_type_id=int(config_id)))
+            response = get(
+                url=self.urls.online_buy_config(
+                    user_id=int(self.user_id),
+                    server_id=int(server_id),
+                    config_type_id=int(config_id)
+                ),
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -274,8 +279,13 @@ class UserApi:
             raise ValueError("amount must be number")
 
         for i in range(2):
-            response = get(url=self.urls.online_charge(user_id=int(self.user_id),
-                                                       amount=int(amount)))
+            response = get(
+                url=self.urls.online_charge(
+                    user_id=int(self.user_id),
+                    amount=int(amount)
+                ),
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -324,80 +334,96 @@ class UserApi:
         """
         
         if (not str(referraler).isnumeric()):
+
             raise ValueError("referraler argument is not a number")
         
-        data = Data(user_id=self.user_id, referraler=int(referraler))
+        data = Data(
+            user_id=self.user_id, 
+            referraler=int(referraler)
+        )
+
         for i in range(2):
 
-            response = post(url=self.urls.ADD_NEW_USER,
-                            data=data.add_user,
-                            headers=self.headers)
-            
-            if (response.status_code == 200):
-                result = AddUser(**loads(response.content))
-                del (data, response)
+            try:
 
-                if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
-                    
-                    return True
+                response = post(
+                    url=self.urls.ADD_NEW_USER,
+                    json=data.add_user,
+                    headers=self.headers,
+                    verify=False
+                )
                 
-                return False
-            
-            elif (response.status_code == 401):
+                if (response.status_code == 200):
 
-                del response
-                ApiConfig().get_token
-                continue
+                    result = AddUser(**loads(response.content))
 
-            else:
-            
-                del (data, response, result)
+                    if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
+                                                
+                        return True
+                    
+                    return False
+                
+                elif (response.status_code == 401):
+
+                    ApiConfig().get_token
+                    continue
+
+                else:
+                
+                    return False
+
+            except Exception as error:
+                
+                print(error)
                 return False
         
         else:
 
-            del (data, response)
             return False
         
 
-    def balance_increase(self, price: int) -> bool:
-        """
-        for balance increase in database 
+    # def balance_increase(self, price: int) -> bool:
+    #     """
+    #     for balance increase in database 
 
-        Args:
-            price (int): this argument for balance increase in database
+    #     Args:
+    #         price (int): this argument for balance increase in database
 
-        Returns:
-            bool: successful or unsuccessful
-        """
+    #     Returns:
+    #         bool: successful or unsuccessful
+    #     """
 
-        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
+    #     if (not str(price).isnumeric()): raise ValueError("price must be an integer")
         
-        data = Data(self.user_id).balance_increase(int(price))
-        count = 0
-        while (count < 2):
+    #     data = Data(self.user_id).balance_increase(int(price))
+    #     count = 0
+    #     while (count < 2):
 
-            response = post(url=self.urls.BALANCE_INCREASE,
-                            data="",
-                            headers=self.headers)
-            if (response.status_code == 200):
+    #         response = post(
+    #             url=self.urls.BALANCE_INCREASE,
+    #             json="",
+    #             headers=self.headers,
+    #             verify=False
+    #         )
 
-                result = loads(response.content)
-                if ():
+    #         if (response.status_code == 200):
 
-                    pass
+    #             result = loads(response.content)
+    #             if ():
 
-                else:
+    #                 pass
 
-                    pass
+    #             else:
+
+    #                 pass
                 
-            elif (response.status_code == 401):
+    #         elif (response.status_code == 401):
                 
-                del response
-                count += 1
-                ApiConfig().get_token
+    #             del response
+    #             count += 1
+    #             ApiConfig().get_token
 
-            else:
+    #         else:
 
-                del (data, response, count)
-                return False
+    #             del (data, response, count)
+    #             return False

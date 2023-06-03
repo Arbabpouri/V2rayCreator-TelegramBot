@@ -56,7 +56,7 @@ class InlineHandlers:
 
         elif (data.startswith("BUY-SELECT-SERVER-")):
             
-            server_id = data.replace("BUY-SELECT-SERVER-", "")  # data[0] is the server id
+            server_id, config_id = data.replace("BUY-SELECT-SERVER-", "").split("-")  # data[0] is the server id
             result, buttons = InlineButtons(event.sender_id).configs_for_sell(int(server_id))
                 
             await event.edit(

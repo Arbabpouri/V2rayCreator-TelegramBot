@@ -2,6 +2,7 @@ from asyncio import sleep
 from uuid import uuid1
 from telethon.custom import Message
 from telethon.types import PeerUser
+from re import match
 
 from modules.tools import OfflineChargeData
 from config import client, Config
@@ -10,6 +11,7 @@ from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineB
 from modules.handlers.limiter import Limit, Step
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
+from modules.enums import UserTypes
 
 
 class TextHandlers:
@@ -17,32 +19,33 @@ class TextHandlers:
 
     @staticmethod
     async def user_move(event: Message) -> None:
+
         text = str(event.message.message)
+        
+        if (match(r"^/start [0-9]", text)):
+
+            user_id = str(event.message.message).lower().replace('https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
+            user_id = user_id.replace("/start ", "")
+            
+            APIS.user_api(event.sender_id).add_user(
+                referraler=0 if (user_id == str(event.sender_id) or not user_id.isnumeric() or
+                                  APIS.user_api(user_id).get_user_type != UserTypes.MANUAL) \
+                else int(user_id)
+            )
+
+            text = "/start"
+
 
         match(text):
-
-            # this is session for referral
-            case (r"^/start [0-9]"):
-
-                user_id = str(event.message.message).lower().replace('https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
-
-                APIS.user_api(event.sender_id).add_user(
-                    referraler=0 if (user_id == str(event.sender_id) or not user_id.isnumeric() or APIS.user_api(user_id).get_user_type in [1, 2]) \
-                    else int(user_id)
-                )
-
-                await client.send_message(
-                    event.chat_id,
-                    Strings.start_menu(event.chat.first_name, event.sender_id),
-                    buttons=TextButtons.start_menu(event.sender_id)
-                )
-
-                del user_id
 
             # this is session for /start and send main menu
             case ("/start"):
 
-                APIS.user_api(user_id=event.sender_id).add_user()
+                add = APIS.user_api(user_id=event.sender_id).add_user()
+
+                if (add):message = Strings.start_menu(event.chat.first_name, event.sender_id)
+                else: message = Strings.ERROR
+
                 await client.send_message(
                     event.chat_id,
                     Strings.start_menu(event.chat.first_name, event.sender_id),
@@ -66,17 +69,17 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.account(event.sender_id),
-                    buttons=TextButtons.start_menu(event.sender_id),
                 )
 
             # this is session for show configs
             case (TextButtunsString.MY_SUBSCRIPTIONS):
 
                 message, buttons = InlineButtons(int(event.sender_id)).user_configs
-                await client.send_message(event.chat_id,
-                                          message,
-                                          buttons=buttons)
-                del (message, buttons)
+                await client.send_message(
+                    event.chat_id,
+                    message,
+                    buttons=buttons
+                )
                 
             # this is session for show charge buttons
             case (TextButtunsString.SHOP):
@@ -115,7 +118,7 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.referral(event.sender_id),
-                    buttons=UrlButtons.referral(event.sender_id)
+                    buttons=UrlButtons(event.sender_id).referral
                 )
 
             # this is session for send admin username to user
@@ -133,7 +136,6 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.get_user_id(event.sender_id),
-                    buttons=TextButtons.start_menu(event.sender_id),
                     parse_mode="html"
                 )
             

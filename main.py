@@ -12,10 +12,9 @@ if __name__ == "__main__":
 
         with open(r"./config/token.txt", "r") as file:
 
-            ApiUrls().TOKEN = str(file.read())
+            ApiUrls.TOKEN = file.read()
+            print("Token received")
             file.close()
-
-        print("Token received")
 
         # for move user to different sessions
         client.add_event_handler(

@@ -27,7 +27,9 @@ class Data:
 
     @property
     def headers(self) -> Dict[str, str]:
-        return Headers(Authorization=self.urls.TOKEN)
+
+        headers = Headers(Authorization=self.urls.TOKEN).dict()
+        return headers
 
 
     @property
@@ -42,8 +44,10 @@ class Data:
 
         if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be a number")
 
-        data = AddNewUser(userId=int(self.user_id),
-                          referralerUserId=int(self.referraler))
+        data = AddNewUser(
+            userId=int(self.user_id),
+            referralerUserId=int(self.referraler)
+        )
         
         return data.dict()
     
@@ -72,7 +76,7 @@ class Data:
                 "password": "password"
             }
         """
-        data = LogIn(username=Config.PASSWORD, password=Config.PASSWORD)
+        data = LogIn(username=Config.USERNAME, password=Config.PASSWORD)
         return data.dict()
 
     

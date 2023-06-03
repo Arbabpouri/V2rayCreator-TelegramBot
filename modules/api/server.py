@@ -46,30 +46,43 @@ class V2Ray:
         i = 0
         while (i < 2):
 
-            response = post(url=self.urls.GET_ALL_CONFIG_TYPES,
-                            headers=self.headers)
-            
-            if (response.status_code == 200):
+            try:
 
-                result = GetAllConfigTypes(**loads(response.content))
-                del response
+                response = get(
+                    url=self.urls.GET_ALL_CONFIG_TYPES,
+                    headers=self.headers,
+                    verify=False
+                )
+                print(response.status_code)
+                print(* " ***")
+                if (response.status_code == 200):
+                    print(loads(response.content))
+                    print(30 * "-")
 
-                if (result.status == ResponseCode.SUCSESS):
+                    result = GetAllConfigTypes(**loads(response.content))
+
+                    if (result.status == ResponseCode.SUCSESS):
+                        
+                        return result.result.configTypes
                     
-                    return result.result.configTypes
+                    return ResponseCode.FAILURE
+                    
+                elif (response.status_code == 401):
                 
-                return ResponseCode.FAILURE
+                    ApiConfig().get_token
+                    continue
+
+                else:
+
+                    return ResponseCode.FAILURE
                 
-            elif (response.status_code == 401):
-               
-                del response
-                ApiConfig().get_token
+            except Exception as error:
+
+                print(error)
+                i += 1
                 continue
-
-            else:
-
-                del response
-                return ResponseCode.FAILURE
+        
+        return []
         
 
     @property
@@ -77,8 +90,11 @@ class V2Ray:
 
         for i in range(2):
 
-            response = get(url=self.urls.GET_ALL_SERVERS,
-                           headers=self.headers)
+            response = get(
+                url=self.urls.GET_ALL_SERVERS,
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -124,14 +140,19 @@ class V2Ray:
         """
         
         for i in range(2):
-            data = Data(user_id=int(user_id)).add_new_config(server_id=int(server_id),
-                                                             config_type_id=int(config_type_id),
-                                                             protocol=str(protocol),
-                                                             is_free=bool(is_free))
+            data = Data(user_id=int(user_id)).add_new_config(
+                server_id=int(server_id),
+                config_type_id=int(config_type_id),
+                protocol=str(protocol),
+                is_free=bool(is_free)
+            )
             
-            response = post(url=self.urls.ADD_NEW_CONFIG,
-                              data=data,
-                              headers=self.headers)
+            response = post(
+                url=self.urls.ADD_NEW_CONFIG,
+                json=data,
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -181,8 +202,11 @@ class V2Ray:
         
         for i in range(2):
 
-            response = get(url=self.urls.get_config_with_id(config_id),
-                             headers=self.headers)
+            response = get(
+                url=self.urls.get_config_with_id(config_id),
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -219,8 +243,11 @@ class V2Ray:
 
         for i in range(2):
 
-            response = put(url=self.urls.change_protocol(int(config_id)),
-                             headers=self.headers)
+            response = put(
+                url=self.urls.change_protocol(int(config_id)),
+                eaders=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -259,9 +286,12 @@ class V2Ray:
         for i in range(2):
 
             data = Data().change_server(int(config_id), int(target_server_id))
-            response = put(url=self.urls.CHANGE_SERVER,
-                             data=data,
-                             headers=self.headers)
+            response = put(
+                url=self.urls.CHANGE_SERVER,
+                json=data,
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -299,9 +329,12 @@ class V2Ray:
         for i in range(2):
             
             data = Data().config_id(int(config_id))
-            response = put(url=self.urls.RENEWAL_CONFIG,
-                          data=data,
-                          headers=self.headers)
+            response = put(
+                url=self.urls.RENEWAL_CONFIG,
+                json=data,
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 
@@ -338,8 +371,11 @@ class V2Ray:
 
         for i in range(2):
 
-            response = delete(url=self.urls.delete_config(int(config_id)),
-                              headers=self.headers)
+            response = delete(
+                url=self.urls.delete_config(int(config_id)),
+                headers=self.headers,
+                verify=False
+            )
             
             if (response.status_code == 200):
 

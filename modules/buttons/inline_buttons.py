@@ -39,19 +39,18 @@ class InlineButtons:
         """
         
 
-        if (str(self.user_id).isnumeric()): raise ValueError("user_id must be number, example: InlineButtons(123456).user_configs()")
+        if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be number, example: InlineButtons(123456).user_configs()")
 
         configs = self.user_api.get_user_configs
 
         if (isinstance(configs, int)):
 
-            message = Strings.RESPONSE_API_STRINGS[str(configs)] if (str(configs) in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
-            del configs
+            message = Strings.RESPONSE_API_STRINGS[str(configs)] if (str(configs) in list(Strings.RESPONSE_API_STRINGS.keys()))\
+                else Strings.ERROR
             return (message, self.BACK_TO_HOME)
         
         elif (not configs): 
             
-            del configs
             return (Strings.NOT_SERVICE, self.BACK_TO_HOME)
 
         buttons = [
@@ -72,11 +71,10 @@ class InlineButtons:
                 ],
             )
         
-        del configs
         return (Strings.SERVICES, buttons)
    
 
-    def select_server(self, buy_or_change: Optional[str] = "BUY", config_id: int | None = None) -> Tuple[str, List[List[Button]]]:
+    def select_server(self, buy_or_change: Optional[str] = "BUY", config_id: int | str = "") -> Tuple[str, List[List[Button]]]:
         """_summary_
 
         Args:
@@ -114,17 +112,15 @@ class InlineButtons:
         
         buttons = [
             [
-                Button.inline("🔢 شماره"),
                 Button.inline("💢 نام سرور ")
             ]
         ]
 
         config = f"-{config_id}" if (buy_or_change.upper() == 'CHANGE') else ''
-        for num, server in enumerate(servers):
+        for server in servers:
             buttons.append(
                 [   
-                    Button.inline(str(num)), 
-                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}{config}"),
+                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}-{config}"),
                 ]
             )
 
@@ -195,28 +191,17 @@ class InlineButtons:
         
         buttons = [
             [
-                Button.inline("🔢 شماره"),
                 Button.inline("💥نام"),
-                Button.inline("📍کاربره"),
-                Button.inline("💎حجم"),
-                Button.inline("⌛مدت"),
-                Button.inline("💳قیمت"),
-                Button.inline("🔑خرید"),
+                Button.inline("💳 قیمت 'تومان'"),
             ]
         ]
-        
-        config: GetAllConfigTypesResult
-        for config, num in enumerate(configs):
+
+        for config in configs:
             price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else config.priceForSellerUsers
             buttons.append(
                 [
-                    Button.inline(str(num)),
-                    Button.inline(str(config.title)),
-                    Button.inline(f"{config.numberOfUsers} کاربره"),
-                    Button.inline(f"{config.maxTraffic} گیگابایت"),
-                    Button.inline(f"{config.activeTime} روزه"),
-                    Button.inline(f"{int(price):,} تومان"),
-                    Button.inline("خرید", f"BUY-CONFIG-{server_id}-{config.id}"),
+                    Button.inline(str(config.title), f"BUY-CONFIG-{server_id}-{config.id}"),
+                    Button.inline(f"{int(price):,}"),
                 ]
             )
         

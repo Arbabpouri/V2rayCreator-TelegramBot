@@ -1,5 +1,5 @@
 from requests import (post, get)
-from json import loads
+from json import loads, dumps
 from modules.api.data_for_send import Data
 from modules.enums.enums import ResponseCode
 from modules.models.api_response import (GetToken,
@@ -23,36 +23,39 @@ class ApiConfig:
             if successful : write jwt token in config/token.txt
             else : return error type and exit in application
         """
+        try:
+            data = Data()
+            response = post(
+                url=self.urls.GET_TOKEN,
+                json=data.get_token,
+                verify=False
+            )
 
-        data = Data().get_token
-        response = post(url=self.urls.GET_TOKEN,
-                        data=data,
-                        verify=False)
-
-        if (response.status_code != 200):
-            print(f"\n\n{response}\n\nApi has no response")
-            del (data, response)
-            exit()
-        
-        result = GetToken(**loads(response.content))
-
-        if (result.status == ResponseCode.SUCSESS):
+            if (response.status_code != 200):
+                print(f"\n\ndata:{response.content}\ncode: {response.status_code}\n\nApi has no response")
+                exit()
             
+            result = GetToken(**loads(response.content))
 
-            with open(r"./config/token.txt", "w+") as file:
-                file.write(f"bearer {result.result.jwtToken}")
-                file.close()
+            if (result.status == ResponseCode.SUCSESS):
                 
-            ApiUrls.TOKEN = rf"bearer {result.result.jwtToken}"
-            del (data, result)
-            return True
 
-        print(
-            "Error : {}".format("Username is wrong" if (result.status == ResponseCode.ADMIN_NOT_FOUND) else \
-                                "Password is wrong" if (result.status == ResponseCode.ADMIN_WRONG_PASSWORD) else result.status)
-        )
-        exit()
+                with open(r"./config/token.txt", "w") as file:
+                    file.write(f"bearer {result.result.jwtToken}")
+                    file.close()
+                    
+                ApiUrls.TOKEN = rf"bearer {result.result.jwtToken}"
+                return True
 
+            print(
+                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.ADMIN_NOT_FOUND) else \
+                                    "Password is wrong" if (result.status == ResponseCode.ADMIN_WRONG_PASSWORD) else result.status)
+            )
+            exit()
+
+        except Exception as error:
+
+            print(error)
 
     @property
     def get_prices_limit(self) -> GetSettingsResult | bool:
@@ -62,8 +65,10 @@ class ApiConfig:
         """
         for i in range(2):
             
-            response = get(url=self.urls.GET_SETTINGS,
-                           headers=self.headers)
+            response = get(
+                url=self.urls.GET_SETTINGS,
+                headers=self.headers
+            )
             
             if (response.status_code == 200):
 

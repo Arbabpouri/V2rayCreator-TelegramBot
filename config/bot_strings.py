@@ -19,19 +19,19 @@ class Strings:
     BACKED_TO_HOME = "👋 به منوی اصلی بازگشتید"
     SERVICES = "سروریس های شما به شرح زیر است"
     NOT_SERVICE = "شما سرویسی ندارید"
-    NOT_SERVER = ""
-    SELECT_SERVER = ""
-    ERROR = ""
-    CONFIG_DOES_NOT_EXIST = ""
+    NOT_SERVER = "server ni"
+    SELECT_SERVER = "kodum"
+    ERROR = "error"
+    CONFIG_DOES_NOT_EXIST = "nist"
 
     RESPONSE_API_STRINGS = {
-        str(ResponseCode.USER_TYPE_ERROR): (""),
-        str(ResponseCode.CONFIG_DOES_NOT_EXIST): (""),
-        str(ResponseCode.SERVER_DOES_NOT_EXIST): (""),
-        str(ResponseCode.LOW_BALANCE): (""),
-        str(ResponseCode.SERVER_IS_FULL): (""),
-        str(ResponseCode.ADD_NEW_CONFIG_PANEL_FAILUR): (""),
-        str(ResponseCode.CONFIG_TYPE_NOT_FOUND): (""),
+        str(ResponseCode.USER_TYPE_ERROR): ("a"),
+        str(ResponseCode.CONFIG_DOES_NOT_EXIST): ("b"),
+        str(ResponseCode.SERVER_DOES_NOT_EXIST): ("c"),
+        str(ResponseCode.LOW_BALANCE): ("d"),
+        str(ResponseCode.SERVER_IS_FULL): ("e"),
+        str(ResponseCode.ADD_NEW_CONFIG_PANEL_FAILUR): ("f"),
+        str(ResponseCode.CONFIG_TYPE_NOT_FOUND): ("g"),
     }
 
 
@@ -84,8 +84,9 @@ class Strings:
 
     @staticmethod
     def account(user_id: int) -> str:
-        user_api = APIS.user_api(int(user_id))
+        user_api = APIS.user_api(user_id)
         result = user_api.get_user_information
+        print(result)
         if (not result):
             
             return "به مشکل خورد مجدد امتحان کنید"

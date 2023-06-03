@@ -4,7 +4,7 @@ class ApiUrls:
 
 
     def __init__(self) -> None:
-        self.API_URL = "http://cnmellat.top"
+        self.API_URL = "https://cnmellat.top"
         self.GET_TOKEN = fr"{self.API_URL}/api/Auth/LogIn"  # this is url for get token for request to api
         self.ADD_NEW_USER = fr"{self.API_URL}/api/Users/AddNewUser"  # this is url for add user
         self.GET_ALL_CONFIG_TYPES = fr"{self.API_URL}/api/ConfigTypes/GetAllConfigTypes"  # this is url for get all config
@@ -66,7 +66,7 @@ class ApiUrls:
             str: _description_
         """
 
-        return fr"{self.API_URL}api/Configs/GetUserConfigs?userId={user_id}"
+        return fr"{self.API_URL}/api/Configs/GetUserConfigs?userId={user_id}"
     
 
     def change_protocol(self, config_id) -> str:
