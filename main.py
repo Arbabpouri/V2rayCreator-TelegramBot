@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
         # for set part
         client.add_event_handler(
-            InlineHandlers.inline_set_part(),
+            InlineHandlers.user_move,
             CallbackQuery(
                 func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
             )

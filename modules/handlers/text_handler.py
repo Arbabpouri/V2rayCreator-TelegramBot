@@ -1,12 +1,13 @@
 from asyncio import sleep
+from uuid import uuid1
 from telethon.custom import Message
 from telethon.types import PeerUser
+
 from modules.tools import OfflineChargeData
 from config import client, Config
 from config.bot_strings import Strings
 from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineButtons)
 from modules.handlers.limiter import Limit, Step
-from uuid import uuid1
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 
@@ -25,7 +26,7 @@ class TextHandlers:
 
                 user_id = str(event.message.message).lower().replace('https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
 
-                await APIS.user_api(event.sender_id).add_user(
+                APIS.user_api(event.sender_id).add_user(
                     referraler=0 if (user_id == str(event.sender_id) or not user_id.isnumeric() or APIS.user_api(user_id).get_user_type in [1, 2]) \
                     else int(user_id)
                 )
@@ -41,7 +42,7 @@ class TextHandlers:
             # this is session for /start and send main menu
             case ("/start"):
 
-                await APIS.user_api(user_id=event.sender_id).add_user()
+                APIS.user_api(user_id=event.sender_id).add_user()
                 await client.send_message(
                     event.chat_id,
                     Strings.start_menu(event.chat.first_name, event.sender_id),
@@ -88,7 +89,8 @@ class TextHandlers:
 
             # this is session for online charge
             case (TextButtunsString.ONLINE_CHARGE):
-                user_type = await APIS.user_api(user_id=event.sender_id).get_user_type
+
+                user_type = APIS.user_api(user_id=event.sender_id).get_user_type
                 await client.send_message(
                     event.chat_id,
                     Strings.SHOP,
@@ -98,6 +100,7 @@ class TextHandlers:
 
             # this is session for offline charge
             case (TextButtunsString.OFFLINE_CHARGE):
+
                 await client.send_message(
                     event.chat_id,
                     Strings.GET_CUSTOM_CHARGE,
@@ -138,7 +141,6 @@ class TextHandlers:
             case _:
                 pass
 
-
     @staticmethod
     async def get_informatios(event: Message) -> None:
         limit = Limit.LIMIT[str(event.sender_id)]
@@ -148,28 +150,39 @@ class TextHandlers:
 
             #this session for get custom charge number
             case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_ONLINE):
+
                 if (not str(event.message.message).isnumeric()):
+
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
+
                 else:
+
                     text = int(event.message.message)
-                    user_type = await APIS.user_api(event.sender_id).get_user_type
+                    user_type = APIS.user_api(event.sender_id).get_user_type
                     Price = Config.MIN_USER_CHARGE if (user_type == 0) else Config.MIN_SELLER_CHARGE
                     if (text >= Price):
+
                         if (limit["part"] == Step.GET_CUSTOM_CHARGE_ONLINE):
+
                             await client.send_message(
                                 event.chat_id,
                                 Strings.WAITING,
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
+
                             await sleep(0.5)
                             link = ApiUrls().online_charge(int(event.sender_id), float(text))
+
                             await client.send_message(
                                 event.chat_id,
                                 Strings.created_payment_link(text),
                                 buttons=UrlButtons.payment_link(link)
                             )
+
                             del (Limit.LIMIT[str(event.sender_id)], text, link, Price, user_type)
+
                         else:
+
                             Limit.LIMIT[str(event.sender_id)] = {
                                 "part": Step.GET_EVIDENCE,
                                 "price": int(event.message.message)
@@ -177,10 +190,12 @@ class TextHandlers:
                             await client.send_message(
                                 event.chat_id,
                                 Strings.send_evidence(price=Limit.LIMIT[str(event.sender_id)]["price"]),
-                                buttons=InlineButtons.CANCEL_GET
+                                buttons=InlineButtons().CANCEL_GET
                             )
                             del (text, user_type, Price)
+
                     else:
+
                         await client.send_message(event.chat_id, Strings.low_price(Price))
 
             # this session for get deposit documents
@@ -191,14 +206,15 @@ class TextHandlers:
                     Strings.DOCUMENTS_RECEIVED,
                     buttons=TextButtons.start_menu(event.sender_id)
                 )
+
                 uuid = str(uuid1())
-                buttons = InlineButtons.accept_admin_documents(
+                buttons = InlineButtons(event.sender_id).accept_admin_documents(
                     name=str(event.chat.first_name),
-                    user_id=str(event.sender_id),
                     user_name="ندارد" if (event.chat.user_name is None) else str(event.chat.user_name),
                     price=limit["price"],
                     uuid=uuid
                 )
+
                 OfflineChargeData(uuid).write(event.sender_id, limit["price"])
                 for admin in Config.ADMINS_USER_ID:
                     try:
