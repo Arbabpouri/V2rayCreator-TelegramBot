@@ -11,8 +11,10 @@ if __name__ == "__main__":
     try:
 
         with open(r"./config/token.txt", "r") as file:
+
             ApiUrls().TOKEN = str(file.read())
             file.close()
+
         print("Token received")
 
         # for move user to different sessions
