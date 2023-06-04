@@ -12,9 +12,9 @@ class TextButtunsString(StrEnum):
     MY_SUBSCRIPTIONS = "♻️ سرویس های من"
     ACCOUNT = "👤 حساب کاربری"
     REFERRAL = "🔗 زیرمجموعه گیری"
-    SUPPORT = "☎️  پشتیبانی ☎️"
-    SHOP = "💳 شارژ حساب کاربری"
-    GET_USER_ID = "📍 شناسه کاربری 📍"
+    SUPPORT = "☎️ پشتیبانی"
+    SHOP = "💳 شارژ حساب"
+    GET_USER_ID = "📍 شناسه کاربری"
     ONLINE_CHARGE = "🌐 شارژ آنلاین"
     OFFLINE_CHARGE = "💳 کارت به کارت"
     BACK_TO_START_MENU = "🔙 منوی اصلی 🔙"
@@ -56,14 +56,13 @@ class TextButtons:
             ],
             [
                 Button.text(TextButtunsString.SHOP, resize=True, single_use=True),
+                Button.text(TextButtunsString.SUPPORT, resize=True, single_use=True),
                 Button.text(TextButtunsString.GET_USER_ID, resize=True, single_use=True),
             ],
             [
                 Button.text(TextButtunsString.REFERRAL, resize=True, single_use=True),
             ] if (user_type != UserTypes.SELLER) else [],
-            [
-                Button.text(TextButtunsString.SUPPORT, resize=True, single_use=True),
-            ],
+
         ]
 
     

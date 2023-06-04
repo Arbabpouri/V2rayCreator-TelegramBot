@@ -44,13 +44,19 @@ class InlineHandlers:
             Limit.LIMIT[str(event.sender_id)] = {
                 "part": Step.GET_CUSTOM_CHARGE_ONLINE
             }
-            del data
+
+        elif (data == "BACK-TO-CONFIG-LIST"):
+
+            message, buttons = InlineButtons(int(event.sender_id)).user_configs
+            await event.edit(
+                message,
+                buttons=buttons
+            )
 
         elif (data == "BACK-TO-HOME"):
 
-            await client.send_message(
-                event.chat_id,
-                message=Strings.BACKED_TO_HOME,
+            await event.edit(
+                Strings.BACKED_TO_HOME,
                 buttons=TextButtons.start_menu(event.sender_id)
             )
 
@@ -76,8 +82,6 @@ class InlineHandlers:
             )
 
             await event.edit("test", buttons=buttons)
-
-            del (data, server_id, config_id, price, buttons)
 
         elif (data.startswith("BUY-SELECT-PROTOCOL-")):
 
@@ -125,13 +129,13 @@ class InlineHandlers:
                         user_id=int(event.sender_id),
                         server_id=int(server_id),
                         config_type_id=int(config_id),
-                        protocol=protocol,
-                        is_free=False if (event.sender_id not in Config.ADMINS_USER_ID) else True
+                        protocol=protocol.lower(),
+                        is_free=False if (not event.sender_id in Config.ADMINS_USER_ID) else True
                     )
                     
                     if (isinstance(add_config, int)):
                         
-                        if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
+                        if (str(add_config) in list(Strings.RESPONSE_API_STRINGS.keys())):
 
                             text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
 
@@ -142,8 +146,6 @@ class InlineHandlers:
                     else:
 
                         text = f"linket `{add_config.v2RayLink}`"
-
-                    del (v2ray, add_config)
 
                 else:
 
@@ -166,8 +168,6 @@ class InlineHandlers:
                     else:
 
                         text = f"linket: {payment_link.result}"
-
-                    del (user_api, payment_link)
 
                 await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
                 del (text)

@@ -53,11 +53,8 @@ class V2Ray:
                     headers=self.headers,
                     verify=False
                 )
-                print(response.status_code)
-                print(* " ***")
+
                 if (response.status_code == 200):
-                    print(loads(response.content))
-                    print(30 * "-")
 
                     result = GetAllConfigTypes(**loads(response.content))
 
@@ -138,14 +135,16 @@ class V2Ray:
             AddNewConfigResult | int: _description_
             int - > 32, 110, 100, 41, 102, 130
         """
+
+        data = Data(user_id=int(user_id)).add_new_config(
+            server_id=int(server_id),
+            config_type_id=int(config_type_id),
+            protocol=str(protocol),
+            is_free=bool(is_free)
+        )
         
         for i in range(2):
-            data = Data(user_id=int(user_id)).add_new_config(
-                server_id=int(server_id),
-                config_type_id=int(config_type_id),
-                protocol=str(protocol),
-                is_free=bool(is_free)
-            )
+            
             
             response = post(
                 url=self.urls.ADD_NEW_CONFIG,
@@ -157,7 +156,6 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = AddNewConfig(**loads(response.content))
-                del response
 
                 if (result.status == ResponseCode.SUCSESS):
                     
@@ -165,27 +163,23 @@ class V2Ray:
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
-                    add_user = UserApi().user_api(int(user_id)).add_user()
+                    add_user = UserApi(int(user_id)).add_user()
 
                     if (not add_user):
 
-                        del (add_user, result)
                         return ResponseCode.FAILURE
                 
                 else:
 
-                    del response
                     return result.status  # 32, 110, 100, 41, 102, 130
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return False
     
 
@@ -207,11 +201,10 @@ class V2Ray:
                 headers=self.headers,
                 verify=False
             )
-            
+
             if (response.status_code == 200):
 
                 result = GetConfig(**loads(response.content))
-                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -221,13 +214,11 @@ class V2Ray:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
 
 

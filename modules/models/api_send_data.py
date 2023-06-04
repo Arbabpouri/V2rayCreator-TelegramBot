@@ -23,6 +23,7 @@ class LogIn(BaseModel):
 class AddNewConfig(BaseModel):
     userId: int
     serverId: int
+    configTypeId: int
     protocol: str
     isFree: Optional[bool] = False
 

@@ -53,7 +53,7 @@ class ApiUrls:
             str: _description_
         """
 
-        return fr"{self.API_URL}/api/Configs/GetConfig?configId={id}"
+        return fr"{self.API_URL}/api/Configs/GetConfig?configId={config_id}"
     
 
     def get_user_configs(self, user_id) -> str:

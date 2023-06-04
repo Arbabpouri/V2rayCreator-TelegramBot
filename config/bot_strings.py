@@ -93,6 +93,8 @@ class Strings:
 
         return (
             f"balance : {result.balance}"
-            "\n\n"
+            "\n"
+            f"referrals: {result.referrals.__len__()}"
+            "\n"
             f"user_id: {user_id}"
         ).format(user_id)

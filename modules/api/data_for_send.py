@@ -99,8 +99,13 @@ class Data:
         }
 
 
-    def add_new_config(self, server_id: int, protocol: str,
-                       is_free: bool) -> Dict[str, str | int]:
+    def add_new_config(
+        self, server_id: int,
+        config_type_id:int, 
+        protocol: str,
+        is_free: bool
+    ) -> Dict[str, str | int]:
+        
         """_summary_
 
         Args:
@@ -116,8 +121,13 @@ class Data:
             Dict[str, str | int]: _description_
         """
         
-        data = AddNewConfig(userId=int(self.user_id), serverId=int(server_id),
-                            protocol=str(protocol), isFree=bool(is_free))
+        data = AddNewConfig(
+            userId=int(self.user_id),
+            serverId=int(server_id),
+            configTypeId=int(config_type_id),
+            protocol=str(protocol),
+            isFree=bool(is_free)
+        )
         
         return data.dict()
 

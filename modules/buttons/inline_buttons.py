@@ -7,6 +7,7 @@ from modules.models.api_response import GetAllConfigTypesResult
 from modules.enums import ResponseCode
 from config.bot_strings import Strings
 from datetime import datetime
+import pprint
 
 
 
@@ -71,6 +72,8 @@ class InlineButtons:
                 ],
             )
         
+        buttons.append(self.BACK_TO_HOME)
+        
         return (Strings.SERVICES, buttons)
    
 
@@ -124,7 +127,8 @@ class InlineButtons:
                 ]
             )
 
-        del (servers, user_type)
+        buttons.append(self.BACK_TO_HOME)
+
         return (Strings.BUY_CONFIG, buttons)
 
 
@@ -241,45 +245,56 @@ class InlineButtons:
         if (not str(config_id).isnumeric()): raise ValueError("config_id must be integer")
 
         config_inform = self.v2ray.get_config(int(config_id))
-        message = ""
 
         if (isinstance(config_inform, int)):
             
             message = Strings.RESPONSE_API_STRINGS[str(config_inform)] \
-                if (str(message) in Strings.RESPONSE_API_STRINGS.keys())\
+                if (str(config_inform) in Strings.RESPONSE_API_STRINGS.keys())\
                 else Strings.ERROR
             
             return (message, self.BACK_TO_HOME)
 
         buttons = [
             [
-                Button.inline(f"name : {config_inform.name}"),  # config name
-                Button.inline(f"sv name: {config_inform.serverName}"),  # server name
-                Button.inline(f"protocol: {config_inform.protocol}"),  # protocol
+                 Button.inline(f"⭕️ {config_inform.configTypeTitle} ⭕️"),  # title
             ],
             [
-                Button.inline(f"usage: {config_inform.up + config_inform.down}"),  # up + down
-                Button.inline(f"max-traffic: {config_inform.maxTraffic}")  # max traffic
+                Button.inline(f"👾 Name : {config_inform.name} 👾"),  # config name
             ],
             [
-                Button.inline(f"upload: {config_inform.up}"),  # up
-                Button.inline(f"download: {config_inform.down}"),  # down
-            ],
-            [ 
-                Button.inline(f"activate time: {config_inform.activeDays}"),  # activate time
-                Button.inline(f"time: {datetime.now() - datetime.strftime(config_inform.expiresDate, '%Y-%m-%dT%H:%M:%S.%fZ')}")  # zaman baghi munde
+                Button.inline(f"🔌 Server Name: {config_inform.serverName} 🔌"),  # server name
             ],
             [
-                Button.inline(f"buy time: {config_inform.creationDate.replace('Z', '').replace('T', ' ')}"),  # zaman kharid
-                Button.inline(f"engheza time: {config_inform.expiresDate.replace('Z', '').replace('T', ' ')}"),  # zaman engheza
+                Button.inline(f"🔩 Protocol: {config_inform.protocol} 🔩"),  # protocol
             ],
             [
-                Button.inline("فعال" if (config_inform.isEnable) else "غیر فعال"),  # status
-                Button.inline("تمدید کانفیگ", f"RENEWAL-CONFIG-{config_id}")  # renewal config
+                Button.inline(f"⚠️ Used: {config_inform.up + config_inform.down} ⚠️"),  # up + down
             ],
             [
-                Button.inline("تغییر سرور", f"CHANGE-SERVER-{config_id}"),  # change server
-                Button.inline("تغییر پروتوکل", f"CHANGE-PROTOCOL-{config_id}"),  # change protocol
+                Button.inline(f"⬆️ Upload: {(config_inform.up) // (1024 ** 2)} ⬆️"),  # up
+                Button.inline(f"⬇️ Download: {(config_inform.down) // (1024 ** 2)} ⬇️"),  # down
+            ],
+            [
+                Button.inline(f"⏳ Remainde: {datetime.fromisoformat(config_inform.expiresDate) - datetime.now()}")  # zaman baghi munde
+            ],
+            [
+                Button.inline(f"🛠 Construction: {config_inform.creationDate.replace('Z', '').replace('T', ' ')}"),  # zaman kharid
+            ],
+            [
+                Button.inline(f"🪦 Expiration: {config_inform.expiresDate.replace('Z', '').replace('T', ' ')}"),  # zaman engheza
+            ],
+            [
+                Button.inline("Status: " + "✅ فعال" if (config_inform.isEnable) else "❌ غیر فعال"),  # status
+            ],
+            [
+                Button.inline("♻️ تمدید کانفیگ ♻️", f"RENEWAL-CONFIG-{config_id}")  # renewal config
+            ],
+            [
+                Button.inline("🚩 تغییر سرور 🚩", f"CHANGE-SERVER-{config_id}"),  # change server
+                Button.inline("⚙️ تغییر پروتوکل ⚙️", f"CHANGE-PROTOCOL-{config_id}"),  # change protocol
+            ],
+            [
+                Button.inline("⬅️ برگشت به لیست کانفیگ ها ⬅️", "BACK-TO-CONFIG-LIST")
             ]
         ]
 
