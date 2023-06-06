@@ -236,7 +236,7 @@ class V2Ray:
 
             response = put(
                 url=self.urls.change_protocol(int(config_id)),
-                eaders=self.headers,
+                headers=self.headers,
                 verify=False
             )
             
@@ -317,9 +317,11 @@ class V2Ray:
             RenewalConfigResult | int: _description_
         """
 
+        data = Data().config_id(int(config_id))
+
         for i in range(2):
             
-            data = Data().config_id(int(config_id))
+            
             response = put(
                 url=self.urls.RENEWAL_CONFIG,
                 json=data,

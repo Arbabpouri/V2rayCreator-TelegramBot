@@ -134,14 +134,8 @@ class InlineHandlers:
                     )
                     
                     if (isinstance(add_config, int)):
-                        
-                        if (str(add_config) in list(Strings.RESPONSE_API_STRINGS.keys())):
-
-                            text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
-
-                        else:
-                            
-                            text = Strings.ERROR
+                        text = Strings.RESPONSE_API_STRINGS[str(payment_link)]\
+                            if (str(add_config) in list(Strings.RESPONSE_API_STRINGS.keys())) else Strings.ERROR
 
                     else:
 
@@ -186,18 +180,20 @@ class InlineHandlers:
 
         elif (data.startswith("RENEWAL-CONFIG-")):
 
-            config_id = data.replace("RENEWAL-CONFIG-")
+            config_id = data.replace("RENEWAL-CONFIG-", "")
             v2ray = APIS.v2ray_api()
             renewal = v2ray.renewal_config(int(config_id))
 
-            if (isinstance(renewal, int)): text = Strings.RESPONSE_API_STRINGS[str(change)] if (change in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
+            if (str(renewal)): text = Strings.RESPONSE_API_STRINGS[str(renewal)] if (str(renewal) in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
 
             elif (isinstance(renewal, RenewalConfigResult)): text = renewal.v2RayLink
 
             else: text = Strings.ERROR
 
-            await event.edit(text)
-            del (config_id, v2ray, renewal, text)
+            await event.edit(
+                text, 
+                buttons=InlineButtons().BACK_TO_CONFIGS
+            )
      
         elif (data.startswith("CHANGE-PROTOCOL-")):
 
@@ -217,8 +213,7 @@ class InlineHandlers:
 
             else: text = Strings.ERROR
 
-            await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
-            del (config_id, v2ray, config)
+            await event.edit(text, buttons=InlineButtons().show_config(config_id)[1])
 
         elif (data.startswith("CHANGE-SERVER-")):
 
@@ -230,12 +225,14 @@ class InlineHandlers:
                 return
             
             message, buttons = InlineButtons(int(event.sender_id)).select_server("CHANGE", int(config_id))
-            await event.edit(message, buttons)
+            await event.edit(message, buttons=buttons)
             del (message, buttons, config_id)
 
         elif (data.startswith("CHANGE-SELECT-SERVER-")):
+            print(data)
 
             data = data.replace("CHANGE-SELECT-SERVER-", "").split("-")
+            print(data)
             server_id, config_id = data
 
             if (not (str(server_id).isnumeric() or str(server_id).isnumeric())):
@@ -248,12 +245,11 @@ class InlineHandlers:
 
             if (isinstance(change, int)): text = Strings.RESPONSE_API_STRINGS[str(change)] if (change in Strings.RESPONSE_API_STRINGS.keys()) else Strings.ERROR
             
-            elif (isinstance(config, ChangeServerResult)): text = change.v2RayLink
+            elif (isinstance(change, ChangeServerResult)): text = change.v2RayLink
 
             else: text = Strings.ERROR
 
-            await event.edit(text, InlineButtons().BACK_TO_HOME)
-            del (data, server_id, v2ray, change, text)
+            await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
                 
 
     @staticmethod

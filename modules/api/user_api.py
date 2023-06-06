@@ -4,13 +4,15 @@ from json import loads
 from typing import Optional, List
 from modules.api.data_for_send import Data
 from modules.enums.enums import ResponseCode
-from modules.models.api_response import (UserType,
-                                        AddUser,
-                                        GetUserConfigs,
-                                        GetUserConfigsResult,
-                                        GetUserInfo,
-                                        GetUserInfoResult,
-                                        PaymentLink)
+from modules.models.api_response import (
+    UserType,
+    AddUser,
+    GetUserConfigs,
+    GetUserConfigsResult,
+    GetUserInfo,
+    GetUserInfoResult,
+    PaymentLink
+)
 
 from modules.api.api_config import ApiConfig
 from modules.api.urls import ApiUrls
@@ -59,22 +61,15 @@ class UserApi:
 
                 result = GetUserInfo(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS):
-
-                    return result.result
+                if (result.status == ResponseCode.SUCSESS): return result.result
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
                     
                     add_user = self.add_user()
 
-                    if (not add_user):
-
-                        del add_user
-                        return False
+                    if (not add_user): return False
                 
-                else:
-
-                    return False
+                else: return False
 
             elif (response.status_code == 401):
 
@@ -82,10 +77,7 @@ class UserApi:
                 ApiConfig().get_token
                 continue
 
-            else:
-                
-                del response
-                return False
+            else: return False
 
 
     @property
@@ -382,48 +374,44 @@ class UserApi:
             return False
         
 
-    # def balance_increase(self, price: int) -> bool:
-    #     """
-    #     for balance increase in database 
+    def balance_increase(self, price: int) -> bool:
+        """
+        for balance increase in database 
 
-    #     Args:
-    #         price (int): this argument for balance increase in database
+        Args:
+            price (int): this argument for balance increase in database
 
-    #     Returns:
-    #         bool: successful or unsuccessful
-    #     """
+        Returns:
+            bool: successful or unsuccessful
+        """
 
-    #     if (not str(price).isnumeric()): raise ValueError("price must be an integer")
+        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
         
-    #     data = Data(self.user_id).balance_increase(int(price))
-    #     count = 0
-    #     while (count < 2):
+        data = Data(self.user_id).balance_increase(int(price))
+        count = 0
+        while (count < 2):
 
-    #         response = post(
-    #             url=self.urls.BALANCE_INCREASE,
-    #             json="",
-    #             headers=self.headers,
-    #             verify=False
-    #         )
+            response = post(
+                url=self.urls.BALANCE_INCREASE,
+                json="",
+                headers=self.headers,
+                verify=False
+            )
 
-    #         if (response.status_code == 200):
+            if (response.status_code == 200):
 
-    #             result = loads(response.content)
-    #             if ():
+                result = loads(response.content)
+                if ():
 
-    #                 pass
+                    pass
 
-    #             else:
+                else:
 
-    #                 pass
+                    pass
                 
-    #         elif (response.status_code == 401):
+            elif (response.status_code == 401):
                 
-    #             del response
-    #             count += 1
-    #             ApiConfig().get_token
+                count += 1
+                ApiConfig().get_token
 
-    #         else:
-
-    #             del (data, response, count)
-    #             return False
+            else: return False

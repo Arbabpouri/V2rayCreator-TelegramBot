@@ -32,6 +32,8 @@ class Strings:
         str(ResponseCode.SERVER_IS_FULL): ("e"),
         str(ResponseCode.ADD_NEW_CONFIG_PANEL_FAILUR): ("f"),
         str(ResponseCode.CONFIG_TYPE_NOT_FOUND): ("g"),
+        str(ResponseCode.CONFIG_IS_ALREADY_ENABLE): ("ss"),
+        str(ResponseCode.SERVER_DOES_NOT_EXIST): ("ssss"),
     }
 
 
@@ -86,10 +88,8 @@ class Strings:
     def account(user_id: int) -> str:
         user_api = APIS.user_api(user_id)
         result = user_api.get_user_information
-        print(result)
-        if (not result):
-            
-            return "به مشکل خورد مجدد امتحان کنید"
+
+        if (not result): return "به مشکل خورد مجدد امتحان کنید"
 
         return (
             f"balance : {result.balance}"

@@ -25,6 +25,7 @@ class InlineButtons:
         self.v2ray = APIS.v2ray_api()
         self.CANCEL_GET = [Button.inline("❌ لغو عملیات ❌", "CANCEl-GET")]
         self.BACK_TO_HOME = [Button.inline("برگشت به خانه", "BACK-TO-HOME")]
+        self.BACK_TO_CONFIGS = [Button.inline("⬅️ برگشت به لیست کانفیگ ها ⬅️", "BACK-TO-CONFIG-LIST")]
 
 
     @property
@@ -94,8 +95,10 @@ class InlineButtons:
         """
 
         if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be integer")
+        
         if (not isinstance(buy_or_change, str) or buy_or_change.upper() not in ["BUY", "CHANGE"]):
             raise ValueError("buy_or_change must be string and buy_or_change in ['BUY', 'CHANGE'].")
+        
         if (buy_or_change.upper() == "CHANGE" and not str(config_id).isnumeric()):
             raise ValueError("whene time set CHANGE should gave number for config_id")
 
@@ -123,7 +126,7 @@ class InlineButtons:
         for server in servers:
             buttons.append(
                 [   
-                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}-{config}"),
+                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}{config}"),
                 ]
             )
 
@@ -293,10 +296,9 @@ class InlineButtons:
                 Button.inline("🚩 تغییر سرور 🚩", f"CHANGE-SERVER-{config_id}"),  # change server
                 Button.inline("⚙️ تغییر پروتوکل ⚙️", f"CHANGE-PROTOCOL-{config_id}"),  # change protocol
             ],
-            [
-                Button.inline("⬅️ برگشت به لیست کانفیگ ها ⬅️", "BACK-TO-CONFIG-LIST")
-            ]
         ]
+
+        buttons.append(self.BACK_TO_CONFIGS)
 
         return ("ok my bro", buttons)
 

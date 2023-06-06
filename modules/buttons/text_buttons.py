@@ -37,7 +37,7 @@ class TextButtons:
 
 
     @staticmethod
-    def start_menu(user_id: int) -> List[Button]:
+    def start_menu(user_id: int) -> List[List[Button]]:
 
 
         if (not str(user_id).isnumeric()):
