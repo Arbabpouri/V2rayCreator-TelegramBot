@@ -5,11 +5,9 @@ from typing import Dict
 
 
 
-if (isfile("./config/data.json") is False):
+if (not isfile("./config/data.json")):
     with open("./config/data.json", "a+") as file:
-        file.write(
-            dumps({}, indent=4)
-        )
+        file.write(dumps({}, indent=4))
         file.close()
 
 
@@ -22,6 +20,7 @@ class OfflineChargeData:
         Args:
             id (int): _description_
         """
+
         self.id = id
         self.path = "./config/data.json"
     
@@ -36,6 +35,7 @@ class OfflineChargeData:
         Returns:
             bool: _description_
         """
+
         with open(self.path, "a+") as file:
             data = loads(file.read())
             data[str(self.id)] = {
@@ -61,6 +61,7 @@ class OfflineChargeData:
         Returns:
             bool: _description_
         """
+
         with open(self.path, "a+") as file:
             data: dict = loads(file.read())
             if (str(self.id) in list(data.keys())
