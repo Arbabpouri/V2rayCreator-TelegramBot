@@ -1,10 +1,10 @@
 from asyncio import sleep
 from uuid import uuid1
 from telethon.custom import Message
-from telethon.types import PeerUser
+from telethon.types import PeerUser, PeerChannel
+from telethon.tl.functions.channels import GetFullChannelRequest
 from re import match
 
-from modules.tools import OfflineChargeData
 from config import client, Config
 from config.bot_strings import Strings
 from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineButtons)
@@ -87,19 +87,25 @@ class TextHandlers:
                 await client.send_message(
                     event.chat_id,
                     Strings.SELECT_CHARGE,
-                    buttons=TextButtons().SELECT_CHARGE
+                    buttons=TextButtons.SELECT_CHARGE
                 )
 
             # this is session for online charge
-            case (TextButtunsString.ONLINE_CHARGE):
+            case (TextButtunsString.ONLINE_CHARGE | TextButtunsString.OFFLINE_CHARGE):
 
-                user_type = APIS.user_api(user_id=event.sender_id).get_user_type
                 await client.send_message(
-                    event.chat_id,
-                    Strings.SHOP,
-                    buttons=UrlButtons.shop(event.sender_id, user_type)
+                    event.sender_id,
+                    "cheghad?",
+                    buttons=TextButtons.CANCEL_GET
                 )
-                del user_type
+
+                # step
+                Limit.LIMIT[str(event.sender_id)] = {
+                    "part": Step.GET_CUSTOM_CHARGE_OFFLINE if (text == TextButtunsString.OFFLINE_CHARGE)\
+                        else Step.GET_CUSTOM_CHARGE_ONLINE,
+
+                    "last-message": event.message.message,
+                }
 
             # this is session for offline charge
             case (TextButtunsString.OFFLINE_CHARGE):
@@ -111,6 +117,15 @@ class TextHandlers:
                 )
 
                 Limit.LIMIT[str(event.sender_id)] = {"part": Step.GET_CUSTOM_CHARGE_OFFLINE}
+
+            # this is session for back to 'TextButtons.start_menu(event.sender_id)'
+            case (TextButtunsString.BACK_TO_START_MENU):
+
+                await client.send_message(
+                    event.chat_id,
+                    Strings.BACKED_TO_HOME,
+                    buttons=TextButtons.start_menu(int(event.sender_id))
+                )
 
             # this is session for send referral link to user
             case (TextButtunsString.REFERRAL):
@@ -145,26 +160,64 @@ class TextHandlers:
 
     @staticmethod
     async def get_informatios(event: Message) -> None:
-        limit = Limit.LIMIT[str(event.sender_id)]
+        informations = Limit.LIMIT[str(event.sender_id)]
+        part = informations["part"]
 
         # get number for payment link for create custom charge
-        match(limit["part"]):
+        match(part):
 
             #this session for get custom charge number
-            case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_ONLINE):
+            case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_OFFLINE):
 
                 if (not str(event.message.message).isnumeric()):
-
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
-
                 else:
 
-                    text = int(event.message.message)
-                    user_type = APIS.user_api(event.sender_id).get_user_type
-                    Price = Config.MIN_USER_CHARGE if (user_type == 0) else Config.MIN_SELLER_CHARGE
-                    if (text >= Price):
+                    try:
 
-                        if (limit["part"] == Step.GET_CUSTOM_CHARGE_ONLINE):
+                        text = int(event.message.message)
+                        user_api = APIS.user_api(event.sender_id)
+                        user_type = user_api.get_user_type
+                        
+                        if (isinstance(user_type, bool) and not user_type):
+
+                            await client.send_message(
+                                event.chat_id,
+                                Strings.ERROR,
+                                buttons=TextButtons.start_menu(event.sender_id)
+                            )
+
+                            del Limit.LIMIT[str(event.sender_id)]
+
+                        else:
+
+                            if (user_type == UserTypes.MANUAL):
+                                min_charge = Config.MIN_USER_CHARGE
+                            else:
+                                api_config = APIS.config_api()
+                                min_charge = api_config.get_prices_limit
+                    
+                    except Exception as error:
+
+                        print(error)
+                        await client.send_message(
+                            event.chat_id,
+                            Strings.ERROR,
+                            buttons=TextButtons.CANCEL_GET
+                        )
+                        return
+
+                    if (text < min_charge):
+
+                        await client.send_message(
+                            event.chat_id,
+                            Strings.low_price(min_charge),
+                            buttons=TextButtons.CANCEL_GET
+                        )
+
+                    else:
+
+                        if (part == Step.GET_CUSTOM_CHARGE_ONLINE):
 
                             await client.send_message(
                                 event.chat_id,
@@ -172,8 +225,7 @@ class TextHandlers:
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
 
-                            await sleep(0.5)
-                            link = ApiUrls().online_charge(int(event.sender_id), float(text))
+                            link = ApiUrls().online_charge(user_id=int(event.sender_id), amount=float(text))
 
                             await client.send_message(
                                 event.chat_id,
@@ -181,27 +233,32 @@ class TextHandlers:
                                 buttons=UrlButtons.payment_link(link)
                             )
 
-                            del (Limit.LIMIT[str(event.sender_id)], text, link, Price, user_type)
+                            del Limit.LIMIT[str(event.sender_id)]
 
-                        else:
+                        elif (part == Step.GET_CUSTOM_CHARGE_OFFLINE):
 
                             Limit.LIMIT[str(event.sender_id)] = {
                                 "part": Step.GET_EVIDENCE,
-                                "price": int(event.message.message)
+                                "price": float(text)
                             }
+
                             await client.send_message(
                                 event.chat_id,
-                                Strings.send_evidence(price=Limit.LIMIT[str(event.sender_id)]["price"]),
+                                Strings.send_evidence(price=informations["price"]),
                                 buttons=InlineButtons().CANCEL_GET
                             )
-                            del (text, user_type, Price)
 
-                    else:
-
-                        await client.send_message(event.chat_id, Strings.low_price(Price))
 
             # this session for get deposit documents
             case (Step.GET_EVIDENCE):
+
+
+
+                # event.media.photo
+
+
+
+
                 del Limit.LIMIT[str(event.sender_id)]
                 await client.send_message(
                     event.chat_id,
@@ -210,31 +267,6 @@ class TextHandlers:
                 )
 
                 uuid = str(uuid1())
-                buttons = InlineButtons(event.sender_id).accept_admin_documents(
-                    name=str(event.chat.first_name),
-                    user_name="ندارد" if (event.chat.user_name is None) else str(event.chat.user_name),
-                    price=limit["price"],
-                    uuid=uuid
-                )
-
-                OfflineChargeData(uuid).write(event.sender_id, limit["price"])
-                for admin in Config.ADMINS_USER_ID:
-                    try:
-                        await client.send_message(
-                            PeerUser(admin),
-                            event.message,
-                            buttons=buttons
-                        )
-                    except:
-                        pass
-                del (uuid, buttons)
-
-
-
-
-
-
-
 
 
 

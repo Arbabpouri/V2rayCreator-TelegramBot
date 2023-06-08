@@ -73,21 +73,14 @@ class ApiConfig:
             if (response.status_code == 200):
 
                 result = GetSettings(**loads(response.content))
-                del response
 
-                if (result.status == ResponseCode.SUCSESS):
-
-                    return result.result
+                if (result.status == ResponseCode.SUCSESS): return result.result
                 
                 return False
 
             elif (response.status_code == 401):
 
-                del response
                 self.get_token
                 continue
 
-            else:
-
-                del response
-                return False
+            else: return False

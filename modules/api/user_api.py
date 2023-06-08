@@ -94,6 +94,7 @@ class UserApi:
         for i in range(2):
 
             try:
+
                 response = get(
                     url=self.urls.get_user_type(self.user_id), 
                     headers=self.headers,
@@ -104,21 +105,18 @@ class UserApi:
 
                     result = UserType(**loads(response.content))
 
-                    if (result.status == ResponseCode.SUCSESS):
-
+                    if (result.status == ResponseCode.SUCSESS): 
                         return int(result.result.type)
-
+                    
                     elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                         add_user = self.add_user()
 
                         if (not add_user):
                             return False
-                        
                         continue
 
                     else:
-
                         return False
                 
                 elif (response.status_code == 401):
@@ -127,7 +125,6 @@ class UserApi:
                     continue
 
                 else:
-
                     return False
                 
             except Exception as error:
