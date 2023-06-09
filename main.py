@@ -1,14 +1,17 @@
 from config import client
 from modules.handlers import TextHandlers, InlineHandlers
 from telethon.events import NewMessage, CallbackQuery
+from aiocron import crontab
+from pystyle import Colors, Write
+
 from modules.handlers.limiter import Limit
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 from modules.tools.check_configs import check_config
-from aiocron import crontab
 
 
-print('Imported')
+
+Write.Print("Modules imported", Colors.red_to_green, end="\n")
 if __name__ == "__main__":
     
     try:
@@ -16,18 +19,18 @@ if __name__ == "__main__":
         with open(r"./config/token.txt", "r") as file:
 
             ApiUrls.TOKEN = file.read()
-            print("Token received")
+            Write.Print("Token received", Colors.purple_to_blue, end="\n")
             file.close()
     
     except FileNotFoundError:
 
         APIS().config_api().get_token
-        print("Please re run")
+        Write.Print("Please re run", Colors.red, end="\n")
         exit()
 
     except Exception as error:
 
-        print(error)
+        Write.Print(str(error), Colors.red, interval=0)
         exit()
         
     # for move user to different sessions
@@ -60,5 +63,5 @@ if __name__ == "__main__":
     )
 
 
-    print('Handlers Created\nBot is online')
+    Write.Print('Handlers Created\nBot is online', Colors.blue_to_green, end="\n")
     client.run_until_disconnected()
