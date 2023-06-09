@@ -104,7 +104,7 @@ class ApiUrls:
         return fr"{self.API_URL}/api/Gateway/GenOnlinePurchaseGateway"
     
 
-    def online_charge(self, user_id: int, amount: float) -> str:
+    def online_charge(self, user_id: int, amount: int) -> str:
         """_summary_
 
         Args:
@@ -115,7 +115,7 @@ class ApiUrls:
             str: _description_
         """
 
-        return fr"{self.API_URL}/api/Gateway/GenChargeGateway"
+        return fr"{self.API_URL}/api/Gateway/GenChargeGateway?UserId={user_id}&Amount={amount}"
 
 
 

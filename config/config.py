@@ -10,7 +10,7 @@ class Config:
     MIN_USER_CHARGE = 50000  # T , for min charge by manual user
     CARD_NUMBER = "1234 5678 9876 5432"
     CARD_HOLDER = "علی مومنی"
-    ACC_REJECT_CHANNEL_LINK = "1946616237"
+    ACC_REJECT_CHANNEL_ID = 1946616237
 
 
 

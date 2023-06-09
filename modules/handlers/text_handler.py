@@ -1,10 +1,7 @@
-from asyncio import sleep
 from uuid import uuid1
 from telethon.custom import Message
-from telethon.types import PeerUser, PeerChannel
-from telethon.tl.functions.channels import GetFullChannelRequest
+from telethon.types import MessageMediaPhoto, PeerChannel
 from re import match
-
 from config import client, Config
 from config.bot_strings import Strings
 from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineButtons)
@@ -160,8 +157,26 @@ class TextHandlers:
 
     @staticmethod
     async def get_informatios(event: Message) -> None:
+
+        
+
+        if (event.message.message == TextButtunsString.CANCEl_GET):
+            
+            await client.send_message(
+                event.chat_id,
+                Strings.CANCELED,
+                buttons=TextButtons.start_menu(int(event.sender_id))
+            )
+            del Limit.LIMIT[str(event.sender_id)]
+            return
+
         informations = Limit.LIMIT[str(event.sender_id)]
         part = informations["part"]
+
+        if (informations["last-message"] == event.message.message): return
+
+        
+        
 
         # get number for payment link for create custom charge
         match(part):
@@ -225,7 +240,7 @@ class TextHandlers:
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
 
-                            link = ApiUrls().online_charge(user_id=int(event.sender_id), amount=float(text))
+                            link = ApiUrls().online_charge(user_id=int(event.sender_id), amount=int(text))
 
                             await client.send_message(
                                 event.chat_id,
@@ -237,15 +252,16 @@ class TextHandlers:
 
                         elif (part == Step.GET_CUSTOM_CHARGE_OFFLINE):
 
-                            Limit.LIMIT[str(event.sender_id)] = {
+                            informations = Limit.LIMIT[str(event.sender_id)] = {
                                 "part": Step.GET_EVIDENCE,
-                                "price": float(text)
+                                "price": int(text),
+                                "last-message": event.message.message
                             }
 
                             await client.send_message(
                                 event.chat_id,
                                 Strings.send_evidence(price=informations["price"]),
-                                buttons=InlineButtons().CANCEL_GET
+                                buttons=TextButtons.CANCEL_GET
                             )
 
 
@@ -254,23 +270,62 @@ class TextHandlers:
 
 
 
-                # event.media.photo
+                if (isinstance(event.message.media, MessageMediaPhoto)):
 
+                    del Limit.LIMIT[str(event.sender_id)]
 
+                    await client.send_message(
+                        event.chat_id,
+                        Strings.DOCUMENTS_RECEIVED,
+                        buttons=TextButtons.start_menu(int(event.sender_id)),
+                    )
 
+                    photo = event.photo
+                    text = Strings.acc_reject(
+                        name=str(event.chat.first_name),
+                        user_name=str(event.chat.username),
+                        user_id=int(event.sender_id),
+                        amount=int(informations["price"]),
+                    )
+                    buttons = InlineButtons(int(event.sender_id)).acc_reject(informations["price"])
+                    try:
 
-                del Limit.LIMIT[str(event.sender_id)]
-                await client.send_message(
-                    event.chat_id,
-                    Strings.DOCUMENTS_RECEIVED,
-                    buttons=TextButtons.start_menu(event.sender_id)
-                )
+                        await client.send_file(
+                            PeerChannel(Config.ACC_REJECT_CHANNEL_ID),
+                            photo,
+                            caption=text,
+                            buttons=buttons,
+                        )
 
-                uuid = str(uuid1())
+                    except:
+                        
+                        for admin in Config.ADMINS_USER_ID:
 
+                            try:
 
+                                await client.send_file(
+                                    admin,
+                                    photo,
+                                    caption=text,
+                                    buttons=buttons,
+                                )
+                                break
 
+                            except: pass
+                        
+                        else:
 
+                            await client.send_message(
+                                event.chat_id,
+                                Strings.DOCUMENTS_NOT_RECEIVED,
+                                buttons=UrlButtons.SUPPORT
+                            )
 
-            case _:
-                pass
+                else:
+
+                    await client.send_message(
+                        event.chat_id,
+                        Strings.NOT_PICTURE,
+                        buttons=TextButtons.CANCEL_GET
+                    )
+

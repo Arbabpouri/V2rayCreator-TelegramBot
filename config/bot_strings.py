@@ -1,6 +1,8 @@
+from jdatetime import datetime as PersianTime
 from config.config import Config
 from modules.enums import ResponseCode
 from modules.api.APIS import APIS
+
 
 
 
@@ -12,10 +14,10 @@ class Strings:
     SUPPORT = "💡 جهت پیام ارتباط با ادمین لطفا روی دکمه زیرین کلیک کنید 🌀"
     GET_CUSTOM_CHARGE = "📍 مبلغ مد نظر خود را به **تومان** وارد کنید (با اعداد لاتین) 💳"
     NOT_NUMBER = "❌مقدار ارسالی شما  به صورت عددی نیست , لطفا **به صورت عدد لاتین** ارسال کنید. ❌"
+    NOT_PICTURE = "🚫 مورد ارسال شده اشتباه است, لطفا فقط عکس ارسال کنید"
     WAITING = "⏳ لطفا منتظر بمانید "
     SELECT_CHARGE = "⁉ به چه روشی میخواهید حساب خود را شارژ کنید؟"
     SEND_PICTURE = "⚠ لطفا تصویر فیش واریزی"
-    DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
     BACKED_TO_HOME = "👋 به منوی اصلی بازگشتید"
     SERVICES = "سروریس های شما به شرح زیر است"
     NOT_SERVICE = "شما سرویسی ندارید"
@@ -23,6 +25,14 @@ class Strings:
     SELECT_SERVER = "kodum"
     ERROR = "error"
     CONFIG_DOES_NOT_EXIST = "nist"
+    CANCELED = "cancel shod"
+    WAIT_CONFIRMATION = "Waiting for confirmation"
+    DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
+    DOCUMENTS_NOT_RECEIVED = (
+        "💢در ارسال مدارک شما به تیم پشتیبانی مشکلی رخ داد, لطفا مدارک خود رو برای ایدی زیر ارسال کنید تا تایید شود."
+        "\n\n"
+        "⭕️ پ.ن : پوزش مارا بپذیرید"
+    )
 
     RESPONSE_API_STRINGS = {
         str(ResponseCode.USER_TYPE_ERROR): ("a"),
@@ -54,8 +64,10 @@ class Strings:
         
         """
         return (
-            f"➕ لطفا به شماره کارت زیر مبلغ {price} تومان واریز کنید و عکس فیش واریزی را ارسال کنید"
+            f"➕ لطفا به شماره کارت زیر مبلغ {int(price):,} تومان واریز کنید و عکس فیش واریزی را ارسال کنید"
+            "\n\n"
             f"شماره کارت : \n {Config.CARD_NUMBER}"
+            "\n"
             f"بنام : {Config.CARD_HOLDER}"
         )
 
@@ -98,3 +110,25 @@ class Strings:
             "\n"
             f"user_id: {user_id}"
         ).format(user_id)
+
+    @staticmethod
+    def acc_reject(name: str, user_name: str,  user_id: int, amount: int) -> str:
+
+        text = (
+            "#درخواست_افزایش_موجودی 💳"
+            "\n\n"
+            f"👤 - Name : [{name}](tg://user?id={user_id})"
+            "\n"
+            f"👾 - User Name : {user_name}"
+            "\n"
+            f"🔢 - User ID : {user_id}"
+            "\n"
+            f"💰 - Amount : {int(amount):,}"
+            "\n"
+            "⏰ - Date Time : {}"
+            "\n"
+            f"🔑 - Status : {Strings.WAIT_CONFIRMATION}"
+            "\n\n\n"
+            f"@{Config.BOT_USERNAME}"
+        )
+        return text

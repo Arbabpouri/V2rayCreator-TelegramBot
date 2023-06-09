@@ -62,7 +62,7 @@ class InlineHandlers:
 
         elif (data.startswith("BUY-SELECT-SERVER-")):
             
-            server_id, config_id = data.replace("BUY-SELECT-SERVER-", "").split("-")  # data[0] is the server id
+            server_id = data.replace("BUY-SELECT-SERVER-", "").split("-")[0]  # data[0] is the server id
             result, buttons = InlineButtons(event.sender_id).configs_for_sell(int(server_id))
                 
             await event.edit(
@@ -229,10 +229,8 @@ class InlineHandlers:
             del (message, buttons, config_id)
 
         elif (data.startswith("CHANGE-SELECT-SERVER-")):
-            print(data)
 
             data = data.replace("CHANGE-SELECT-SERVER-", "").split("-")
-            print(data)
             server_id, config_id = data
 
             if (not (str(server_id).isnumeric() or str(server_id).isnumeric())):
