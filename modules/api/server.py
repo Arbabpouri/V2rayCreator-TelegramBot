@@ -1,21 +1,25 @@
-from typing import List, Dict, Optional
+from typing import List, Optional
 from requests import (post, get, put, delete)
 from json import loads
-from modules.models.api_response import (GetAllConfigTypes,
-                                        GetAllConfigTypesResult,
-                                        AddNewConfig,
-                                        AddNewConfigResult,
-                                        ChangeProtocol, ChangeProtocolResult,
-                                        ChangeServer,
-                                        ChangeServerResult,
-                                        RenewalConfig,
-                                        RenewalConfigResult,
-                                        DeleteConfig,
-                                        GetAllServer,
-                                        GetAllServerResult,
-                                        GetConfig,
-                                        GetConfigResult
-                                        )
+from itertools import chain
+from modules.models.api_response import (
+    GetAllConfigTypes,
+    GetAllConfigTypesResult,
+    AddNewConfig,
+    AddNewConfigResult,
+    ChangeProtocol, ChangeProtocolResult,
+    ChangeServer,
+    ChangeServerResult,
+    RenewalConfig,
+    RenewalConfigResult,
+    DeleteConfig,
+    GetAllServer,
+    GetAllServerResult,
+    GetConfig,
+    GetConfigResult,
+    GetAllConfigs,
+    GetAllConfigsResult
+)
 
 from modules.api.data_for_send import Data
 from modules.enums import ResponseCode
@@ -32,7 +36,6 @@ class V2Ray:
     def __init__(self) -> None:
         self.urls = ApiUrls()
         self.headers = Data().headers
-
 
     @property
     def get_all_config_types(self) -> List[GetAllConfigTypesResult] | int:
@@ -81,7 +84,6 @@ class V2Ray:
         
         return []
         
-
     @property
     def get_all_servers(self) -> List[GetAllServerResult] | bool:
 
@@ -96,7 +98,6 @@ class V2Ray:
             if (response.status_code == 200):
 
                 result = GetAllServer(**loads(response.content))
-                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -110,15 +111,45 @@ class V2Ray:
                 ApiConfig().get_token
                 continue
 
-            else:
-
-                del response
-                return False
+            else: return False
             
-        else:
-            del response
-            return False
+        else: return False
 
+    @property
+    def get_all_configs(self) -> List[GetAllConfigsResult] | bool | list:
+        """_summary_
+
+        Returns:
+            List[GetAllConfigsResult] | bool | list: _description_
+        """
+
+        servers = self.get_all_servers
+        if (not servers): return False
+        configs: list = []
+
+        for server in servers:
+
+
+            response = get(
+                url=self.urls.get_all_configs(server.id),
+                headers=self.headers,
+                verify=False
+            )
+            
+            if (response.status_code == 200):
+
+                result = GetAllConfigs(**loads(response.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    configs.append(result.result)
+
+            elif (response.status_code == 401):
+
+                ApiConfig().get_token
+                continue
+
+        return chain.from_iterable(configs)
 
     def add_new_config(self, user_id: int, server_id: int, config_type_id: int, protocol: str, 
                        is_free: Optional[bool]= False) -> AddNewConfigResult | int:
@@ -182,7 +213,6 @@ class V2Ray:
 
                 return False
     
-
     def get_config(self, config_id: int) -> GetConfigResult | int:
         """_summary_
 
@@ -220,7 +250,6 @@ class V2Ray:
             else:
 
                 return ResponseCode.FAILURE
-
 
     def change_protocol(self, config_id: int) -> ChangeProtocolResult | int:
         """_summary_
@@ -261,7 +290,6 @@ class V2Ray:
 
                 del response
                 return ResponseCode.FAILURE
-
 
     def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int:
         """_summary_
@@ -306,7 +334,6 @@ class V2Ray:
                 del response
                 return ResponseCode.FAILURE
 
-
     def renewal_config(self, config_id: int) -> RenewalConfigResult | int | bool:
         """_summary_
 
@@ -350,7 +377,6 @@ class V2Ray:
 
                 del response
                 return ResponseCode.FAILURE
-
 
     def delete_config(self, config_id: int) -> bool | int:
         """_summary_

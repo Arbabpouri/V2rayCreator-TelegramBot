@@ -132,3 +132,20 @@ class Strings:
             f"@{Config.BOT_USERNAME}"
         )
         return text
+    
+    @staticmethod
+    def end_config(user_id: int, v2ray_link: str) -> str:
+
+        text = (
+            f"کاربر با ایدی عددی `{user_id}`"
+            "\n"
+            "تاریخ انتقضا کانفیگ شما با لینک : "
+            "\n"
+            f"`{v2ray_link}`"
+            "\n"
+            "در حال اتمام است, اگر مایلید تمدید کنید"
+            "\n\n\n"
+            f"🆔 @{Config.BOT_USERNAME}"
+        )
+
+        return text

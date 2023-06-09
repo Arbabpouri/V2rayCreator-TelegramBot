@@ -91,7 +91,8 @@ class InlineButtons:
             Tuple[str, List[List[Button]]]: _description_
         """
 
-        if (not str(self.user_id).isnumeric()): raise ValueError("user_id must be integer")
+        if (not str(self.user_id).isnumeric()): 
+            raise ValueError("user_id must be integer")
         
         if (not isinstance(buy_or_change, str) or buy_or_change.upper() not in ["BUY", "CHANGE"]):
             raise ValueError("buy_or_change must be string and buy_or_change in ['BUY', 'CHANGE'].")

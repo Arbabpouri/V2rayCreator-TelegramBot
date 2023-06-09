@@ -14,8 +14,7 @@ class ApiUrls:
         self.GET_SETTINGS = fr"{self.API_URL}/api/Settings/GetSettings"  #
         self.HANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  # 
         self.RENEWAL_CONFIG = fr"{self.API_URL}/api/Configs/RenewalConfig"  # 
-        self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  #
-    
+        self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  #    
     
     def get_user_type(self, user_id) -> str:
         """_summary_
@@ -29,7 +28,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Users/GetUserType?userId={user_id}"
     
-
     def get_user_info(self, user_id) -> str:
         """_summary_
 
@@ -41,7 +39,6 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Users/GetUserInfo?userId={user_id}"
-
 
     def get_config_with_id(self, config_id) -> str:
         """_summary_
@@ -55,7 +52,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Configs/GetConfig?configId={config_id}"
     
-
     def get_user_configs(self, user_id) -> str:
         """_summary_
 
@@ -68,7 +64,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Configs/GetUserConfigs?userId={user_id}"
     
-
     def change_protocol(self, config_id) -> str:
         """_summary_
 
@@ -81,7 +76,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Configs/ChangeProtocol?configId={config_id}"
     
-
     def delete_config(self, config_id) -> str:
         """_summary_
 
@@ -94,7 +88,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Configs/DeleteConfig?configId={config_id}"
 
-
     def online_buy_config(self, user_id: int, server_id: int,
                           config_type_id: int) -> str:
         
@@ -103,7 +96,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Gateway/GenOnlinePurchaseGateway"
     
-
     def online_charge(self, user_id: int, amount: int) -> str:
         """_summary_
 
@@ -117,5 +109,6 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Gateway/GenChargeGateway?UserId={user_id}&Amount={amount}"
 
+    def get_all_configs(self, server_id: int) -> str:
 
-
+        return fr"{self.API_URL}/api/Configs/GetAllConfigs?ServerId={server_id}"

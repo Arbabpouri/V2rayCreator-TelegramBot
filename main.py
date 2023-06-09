@@ -4,6 +4,8 @@ from telethon.events import NewMessage, CallbackQuery
 from modules.handlers.limiter import Limit
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
+from modules.tools.check_configs import check_config
+from aiocron import crontab
 
 
 print('Imported')
@@ -51,6 +53,12 @@ if __name__ == "__main__":
             func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
         )
     )
+
+    crontab(
+        spec="* */6 * * *",
+        func=check_config,
+    )
+
 
     print('Handlers Created\nBot is online')
     client.run_until_disconnected()

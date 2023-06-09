@@ -9,6 +9,7 @@ from modules.handlers.limiter import Limit, Step
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 from modules.enums import UserTypes
+from modules.tools.check_configs import check_config
 
 
 class TextHandlers:

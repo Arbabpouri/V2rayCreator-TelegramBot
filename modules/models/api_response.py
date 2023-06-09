@@ -242,3 +242,27 @@ class PaymentLink(BaseModel):
     status: int
     message: str | None = None
     result: str
+
+
+#
+class GetAllConfigsResult(BaseModel):
+    id: int
+    name: str
+    protocol: str
+    serverName: str
+    configTypeTitle: str
+    numberOfUsers: int
+    activeDays: int
+    maxTraffic: int
+    v2RayLink: str
+    creationDate: str
+    expiresDate: str
+    clientUserId: int
+    up: int
+    down: int
+    isEnable: bool
+
+class GetAllConfigs(BaseModel):
+    status: int
+    message: str | None = None
+    result: List[GetAllConfigsResult] | list | None = None
