@@ -44,3 +44,16 @@ class Headers(BaseModel):
     Authorization: str
 
 
+class CryptoCharge(BaseModel):
+    crypto_payment_type: int
+    user_id: int
+    toman_amount: int
+
+class CryptoOnlinePurchase(BaseModel):
+    crypto_payment_type: int
+    user_id: int
+    toman_amount: int
+    server_id: int
+    config_type_id: int
+
+    

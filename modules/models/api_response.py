@@ -272,3 +272,14 @@ class IncreaseBalance(BaseModel):
     status: int
     message: str | None = None
     result: str | None = None
+
+
+class CryptoChargeResult(BaseModel):
+    status: int
+    message: str | None = None
+    result: str | None = None
+
+class CryptoOnlinePurchaseResult(BaseModel):
+    status: int
+    message: str | None = None
+    result: str | None = None

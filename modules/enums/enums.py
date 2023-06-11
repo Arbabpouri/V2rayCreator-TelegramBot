@@ -16,10 +16,11 @@ class ResponseCode(IntEnum):
     LOW_AMOUNT = 40
     LOW_BALANCE = 41
     GETEWAY_AUTH_CODE_ERROR = 42
-    DUPLICATE_VERIFY = 43
+    PAYMENT_ALREADY_VERIFY = 43
     VERIFY_HAS_PROBLEM = 44
     GATEWAY_NOK = 45
     PAYMENT_DOES_NOT_EXIST = 46
+    PAYMENT_ALREADY_EXIST = 47
     SERVER_DOES_NOT_EXIST = 100
     SAME_SERVER_ALREADY_EXIST = 101
     SERVER_IS_FULL = 102
@@ -37,3 +38,8 @@ class UserTypes(IntEnum):
     MANUAL = 0
     SELLER = 1
     MARKETER = 2
+
+@unique
+class CryptoCheckStatus(IntEnum):
+    CHARGE = 0
+    ONLINE_PURCHASE = 1

@@ -1,10 +1,15 @@
+from modules.enums.enums import CryptoCheckStatus
+
+
 class ApiUrls:
 
     TOKEN: str = ""
 
 
     def __init__(self) -> None:
+
         self.API_URL = "https://cnmellat.top"
+        self.CRYPTO_API_URL = "https://127.0.0.1:443"
         self.GET_TOKEN = fr"{self.API_URL}/api/Auth/LogIn"  # this is url for get token for request to api
         self.ADD_NEW_USER = fr"{self.API_URL}/api/Users/AddNewUser"  # this is url for add user
         self.GET_ALL_CONFIG_TYPES = fr"{self.API_URL}/api/ConfigTypes/GetAllConfigTypes"  # this is url for get all config
@@ -87,8 +92,12 @@ class ApiUrls:
 
         return fr"{self.API_URL}/api/Configs/DeleteConfig?configId={config_id}"
 
-    def online_buy_config(self, user_id: int, server_id: int,
-                          config_type_id: int) -> str:
+    def online_buy_config(
+        self, 
+        user_id: int, 
+        server_id: int,
+        config_type_id: int
+    ) -> str:
         
         """_summary_
         """
@@ -120,3 +129,12 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Users/ChangeUserMoney?userId={user_id}&howMuch={how_much}"
+
+    def crypto_check_status(
+        self, 
+        crypto_payment_type: CryptoCheckStatus, 
+        payment_id: int, 
+        # price: int
+    ) -> str:
+
+        return fr"{self.CRYPTO_API_URL}/api/payment/status?payment_id={payment_id}&crypto_payment_type={crypto_payment_type}"
