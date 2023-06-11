@@ -1,9 +1,9 @@
-from config import client
-from modules.handlers import TextHandlers, InlineHandlers
 from telethon.events import NewMessage, CallbackQuery
 from aiocron import crontab
 from pystyle import Colors, Write
 
+from config import client, Config
+from modules.handlers import TextHandlers, InlineHandlers
 from modules.handlers.limiter import Limit
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
@@ -54,6 +54,14 @@ if __name__ == "__main__":
         InlineHandlers.user_move,
         CallbackQuery(
             func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
+        )
+    )
+
+    client.add_event_handler(
+        InlineHandlers.acc_reject,
+        CallbackQuery(
+            func=lambda event: str(event.sender_id) not in list(Limit.LIMIT.keys()) \
+                and event.sender_id in Config.ADMINS_USER_ID
         )
     )
 

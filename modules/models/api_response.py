@@ -266,3 +266,9 @@ class GetAllConfigs(BaseModel):
     status: int
     message: str | None = None
     result: List[GetAllConfigsResult] | list | None = None
+
+
+class IncreaseBalance(BaseModel):
+    status: int
+    message: str | None = None
+    result: str | None = None

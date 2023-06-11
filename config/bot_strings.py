@@ -28,6 +28,7 @@ class Strings:
     CANCELED = "cancel shod"
     WAIT_CONFIRMATION = "Waiting for confirmation"
     DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
+    ACC_ERROR = "Error"
     DOCUMENTS_NOT_RECEIVED = (
         "💢در ارسال مدارک شما به تیم پشتیبانی مشکلی رخ داد, لطفا مدارک خود رو برای ایدی زیر ارسال کنید تا تایید شود."
         "\n\n"
@@ -45,18 +46,6 @@ class Strings:
         str(ResponseCode.CONFIG_IS_ALREADY_ENABLE): ("ss"),
         str(ResponseCode.SERVER_DOES_NOT_EXIST): ("ssss"),
     }
-
-
-    @staticmethod
-    def documents_status(uuid: str, price: int, status: bool) -> str:
-        """
-        
-        """
-
-        if status:
-            return "💢 کاربر گرامی"
-        else:
-            return ""
 
     @staticmethod
     def send_evidence(price: int) -> str:
@@ -146,6 +135,47 @@ class Strings:
             "در حال اتمام است, اگر مایلید تمدید کنید"
             "\n\n\n"
             f"🆔 @{Config.BOT_USERNAME}"
+        )
+
+        return text
+
+    @staticmethod
+    def admin_accepted(user_id: int, admin_user_id: int, amount: int) -> str:
+
+        text = (
+            "salam"
+            "acc"
+            "shod"
+        )
+
+        return text
+
+    @staticmethod
+    def admin_rejected(user_id: int, admin_user_id: int, amount: int) -> str:
+        text = (
+            "a"
+            ""
+            ""
+        )
+
+        return text
+
+    @staticmethod
+    def user_accepted(amount: int) -> str:
+        text = (
+            "s"
+            ""
+            ""
+        )
+
+        return text
+
+    @staticmethod
+    def user_rejected(amount: int) -> str:
+        text = (
+            "c"
+            ""
+            ""
         )
 
         return text

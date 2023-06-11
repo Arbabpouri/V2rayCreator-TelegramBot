@@ -89,7 +89,7 @@ class TextHandlers:
                 )
 
             # this is session for online charge
-            case (TextButtunsString.ONLINE_CHARGE | TextButtunsString.OFFLINE_CHARGE):
+            case (TextButtunsString.ONLINE_CHARGE | TextButtunsString.OFFLINE_CHARGE | TextButtunsString.CRYPTO_CHARGE):
 
                 await client.send_message(
                     event.sender_id,
@@ -98,23 +98,17 @@ class TextHandlers:
                 )
 
                 # step
-                Limit.LIMIT[str(event.sender_id)] = {
-                    "part": Step.GET_CUSTOM_CHARGE_OFFLINE if (text == TextButtunsString.OFFLINE_CHARGE)\
-                        else Step.GET_CUSTOM_CHARGE_ONLINE,
+                if (text == TextButtunsString.ONLINE_CHARGE):
+                    part = Step.GET_CUSTOM_CHARGE_ONLINE
+                elif (text == TextButtunsString.OFFLINE_CHARGE):
+                    part = Step.GET_CUSTOM_CHARGE_OFFLINE
+                elif (text == TextButtunsString.CRYPTO_CHARGE):
+                    part = Step.GET_CUSTOM_CHARGE_CRYPTO
 
+                Limit.LIMIT[str(event.sender_id)] = {
+                    "part": part,
                     "last-message": event.message.message,
                 }
-
-            # this is session for offline charge
-            case (TextButtunsString.OFFLINE_CHARGE):
-
-                await client.send_message(
-                    event.chat_id,
-                    Strings.GET_CUSTOM_CHARGE,
-                    buttons=TextButtons.CANCEL_GET
-                )
-
-                Limit.LIMIT[str(event.sender_id)] = {"part": Step.GET_CUSTOM_CHARGE_OFFLINE}
 
             # this is session for back to 'TextButtons.start_menu(event.sender_id)'
             case (TextButtunsString.BACK_TO_START_MENU):
@@ -159,8 +153,6 @@ class TextHandlers:
     @staticmethod
     async def get_informatios(event: Message) -> None:
 
-        
-
         if (event.message.message == TextButtunsString.CANCEl_GET):
             
             await client.send_message(
@@ -183,7 +175,7 @@ class TextHandlers:
         match(part):
 
             #this session for get custom charge number
-            case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_OFFLINE):
+            case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_OFFLINE | Step.GET_CUSTOM_CHARGE_CRYPTO):
 
                 if (not str(event.message.message).isnumeric()):
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
@@ -264,6 +256,28 @@ class TextHandlers:
                                 Strings.send_evidence(price=informations["price"]),
                                 buttons=TextButtons.CANCEL_GET
                             )
+
+                        elif (part == Step.GET_CUSTOM_CHARGE_CRYPTO):
+
+                            await client.send_message(
+                                event.chat_id,
+                                Strings.WAITING,
+                                buttons=TextButtons.start_menu(event.sender_id)
+                            )
+
+                            # TODO
+
+                            del Limit.LIMIT[str(event.sender_id)]
+
+                        else:
+
+                            await client.send_message(
+                                event.chat_id,
+                                Strings.ERROR,
+                                buttons=TextButtons().start_menu(int(event.sender_id))
+                            )
+
+                            del Limit.LIMIT[str(event.sender_id)]
 
 
             # this session for get deposit documents

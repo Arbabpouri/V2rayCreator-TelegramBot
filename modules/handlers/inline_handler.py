@@ -1,4 +1,5 @@
 from telethon.events import CallbackQuery
+from telethon.types import PeerUser
 
 from config import client
 from config.bot_strings import Strings
@@ -70,8 +71,6 @@ class InlineHandlers:
                 buttons=buttons
             )
 
-            del (data, buttons, server_id)
-
         elif (data.startswith("BUY-CONFIG-")):
             
             data = data.replace("BUY-CONFIG-", "").split("-")  # data[0] is server id and data[1] is config id
@@ -118,8 +117,6 @@ class InlineHandlers:
 
                     await event.edit("config not dound", buttons=InlineButtons().BACK_TO_HOME)
                     return
-
-                text = ""
 
                 if (balance >= price):
                     
@@ -261,50 +258,47 @@ class InlineHandlers:
         Returns:
             NoReturn: _description_
         """
-
         callback_data = bytes(event.data).decode()
-        if (callback_data.startswith("acc-")):
+        data = callback_data.split("-")
+        if (data.__len__() != 3): return
+        action, user_id, amount = data
 
-            id = callback_data.replace("acc-", "")
-            delete = OfflineChargeData(id).delete(event.sender_id, "accepted")
-            if (delete):
+        if (action == "acc"):
 
-                data = OfflineChargeData(id).read()
-                price = OfflineCharge(**price)
-                balance_increase = APIS.user_api(price.user_id).balance_increase()
-                if (balance_increase):
+            user_id, amount = callback_data.replace("acc-", "").split("-")
+            user_api = APIS.user_api(int(event.sender_id))
+            increase = user_api.balance_increase(int(amount))
+
+            if (increase):
+
+                await event.edit(
+                    Strings.admin_accepted(
+                        int(user_id),
+                        int(event.sender_id),
+                        int(amount)
+                    )
+                )
+
+                try:
 
                     await client.send_message(
-                        event.chat_id,
-                        "s"
+                        PeerUser(int(user_id)),
+                        Strings.user_accepted(amount),
                     )
 
-                else:
-                    
-                    await client.send_message(
-                        event.chat_id,
-                        "s"
-                    )
-                
-                del (callback_data, id, delete, data, price, balance_increase)
-                return
-                
-            else:
+                except: pass
+
+            else: await event.answer(Strings.ACC_ERROR, alert=True)
+
+        elif (action == "reject"):
+
+            await event.edit(Strings.admin_rejected(user_id, event.sender_id, amount))
+
+            try:
 
                 await client.send_message(
-                    event.chat_id,
-                    "s"
+                    PeerUser(int(user_id)),
+                    Strings.user_rejected(amount)
                 )
-                del (callback_data, id, delete)
 
-        elif (callback_data.startswith("reject-")):
-
-            id = callback_data.replace("reject-", "")
-            delete = OfflineChargeData(id).delete(event.sender_id, "failed")
-            if (delete):
-
-                pass
-
-            else:
-
-                pass
+            except: pass

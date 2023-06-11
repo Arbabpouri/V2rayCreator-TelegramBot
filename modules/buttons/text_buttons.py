@@ -17,6 +17,7 @@ class TextButtunsString(StrEnum):
     GET_USER_ID = "📍 شناسه کاربری"
     ONLINE_CHARGE = "🌐 شارژ آنلاین"
     OFFLINE_CHARGE = "💳 کارت به کارت"
+    CRYPTO_CHARGE = "💎 پرداخت با ارز دیجیتال 💎"
     BACK_TO_START_MENU = "🔙 منوی اصلی 🔙"
     CANCEl_GET = "❌ لغو عملیات ❌"
 
@@ -26,14 +27,17 @@ class TextButtons:
     CANCEL_GET = [Button.text(TextButtunsString.CANCEl_GET, resize=True, single_use=True)]
 
     SELECT_CHARGE = [
-            [
-                Button.text(TextButtunsString.ONLINE_CHARGE, resize=True, single_use=True),
-                Button.text(TextButtunsString.OFFLINE_CHARGE, resize=True, single_use=True)
-            ],
-            [
-                Button.text(TextButtunsString.BACK_TO_START_MENU, resize=True, single_use=True)
-            ]
-        ]       
+        [
+            Button.text(TextButtunsString.ONLINE_CHARGE, resize=True, single_use=True),
+            Button.text(TextButtunsString.OFFLINE_CHARGE, resize=True, single_use=True)
+        ],
+        [
+            Button.text(TextButtunsString.CRYPTO_CHARGE, resize=True, single_use=True)
+        ],
+        [
+            Button.text(TextButtunsString.BACK_TO_START_MENU, resize=True, single_use=True)
+        ],
+    ]
 
 
     @staticmethod

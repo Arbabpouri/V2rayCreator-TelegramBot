@@ -11,7 +11,8 @@ from modules.models.api_response import (
     GetUserConfigsResult,
     GetUserInfo,
     GetUserInfoResult,
-    PaymentLink
+    PaymentLink,
+    IncreaseBalance
 )
 
 from modules.api.api_config import ApiConfig
@@ -21,7 +22,6 @@ from modules.api.urls import ApiUrls
 
 
 class UserApi:
-
 
     def __init__(self, user_id: int) -> None:
         """_summary_
@@ -36,7 +36,6 @@ class UserApi:
         self.user_id = user_id
         self.urls = ApiUrls()
         self.headers = Data().headers
-
 
     @property
     def get_user_information(self) -> GetUserInfoResult | bool:
@@ -73,12 +72,10 @@ class UserApi:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
             else: return False
-
 
     @property
     def get_user_type(self) -> int | bool:
@@ -112,20 +109,17 @@ class UserApi:
 
                         add_user = self.add_user()
 
-                        if (not add_user):
-                            return False
+                        if (not add_user): return False
                         continue
 
-                    else:
-                        return False
+                    else: return False
                 
                 elif (response.status_code == 401):
                     
                     ApiConfig().get_token
                     continue
 
-                else:
-                    return False
+                else: return False
                 
             except Exception as error:
 
@@ -135,7 +129,6 @@ class UserApi:
         
         return False
 
-    
     @property
     def get_user_configs(self) -> List[GetUserConfigsResult] | int:
         """_summary_
@@ -196,7 +189,6 @@ class UserApi:
                 continue
 
         return ResponseCode.FAILURE
-    
 
     def online_buy_link(self, server_id: int, config_id: int) -> int | str:
         """_summary_
@@ -251,7 +243,16 @@ class UserApi:
         else:
 
             return ResponseCode.FAILURE
-    
+
+    def online_crypto_buy_link(self, server_id: int, config_id: int) -> str:
+
+        pass
+
+
+    def online_crypto_charge_link(self, amount: int) -> str:
+
+        pass
+
 
     def online_charge_link(self, amount: int) -> int | str:
         """_summary_
@@ -307,7 +308,6 @@ class UserApi:
 
             return ResponseCode.FAILURE                
 
-
     def add_user(self, referraler: Optional[int] = 0) -> bool:
         """
         for add user to database
@@ -357,9 +357,7 @@ class UserApi:
                     ApiConfig().get_token
                     continue
 
-                else:
-                
-                    return False
+                else: return False
 
             except Exception as error:
                 
@@ -369,46 +367,48 @@ class UserApi:
         else:
 
             return False
-        
 
-    def balance_increase(self, price: int) -> bool:
+    def balance_increase(self, how_much: int) -> bool:
         """
         for balance increase in database 
 
         Args:
-            price (int): this argument for balance increase in database
+            how_much (int): this argument for balance increase in database
 
         Returns:
             bool: successful or unsuccessful
         """
 
-        if (not str(price).isnumeric()): raise ValueError("price must be an integer")
+        if (not str(how_much).isnumeric()): raise ValueError("how_much must be an integer")
         
-        data = Data(self.user_id).balance_increase(int(price))
         count = 0
         while (count < 2):
 
-            response = post(
-                url=self.urls.BALANCE_INCREASE,
-                json="",
+            response = put(
+                url=self.urls.increase_balance(self.user_id, how_much),
                 headers=self.headers,
                 verify=False
             )
 
             if (response.status_code == 200):
 
-                result = loads(response.content)
-                if ():
+                result = IncreaseBalance(**loads(response.content))
 
-                    pass
-
+                if (result.status == ResponseCode.SUCSESS):
+                    return True
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+                    user_api = UserApi(self.user_id).add_user()
+                    count += 1
+                    continue
                 else:
+                    return False
 
-                    pass
-                
             elif (response.status_code == 401):
-                
                 count += 1
                 ApiConfig().get_token
+                continue
+            else:
+                return False
 
-            else: return False
+        else:
+            return False

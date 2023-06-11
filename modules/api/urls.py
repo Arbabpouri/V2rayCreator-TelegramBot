@@ -8,8 +8,7 @@ class ApiUrls:
         self.GET_TOKEN = fr"{self.API_URL}/api/Auth/LogIn"  # this is url for get token for request to api
         self.ADD_NEW_USER = fr"{self.API_URL}/api/Users/AddNewUser"  # this is url for add user
         self.GET_ALL_CONFIG_TYPES = fr"{self.API_URL}/api/ConfigTypes/GetAllConfigTypes"  # this is url for get all config
-        self.BALANCE_INCREASE = fr"{self.API_URL}/api/Users/"  # this is url for balance increase TODO
-        self.ADD_NEW_CONFIG = fr"{self.API_URL}/api/Configs/AddNewConfig"  # 
+        self.ADD_NEW_CONFIG = fr"{self.API_URL}/api/Configs/AddNewConfig"  #
         self.GET_ALL_SERVERS = fr"{self.API_URL}/api/Servers/GetAllServers"  # 
         self.GET_SETTINGS = fr"{self.API_URL}/api/Settings/GetSettings"  #
         self.HANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  # 
@@ -112,3 +111,12 @@ class ApiUrls:
     def get_all_configs(self, server_id: int) -> str:
 
         return fr"{self.API_URL}/api/Configs/GetAllConfigs?ServerId={server_id}"
+
+    def increase_balance(self, user_id: int, how_much: int) -> str:
+        """
+        :param user_id: int
+        :param how_much: int
+        :return: str
+        """
+
+        return fr"{self.API_URL}/api/Users/ChangeUserMoney?userId={user_id}&howMuch={how_much}"

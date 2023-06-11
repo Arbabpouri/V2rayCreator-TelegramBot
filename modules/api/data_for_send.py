@@ -12,7 +12,6 @@ from modules.api.urls import ApiUrls
 
 class Data:
 
-
     def __init__(self, user_id: int | None = None, referraler: Optional[int] = 0) -> None:
         """_summary_
 
@@ -24,13 +23,11 @@ class Data:
         self.referraler = referraler
         self.urls = ApiUrls()
 
-
     @property
     def headers(self) -> Dict[str, str]:
 
         headers = Headers(Authorization=self.urls.TOKEN).dict()
         return headers
-
 
     @property
     def add_user(self) -> Dict[str, int]:
@@ -50,7 +47,6 @@ class Data:
         )
         
         return data.dict()
-    
 
     @property
     def userId(self) -> Dict[str, int]:
@@ -65,8 +61,7 @@ class Data:
         data = UserId(userId=int(self.userId))
 
         return data.dict()
-    
-    
+
     @property
     def get_token(self) -> Dict[str, str]:
 
@@ -78,26 +73,6 @@ class Data:
         """
         data = LogIn(username=Config.USERNAME, password=Config.PASSWORD)
         return data.dict()
-
-    
-    def balance_increase(self, price) -> Dict[str, int]:
-        """_summary_
-
-        Args:
-            price (_type_): _description_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            Dict[str, int]: _description_
-        """
-
-        return {
-            "userId": self.user_id,
-            "price": int(price)
-        }
-
 
     def add_new_config(
         self, server_id: int,
@@ -131,7 +106,6 @@ class Data:
         
         return data.dict()
 
-
     def change_server(self, config_id: int, target_server_id: int) -> Dict[str, int]:
         """_summary_
 
@@ -145,7 +119,6 @@ class Data:
 
         data = ChangeServer(configId=int(config_id), targeterverId=int(target_server_id))
         return data.dict()
-
 
     def config_id(self, config_id: int) -> Dict[str, int]:
         """_summary_

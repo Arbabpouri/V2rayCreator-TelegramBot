@@ -3,10 +3,10 @@ class Config:
     SESSION_NAME = "bot"  # string
     API_ID = 3359959  # Telegram Api ID , you can get it from telegram website
     API_HASH = "fc809b5d42bdac477f9ac9b56383a699"  # Telegram Api Hash , you can get it from telegram website
-    BOT_TOKEN = "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8"   # Bot Token,you can get it from @BotFather
+    BOT_TOKEN = "6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks"   # Bot Token,you can get it from @BotFather
+    BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     ADMIN_USERNAME = "Oxygn16"  # Admin Username without @ , example: SirSardar . ** for supporter **
     ADMINS_USER_ID = [2056493966,]  # Admins user id for send deposit documents 
-    BOT_USERNAME = "TvYarBot"  # without the @ , example : V2rayCreatorBot
     MIN_USER_CHARGE = 50000  # T , for min charge by manual user
     CARD_NUMBER = "1234 5678 9876 5432"
     CARD_HOLDER = "علی مومنی"
