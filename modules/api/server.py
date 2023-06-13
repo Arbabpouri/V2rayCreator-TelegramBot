@@ -157,8 +157,14 @@ class V2Ray:
         return chain.from_iterable(configs)
 
 
-    def add_new_config(self, user_id: int, server_id: int, config_type_id: int, protocol: str, 
-                       is_free: Optional[bool]= False) -> AddNewConfigResult | int:
+    def add_new_config(
+        self, 
+        user_id: int, 
+        server_id: int, 
+        config_type_id: int, 
+        protocol: str, 
+        is_free: Optional[bool] = False
+    ) -> AddNewConfigResult | int:
         """_summary_
 
         Args:
