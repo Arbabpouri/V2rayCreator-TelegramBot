@@ -1,10 +1,8 @@
-from requests import (post, get)
-from json import loads, dumps
-from modules.api.data_for_send import Data
+from requests import post, get
+from json import loads
 from modules.enums.enums import ResponseCode
-from modules.models.api_response import (GetToken,
-                                         GetSettings,
-                                         GetSettingsResult)
+from modules.models.api_response import GetSettingsResult
+from modules.models import Models
 from modules.api.urls import ApiUrls
 
 
@@ -12,8 +10,11 @@ class ApiConfig:
 
 
     def __init__(self) -> None:
+        
         self.urls = ApiUrls()
-        self.headers = Data().headers
+        self.send_data = Models.send_data_to_api
+        self.response = Models.get_response_from_api
+        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN)
 
 
     @property
@@ -23,11 +24,12 @@ class ApiConfig:
             if successful : write jwt token in config/token.txt
             else : return error type and exit in application
         """
+
         try:
-            data = Data()
+            data = self.send_data.LogIn()
             response = post(
                 url=self.urls.GET_TOKEN,
-                json=data.get_token,
+                json=data,
                 verify=False
             )
 
@@ -35,7 +37,7 @@ class ApiConfig:
                 print(f"\n\ndata:{response.content}\ncode: {response.status_code}\n\nApi has no response")
                 exit()
             
-            result = GetToken(**loads(response.content))
+            result = self.response.GetToken(**loads(response.content))
 
             if (result.status == ResponseCode.SUCSESS):
                 
@@ -57,6 +59,7 @@ class ApiConfig:
 
             print(error)
 
+
     @property
     def get_prices_limit(self) -> GetSettingsResult | bool:
         """
@@ -72,9 +75,11 @@ class ApiConfig:
             
             if (response.status_code == 200):
 
-                result = GetSettings(**loads(response.content))
+                result = self.response.GetSettings(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS): return result.result
+                if (result.status == ResponseCode.SUCSESS): 
+                    
+                    return result.result
                 
                 return False
 
@@ -83,4 +88,6 @@ class ApiConfig:
                 self.get_token
                 continue
 
-            else: return False
+            else: 
+                
+                return False

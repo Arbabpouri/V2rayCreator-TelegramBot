@@ -26,6 +26,7 @@ class InlineButtons:
         self.BACK_TO_HOME = [Button.inline("برگشت به خانه", "BACK-TO-HOME")]
         self.BACK_TO_CONFIGS = [Button.inline("⬅️ برگشت به لیست کانفیگ ها ⬅️", "BACK-TO-CONFIG-LIST")]
 
+
     @property
     def user_configs(self) -> Tuple[str, List[List[Button]]]:
         """_summary_
@@ -74,7 +75,8 @@ class InlineButtons:
         buttons.append(self.BACK_TO_HOME)
         
         return (Strings.SERVICES, buttons)
-   
+
+
     def select_server(self, buy_or_change: Optional[str] = "BUY", config_id: int | str = "") -> Tuple[str, List[List[Button]]]:
         """_summary_
 
@@ -132,6 +134,7 @@ class InlineButtons:
 
         return (Strings.BUY_CONFIG, buttons)
 
+
     def accept_admin_documents(self, name: str, user_name: str,
                                price: str, uuid: str) -> Tuple[bool, List[List[Button]]]:
         """_summary_
@@ -159,6 +162,7 @@ class InlineButtons:
             [Button.inline("💎 Price"), Button.inline(f"{int(price):,} تومان")],
             [Button.inline("✅ تایید کردن", f"ACC-{uuid}"), Button.inline("❌ رد کردن", f"REJECT-{uuid}")]
         ]
+
 
     def configs_for_sell(self, server_id: int) -> Tuple[bool, List[List[Button]]]:
         """_summary_
@@ -211,6 +215,7 @@ class InlineButtons:
         del (configs, user_type)
         return (True, buttons)
 
+
     def vmess_or_vless(self, server_id: int, config_id: int) -> List[List[Button]]:
         """_summary_
 
@@ -236,6 +241,7 @@ class InlineButtons:
                 Button.inline("Vless", f"BUY-SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
             ]
         ]
+
 
     def show_config(self, config_id: int) -> Tuple[str, List[List[Button]]]:
 
@@ -296,6 +302,7 @@ class InlineButtons:
 
         return ("ok my bro", buttons)
 
+
     def acc_reject(self, amount: int) -> List[List[Button]]:
         """_summary_
 
@@ -313,6 +320,40 @@ class InlineButtons:
             [
                 Button.inline("قبول کرد ✅", f"acc-{self.user_id}-{amount}"),
                 Button.inline("رد کردن ❌", f"reject-{self.user_id}-{amount}"),
+            ]
+        ]
+
+        return buttons
+    
+
+    def crypto_status(self, payment_id: int, amount: int) -> List[List[Button]]:
+        """_summary_
+
+        Args:
+            payment_id (int): _description_
+            amount (int): _description_
+
+        Returns:
+            List[List[Button]]: _description_
+        """
+
+        buttons = [
+            [
+                Button.inline("🔷 پرداخت کردم 🔷", f"CRYPTO-STATUS-{payment_id}-{amount}")
+            ]
+        ]
+
+        return buttons
+
+
+    def select_plan_online_buy(self, amount: int) -> List[List[Button]]:
+
+        buttons = [
+            [
+                Button.inline("💳 خرید انلاین با ریال 💳", f"IRR-PAYMENT-{self.user_id}-{amount}")
+            ],
+            [
+                Button.inline("💎 پرداخت انلاین با ارز دیجیتال 💎", f"CRYPTO-PAYMENT-{self.user_id}-{amount}")
             ]
         ]
 

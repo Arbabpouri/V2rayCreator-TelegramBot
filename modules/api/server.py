@@ -1,27 +1,23 @@
 from typing import List, Optional
-from requests import (post, get, put, delete)
+from requests import (
+    post, 
+    get, 
+    put, 
+    delete
+)
 from json import loads
 from itertools import chain
 from modules.models.api_response import (
-    GetAllConfigTypes,
     GetAllConfigTypesResult,
-    AddNewConfig,
     AddNewConfigResult,
-    ChangeProtocol, ChangeProtocolResult,
-    ChangeServer,
+    ChangeProtocolResult,
     ChangeServerResult,
-    RenewalConfig,
     RenewalConfigResult,
-    DeleteConfig,
-    GetAllServer,
     GetAllServerResult,
-    GetConfig,
     GetConfigResult,
-    GetAllConfigs,
     GetAllConfigsResult
 )
-
-from modules.api.data_for_send import Data
+from modules.models import Models
 from modules.enums import ResponseCode
 from modules.api.urls import ApiUrls
 from modules.api.api_config import ApiConfig
@@ -34,8 +30,12 @@ class V2Ray:
 
 
     def __init__(self) -> None:
+
         self.urls = ApiUrls()
-        self.headers = Data().headers
+        self.response = Models.get_response_from_api
+        self.send_data = Models.send_data_to_api
+        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN)
+        
 
     @property
     def get_all_config_types(self) -> List[GetAllConfigTypesResult] | int:
@@ -59,7 +59,7 @@ class V2Ray:
 
                 if (response.status_code == 200):
 
-                    result = GetAllConfigTypes(**loads(response.content))
+                    result = self.response.GetAllConfigTypes(**loads(response.content))
 
                     if (result.status == ResponseCode.SUCSESS):
                         
@@ -84,6 +84,7 @@ class V2Ray:
         
         return []
         
+
     @property
     def get_all_servers(self) -> List[GetAllServerResult] | bool:
 
@@ -97,7 +98,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = GetAllServer(**loads(response.content))
+                result = self.response.GetAllServer(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -107,13 +108,17 @@ class V2Ray:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
-            else: return False
+            else: 
+                
+                return False
             
-        else: return False
+        else: 
+            
+            return False
+
 
     @property
     def get_all_configs(self) -> List[GetAllConfigsResult] | bool | list:
@@ -138,7 +143,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = GetAllConfigs(**loads(response.content))
+                result = self.response.GetAllConfigs(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -150,6 +155,7 @@ class V2Ray:
                 continue
 
         return chain.from_iterable(configs)
+
 
     def add_new_config(self, user_id: int, server_id: int, config_type_id: int, protocol: str, 
                        is_free: Optional[bool]= False) -> AddNewConfigResult | int:
@@ -167,12 +173,13 @@ class V2Ray:
             int - > 32, 110, 100, 41, 102, 130
         """
 
-        data = Data(user_id=int(user_id)).add_new_config(
-            server_id=int(server_id),
-            config_type_id=int(config_type_id),
+        data = self.send_data.AddNewConfig(
+            userId=int(user_id),
+            serverId=int(server_id),
+            configTypeId=int(config_type_id),
             protocol=str(protocol),
-            is_free=bool(is_free)
-        )
+            isFree=bool(is_free)
+        ).dict()
         
         for i in range(2):
             
@@ -186,7 +193,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = AddNewConfig(**loads(response.content))
+                result = self.response.AddNewConfig(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
                     
@@ -213,6 +220,7 @@ class V2Ray:
 
                 return False
     
+
     def get_config(self, config_id: int) -> GetConfigResult | int:
         """_summary_
 
@@ -234,7 +242,7 @@ class V2Ray:
 
             if (response.status_code == 200):
 
-                result = GetConfig(**loads(response.content))
+                result = self.response.GetConfig(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -250,6 +258,7 @@ class V2Ray:
             else:
 
                 return ResponseCode.FAILURE
+
 
     def change_protocol(self, config_id: int) -> ChangeProtocolResult | int:
         """_summary_
@@ -271,25 +280,23 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = ChangeProtocol(**loads(response.content))
+                result = self.response.ChangeProtocol(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result.result
 
-                del response
                 return result.status  # 120, 121, 130
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
+
 
     def change_server(self, config_id: int, target_server_id: int) -> ChangeServerResult | int:
         """_summary_
@@ -302,9 +309,14 @@ class V2Ray:
             ChangeServerResult | int: _description_
         """
         
+        data = self.send_data.ChangeServer(
+            configId=int(config_id),
+            targeterverId=int(target_server_id)
+        ).dict()
+
         for i in range(2):
 
-            data = Data().change_server(int(config_id), int(target_server_id))
+            
             response = put(
                 url=self.urls.CHANGE_SERVER,
                 json=data,
@@ -314,8 +326,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = ChangeServer(**loads(response.content))
-                del response
+                result = self.response.ChangeServer(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -325,14 +336,13 @@ class V2Ray:
 
             elif (response.status_code == 401):
                 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
+
 
     def renewal_config(self, config_id: int) -> RenewalConfigResult | int | bool:
         """_summary_
@@ -344,7 +354,7 @@ class V2Ray:
             RenewalConfigResult | int: _description_
         """
 
-        data = Data().config_id(int(config_id))
+        data = self.send_data.RenewalConfig(configId=int(config_id)).dict()
 
         for i in range(2):
             
@@ -358,8 +368,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = RenewalConfig(**loads(response.content))
-                del response
+                result = self.response.RenewalConfig(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -369,14 +378,13 @@ class V2Ray:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
+
 
     def delete_config(self, config_id: int) -> bool | int:
         """_summary_
@@ -398,8 +406,7 @@ class V2Ray:
             
             if (response.status_code == 200):
 
-                result = DeleteConfig(**loads(response.content))
-                del response
+                result = self.response.DeleteConfig(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -409,11 +416,9 @@ class V2Ray:
 
             elif (response.status_code == 401):
                 
-                del response
                 ApiConfig().get_token
                 continue
 
             else:
 
-                del response
                 return False

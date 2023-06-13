@@ -178,42 +178,32 @@ class TextHandlers:
             case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_OFFLINE | Step.GET_CUSTOM_CHARGE_CRYPTO):
 
                 if (not str(event.message.message).isnumeric()):
+
                     await client.send_message(event.chat_id, Strings.NOT_NUMBER)
+
                 else:
 
-                    try:
-
-                        text = int(event.message.message)
-                        user_api = APIS.user_api(event.sender_id)
-                        user_type = user_api.get_user_type
-                        
-                        if (isinstance(user_type, bool) and not user_type):
-
-                            await client.send_message(
-                                event.chat_id,
-                                Strings.ERROR,
-                                buttons=TextButtons.start_menu(event.sender_id)
-                            )
-
-                            del Limit.LIMIT[str(event.sender_id)]
-
-                        else:
-
-                            if (user_type == UserTypes.MANUAL):
-                                min_charge = Config.MIN_USER_CHARGE
-                            else:
-                                api_config = APIS.config_api()
-                                min_charge = api_config.get_prices_limit
+                    text = int(event.message.message)
+                    user_api = APIS.user_api(event.sender_id)
+                    user_type = user_api.get_user_type
                     
-                    except Exception as error:
+                    if (isinstance(user_type, bool) and not user_type):
 
-                        print(error)
                         await client.send_message(
                             event.chat_id,
                             Strings.ERROR,
-                            buttons=TextButtons.CANCEL_GET
+                            buttons=TextButtons.start_menu(event.sender_id)
                         )
-                        return
+
+                        del Limit.LIMIT[str(event.sender_id)]
+
+                    else:
+
+                        if (user_type == UserTypes.MANUAL):
+                            min_charge = Config.MIN_USER_CHARGE
+                        else:
+                            api_config = APIS.config_api()
+                            min_charge = api_config.get_prices_limit
 
                     if (text < min_charge):
 
@@ -265,7 +255,25 @@ class TextHandlers:
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
 
-                            # TODO
+                            
+
+
+
+
+                            
+
+                            # TODO. dar in bakhsh bayad link va dokme pardakht kardam ezafe shavad
+                            
+
+
+
+
+
+
+
+
+
+
 
                             del Limit.LIMIT[str(event.sender_id)]
 

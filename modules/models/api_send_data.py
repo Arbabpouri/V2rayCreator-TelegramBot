@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+from config import Config
 
 
 #
@@ -15,8 +16,8 @@ class UserId(BaseModel):
 
 #
 class LogIn(BaseModel):
-    username: str
-    password: str
+    username: Optional[str] = Config.USERNAME
+    password: Optional[str] = Config.PASSWORD
 
 
 #

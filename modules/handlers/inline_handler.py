@@ -138,30 +138,30 @@ class InlineHandlers:
 
                         text = f"linket `{add_config.v2RayLink}`"
 
-                else:
+                else: 
 
-                    user_api = APIS.user_api(int(event.sender_id))
-                    payment_link = user_api.online_buy_link(
-                        server_id=int(server_id),
-                        config_id=int(config_id)
-                    )
+                    pass
+                #     user_api = APIS.user_api(int(event.sender_id))
+                #     payment_link = user_api.online_buy_link(
+                #         server_id=int(server_id),
+                #         config_id=int(config_id)
+                #     )
 
-                    if isinstance(payment_link, int):
+                #     if isinstance(payment_link, int):
                         
-                        if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
+                #         if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
 
-                            text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
+                #             text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
 
-                        else:
+                #         else:
                             
-                            text = "error"
+                #             text = "error"
                     
-                    else:
+                #     else:
 
-                        text = f"linket: {payment_link.result}"
+                #         text = f"linket: {payment_link.result}"
 
-                await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
-                del (text)
+                # await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
 
         elif (data.startswith("SHOW-CONFIG-INFO")):
 
@@ -246,6 +246,20 @@ class InlineHandlers:
 
             await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
                 
+        elif (data.startswith("IRR-PAYMENT-")):
+
+            pass
+        
+        elif (data.startswith("CRYPTO-PAYMENT-")):
+
+            pass
+
+        elif (data.startswith("CRYPTO-STATUS-")):
+
+            pass
+
+
+
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:

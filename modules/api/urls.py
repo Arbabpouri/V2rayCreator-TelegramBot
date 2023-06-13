@@ -138,3 +138,5 @@ class ApiUrls:
     ) -> str:
 
         return fr"{self.CRYPTO_API_URL}/api/payment/status?payment_id={payment_id}&crypto_payment_type={crypto_payment_type}"
+
+    # def online_

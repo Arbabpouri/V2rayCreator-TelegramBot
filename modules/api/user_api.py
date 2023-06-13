@@ -1,20 +1,16 @@
-from requests import (post, put, delete, get)
-from config import Config
+from requests import (
+    post,
+    put, 
+    get
+)
 from json import loads
 from typing import Optional, List
-from modules.api.data_for_send import Data
 from modules.enums.enums import ResponseCode
 from modules.models.api_response import (
-    UserType,
-    AddUser,
-    GetUserConfigs,
     GetUserConfigsResult,
-    GetUserInfo,
     GetUserInfoResult,
-    PaymentLink,
-    IncreaseBalance
 )
-
+from modules.models import Models
 from modules.api.api_config import ApiConfig
 from modules.api.urls import ApiUrls
 
@@ -22,6 +18,7 @@ from modules.api.urls import ApiUrls
 
 
 class UserApi:
+
 
     def __init__(self, user_id: int) -> None:
         """_summary_
@@ -35,7 +32,10 @@ class UserApi:
 
         self.user_id = user_id
         self.urls = ApiUrls()
-        self.headers = Data().headers
+        self.response = Models.get_response_from_api
+        self.send_data = Models.send_data_to_api
+        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN)
+
 
     @property
     def get_user_information(self) -> GetUserInfoResult | bool:
@@ -50,15 +50,16 @@ class UserApi:
 
         for i in range(2):
             
+            url = self.urls.get_user_info(self.user_id)
             response = get(
-                url=self.urls.get_user_info(self.user_id),
+                url=url,
                 headers=self.headers,
                 verify=False
             )
             
             if (response.status_code == 200):
 
-                result = GetUserInfo(**loads(response.content))
+                result = self.response.GetUserInfo(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS): return result.result
 
@@ -68,14 +69,19 @@ class UserApi:
 
                     if (not add_user): return False
                 
-                else: return False
+                else: 
+                    
+                    return False
 
             elif (response.status_code == 401):
 
                 ApiConfig().get_token
                 continue
 
-            else: return False
+            else: 
+                
+                return False
+
 
     @property
     def get_user_type(self) -> int | bool:
@@ -86,21 +92,22 @@ class UserApi:
             str | bool: _description_
         """
 
-        data = Data(user_id=self.user_id)
+        data = self.send_data.UserId(userId=self.user_id).dict()
 
         for i in range(2):
 
             try:
 
+                url = self.urls.get_user_type(self.user_id)
                 response = get(
-                    url=self.urls.get_user_type(self.user_id), 
+                    url=url, 
                     headers=self.headers,
                     verify=False
                 )
 
                 if (response.status_code == 200):
 
-                    result = UserType(**loads(response.content))
+                    result = self.response.UserType(**loads(response.content))
 
                     if (result.status == ResponseCode.SUCSESS): 
                         return int(result.result.type)
@@ -112,14 +119,18 @@ class UserApi:
                         if (not add_user): return False
                         continue
 
-                    else: return False
+                    else: 
+                        
+                        return False
                 
                 elif (response.status_code == 401):
                     
                     ApiConfig().get_token
                     continue
 
-                else: return False
+                else:
+                    
+                    return False
                 
             except Exception as error:
 
@@ -128,6 +139,7 @@ class UserApi:
 
         
         return False
+
 
     @property
     def get_user_configs(self) -> List[GetUserConfigsResult] | int:
@@ -142,16 +154,17 @@ class UserApi:
         while (count < 2):
 
             try:
-            
+                
+                url = self.urls.get_user_configs(self.user_id)
                 response = get(
-                    url=self.urls.get_user_configs(self.user_id),
+                    url=url,
                     headers=self.headers,
                     verify=False
                 )
                 
                 if (response.status_code == 200):
 
-                    result = GetUserConfigs(**loads(response.content))
+                    result = self.response.GetUserConfigs(**loads(response.content))
                     del response
                     
                     if (result.status == ResponseCode.SUCSESS):
@@ -164,24 +177,20 @@ class UserApi:
                         
                         if (not add_user):
                             
-                            del (add_user, result)
                             return ResponseCode.FAILURE
                         
                     else:
 
-                        del response
                         return result.status  # 30, 32
                 
                 elif (response.status_code == 401):
 
                     count += 1
-                    del response
                     ApiConfig().get_token
                     continue
 
                 else:
 
-                    del response
                     return ResponseCode.FAILURE
             except Exception as error:
                 print(error)
@@ -189,6 +198,7 @@ class UserApi:
                 continue
 
         return ResponseCode.FAILURE
+
 
     def online_buy_link(self, server_id: int, config_id: int) -> int | str:
         """_summary_
@@ -204,19 +214,20 @@ class UserApi:
         """
 
         for i in range(2):
+            
+            url = self.urls.online_buy_config(
+                user_id=int(self.user_id),
+                server_id=int(server_id),
+                config_type_id=int(config_id)
+            )
             response = get(
-                url=self.urls.online_buy_config(
-                    user_id=int(self.user_id),
-                    server_id=int(server_id),
-                    config_type_id=int(config_id)
-                ),
+                url=url,
                 verify=False
             )
             
             if (response.status_code == 200):
 
-                result = PaymentLink(**loads(response.content))
-                del response
+                result = self.response.PaymentLink(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -232,26 +243,38 @@ class UserApi:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
         
         else:
 
             return ResponseCode.FAILURE
 
+
     def online_crypto_buy_link(self, server_id: int, config_id: int) -> str:
 
-        pass
+        """
+        :param server_id:
+        :param config_id:
+        :return:
+        """
+
+        response = post(
+            url=self.urls.online
+        )
 
 
     def online_crypto_charge_link(self, amount: int) -> str:
 
-        pass
+        """
+        :param amount:
+        :return:
+        """
+
+        data = Data(self.user_id).cr
 
 
     def online_charge_link(self, amount: int) -> int | str:
@@ -269,17 +292,19 @@ class UserApi:
             raise ValueError("amount must be number")
 
         for i in range(2):
+
+            url = self.urls.online_charge(
+                user_id=int(self.user_id),
+                amount=int(amount)
+            )
             response = get(
-                url=self.urls.online_charge(
-                    user_id=int(self.user_id),
-                    amount=int(amount)
-                ),
+                url=url,
                 verify=False
             )
             
             if (response.status_code == 200):
 
-                result = PaymentLink(**loads(response.content))
+                result = self.response.PaymentLink(**loads(response.content))
                 del response
 
                 if (result.status == ResponseCode.SUCSESS):
@@ -308,6 +333,7 @@ class UserApi:
 
             return ResponseCode.FAILURE                
 
+
     def add_user(self, referraler: Optional[int] = 0) -> bool:
         """
         for add user to database
@@ -326,10 +352,10 @@ class UserApi:
 
             raise ValueError("referraler argument is not a number")
         
-        data = Data(
-            user_id=self.user_id, 
-            referraler=int(referraler)
-        )
+        data = self.send_data.AddNewUser(
+            userId=int(self.user_id),
+            referralerUserId=int(referraler)
+        ).dict()
 
         for i in range(2):
 
@@ -337,14 +363,14 @@ class UserApi:
 
                 response = post(
                     url=self.urls.ADD_NEW_USER,
-                    json=data.add_user,
+                    json=data,
                     headers=self.headers,
                     verify=False
                 )
                 
                 if (response.status_code == 200):
 
-                    result = AddUser(**loads(response.content))
+                    result = self.response.AddUser(**loads(response.content))
 
                     if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
                                                 
@@ -357,7 +383,9 @@ class UserApi:
                     ApiConfig().get_token
                     continue
 
-                else: return False
+                else: 
+                    
+                    return False
 
             except Exception as error:
                 
@@ -367,6 +395,7 @@ class UserApi:
         else:
 
             return False
+
 
     def balance_increase(self, how_much: int) -> bool:
         """
@@ -384,31 +413,40 @@ class UserApi:
         count = 0
         while (count < 2):
 
+            url = self.urls.increase_balance(self.user_id, how_much)
             response = put(
-                url=self.urls.increase_balance(self.user_id, how_much),
+                url=url,
                 headers=self.headers,
                 verify=False
             )
 
             if (response.status_code == 200):
 
-                result = IncreaseBalance(**loads(response.content))
+                result = self.response.IncreaseBalance(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
+
                     return True
+                
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
-                    user_api = UserApi(self.user_id).add_user()
+
+                    user_api = self.add_user()
                     count += 1
                     continue
+
                 else:
+
                     return False
 
             elif (response.status_code == 401):
                 count += 1
                 ApiConfig().get_token
                 continue
+
             else:
+
                 return False
 
         else:
+
             return False
