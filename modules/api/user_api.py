@@ -305,7 +305,6 @@ class UserApi:
             if (response.status_code == 200):
 
                 result = self.response.PaymentLink(**loads(response.content))
-                del response
 
                 if (result.status == ResponseCode.SUCSESS):
 
@@ -321,12 +320,10 @@ class UserApi:
 
             elif (response.status_code == 401):
 
-                del response
                 ApiConfig().get_token
 
             else:
 
-                del response
                 return ResponseCode.FAILURE
         
         else:
