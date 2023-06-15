@@ -40,6 +40,6 @@ class UserTypes(IntEnum):
     MARKETER = 2
 
 @unique
-class CryptoCheckStatus(IntEnum):
+class CryptoPaymentType(IntEnum):
     CHARGE = 0
     ONLINE_PURCHASE = 1

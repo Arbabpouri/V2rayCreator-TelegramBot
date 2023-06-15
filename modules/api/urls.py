@@ -1,10 +1,9 @@
-from modules.enums.enums import CryptoCheckStatus
+from modules.enums.enums import CryptoPaymentType
 
 
 class ApiUrls:
 
     TOKEN: str = ""
-
 
     def __init__(self) -> None:
 
@@ -16,10 +15,10 @@ class ApiUrls:
         self.ADD_NEW_CONFIG = fr"{self.API_URL}/api/Configs/AddNewConfig"  #
         self.GET_ALL_SERVERS = fr"{self.API_URL}/api/Servers/GetAllServers"  # 
         self.GET_SETTINGS = fr"{self.API_URL}/api/Settings/GetSettings"  #
-        self.HANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  # 
         self.RENEWAL_CONFIG = fr"{self.API_URL}/api/Configs/RenewalConfig"  # 
         self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  #    
-    
+        self.CRYPTO_PAYMENT = fr"{self.API_URL}/api/payment/"
+
     def get_user_type(self, user_id) -> str:
         """_summary_
 
@@ -132,11 +131,8 @@ class ApiUrls:
 
     def crypto_check_status(
         self, 
-        crypto_payment_type: CryptoCheckStatus, 
+        crypto_payment_type: CryptoPaymentType, 
         payment_id: int, 
-        # price: int
     ) -> str:
 
         return fr"{self.CRYPTO_API_URL}/api/payment/status?payment_id={payment_id}&crypto_payment_type={crypto_payment_type}"
-
-    # def online_

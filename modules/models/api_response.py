@@ -274,10 +274,19 @@ class IncreaseBalance(BaseModel):
     result: str | None = None
 
 
-class CryptoChargeResult(BaseModel):
+class CryptoPayment(BaseModel):
     status: int
     message: str | None = None
     result: str | None = None
+    payment_id: int
+    payment_status: str
+    pay_address: str
+    price_amount: float | int
+    price_currency: str
+    pay_amount: float | int
+    amount_received: float | int
+    pay_currency: str
+    purchase_id: str
 
 class CryptoOnlinePurchaseResult(BaseModel):
     status: int
