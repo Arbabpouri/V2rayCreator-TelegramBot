@@ -1,6 +1,4 @@
-import api_send_data
-import api_response
-
+from modules.models import api_send_data, api_response
 
 class Models:
 

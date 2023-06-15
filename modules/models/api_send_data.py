@@ -46,7 +46,7 @@ class Headers(BaseModel):
 
 
 class CryptoCharge(BaseModel):
-    crypto_payment_type = Optional[int] = 0
+    crypto_payment_type: Optional[int] = 0
     user_id: int
     toman_amount: int
 

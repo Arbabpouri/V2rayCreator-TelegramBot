@@ -34,7 +34,7 @@ class V2Ray:
         self.urls = ApiUrls()
         self.response = Models.get_response_from_api
         self.send_data = Models.send_data_to_api
-        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN)
+        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN).dict()
         
 
     @property

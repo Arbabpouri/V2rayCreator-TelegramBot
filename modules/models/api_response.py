@@ -287,8 +287,3 @@ class CryptoPayment(BaseModel):
     amount_received: float | int
     pay_currency: str
     purchase_id: str
-
-class CryptoOnlinePurchaseResult(BaseModel):
-    status: int
-    message: str | None = None
-    result: str | None = None

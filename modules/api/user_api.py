@@ -3,22 +3,20 @@ from requests import (
     put, 
     get
 )
-from json import loads
+from json import loads, dumps
 from typing import Optional, List
 from modules.enums.enums import ResponseCode
 from modules.models.api_response import (
     GetUserConfigsResult,
     GetUserInfoResult,
+    CryptoOnlinePurchaseResult
 )
 from modules.models import Models
 from modules.api.api_config import ApiConfig
 from modules.api.urls import ApiUrls
 
 
-
-
 class UserApi:
-
 
     def __init__(self, user_id: int) -> None:
         """_summary_
@@ -34,8 +32,7 @@ class UserApi:
         self.urls = ApiUrls()
         self.response = Models.get_response_from_api
         self.send_data = Models.send_data_to_api
-        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN)
-
+        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN).dict()
 
     @property
     def get_user_information(self) -> GetUserInfoResult | bool:
@@ -81,7 +78,6 @@ class UserApi:
             else: 
                 
                 return False
-
 
     @property
     def get_user_type(self) -> int | bool:
@@ -139,7 +135,6 @@ class UserApi:
 
         
         return False
-
 
     @property
     def get_user_configs(self) -> List[GetUserConfigsResult] | int:
@@ -199,7 +194,6 @@ class UserApi:
 
         return ResponseCode.FAILURE
 
-
     def online_buy_link(self, server_id: int, config_id: int) -> int | str:
         """_summary_
 
@@ -253,8 +247,7 @@ class UserApi:
 
             return ResponseCode.FAILURE
 
-
-    def online_crypto_buy_link(self, server_id: int, config_id: int) -> str:
+    def online_crypto_buy_link(self, toman_amount: int, server_id: int, config_id: int) -> str:
 
         """
         :param server_id:
@@ -262,20 +255,100 @@ class UserApi:
         :return:
         """
 
-        response = post(
-            url=self.urls.online
-        )
+        data = self.send_data.CryptoOnlinePurchase(
+            user_id=int(self.user_id),
+            toman_amount=int(toman_amount),
+            server_id=int(server_id),
+            config_type_id=int(config_id),
+        ).dict()
 
+        for i in range(2):
 
-    def online_crypto_charge_link(self, amount: int) -> str:
+            response = post(
+                url=self.urls.CRYPTO_PAYMENT,
+                data=data,
+                headers=self.headers
+            )
+
+            if (response.status_code == 200):
+
+                result = self.response.CryptoPayment(**loads(response.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result
+                
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    self.add_user()
+                    continue
+
+                else:
+
+                    return ResponseCode.FAILURE
+
+            elif (response.status_code == 401):
+
+                ApiConfig().get_token
+                continue
+
+            else:
+
+                return ResponseCode.FAILURE
+        
+        else:
+
+            return ResponseCode.FAILURE
+
+    def online_crypto_charge_link(self, toman_amount: int) -> CryptoOnlinePurchaseResult | int:
 
         """
         :param amount:
         :return:
         """
 
-        data = Data(self.user_id).cr
+        data = self.send_data.CryptoCharge(
+            user_id=int(self.user_id),
+            toman_amount=int(toman_amount),
+        ).dict()
 
+        for i in range(2):
+
+            response = post(
+                url=self.urls.CRYPTO_PAYMENT,
+                data=data,
+                headers=self.headers
+            )
+
+            if (response.status_code == 200):
+
+                result = self.response.CryptoPayment(**loads(response.content))
+
+                if (result.status == ResponseCode.SUCSESS):
+
+                    return result
+                
+                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
+
+                    self.add_user()
+                    continue
+
+                else:
+
+                    return ResponseCode.FAILURE
+
+            elif (response.status_code == 401):
+
+                ApiConfig().get_token
+                continue
+
+            else:
+
+                return ResponseCode.FAILURE
+        
+        else:
+
+            return ResponseCode.FAILURE
 
     def online_charge_link(self, amount: int) -> int | str:
         """_summary_
@@ -329,7 +402,6 @@ class UserApi:
         else:
 
             return ResponseCode.FAILURE                
-
 
     def add_user(self, referraler: Optional[int] = 0) -> bool:
         """
@@ -393,7 +465,6 @@ class UserApi:
 
             return False
 
-
     def balance_increase(self, how_much: int) -> bool:
         """
         for balance increase in database 
@@ -407,8 +478,7 @@ class UserApi:
 
         if (not str(how_much).isnumeric()): raise ValueError("how_much must be an integer")
         
-        count = 0
-        while (count < 2):
+        for i in range(2):
 
             url = self.urls.increase_balance(self.user_id, how_much)
             response = put(
@@ -428,7 +498,6 @@ class UserApi:
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     user_api = self.add_user()
-                    count += 1
                     continue
 
                 else:
@@ -436,7 +505,7 @@ class UserApi:
                     return False
 
             elif (response.status_code == 401):
-                count += 1
+
                 ApiConfig().get_token
                 continue
 
