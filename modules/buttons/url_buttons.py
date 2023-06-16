@@ -1,11 +1,7 @@
 from telethon import Button
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from modules.buttons.inline_buttons import InlineButtonsString
 from config import Config
-from modules.api.urls import ApiUrls
-from modules.api.APIS import APIS
-
-
 
 
 class UrlButtonsString:
@@ -13,6 +9,8 @@ class UrlButtonsString:
     SUPPORT = "📞 ارتباط با ادمین 📞"
     REFERRAL = "💢 لینک زیر مجموعه گیری 💢"
     CLICK_ME = "📍 کلیک کنید 📍"
+    CRYPTO_PAYMENT = "💎 پرداخت با ارز دیجیتال 💎"
+    IRR_PAYMENT = "💳 پرداخت با ریال 💳"
 
     @staticmethod
     def shop(price: int) -> str:
@@ -40,47 +38,10 @@ class UrlButtons:
 
     
     @staticmethod
-    def payment_link(link: str) -> List[Button]:
+    def payment_link(link: str, text: Optional[str] = UrlButtonsString.CLICK_ME) -> List[Button]:
 
         """
             
         """
 
-        return [Button.url(UrlButtonsString.CLICK_ME, link)]
-
-
-
-    # def shop(self, min_price: Optional[int] = Config.MIN_USER_CHARGE) -> Tuple[str, List[List[Button]]]:
-    #     """_summary_
-
-    #     Args:
-    #         min_price (Optional[int], optional): _description_. Defaults to Config.MIN_USER_CHARGE.
-
-    #     Returns:
-    #         List[Button]: _description_
-    #     """
-
-    #     user_api = APIS.user_api(self.user_id)
-        
-    #     if (min_price is None):
-    #         min_price = APIS.config_api().get_prices_limit
-        
-    #     if (not min_price): min_price = Config.MIN_USER_CHARGE
-
-    #     self.user_id = int(self.user_id)
-    #     buttons = [
-    #         [
-    #             Button.url(f"{int(min_price * 1):,} تومان", ""),
-    #             Button.url(f"{int(min_price * 2):,} تومان", "")
-    #         ],
-    #         [
-    #             Button.url(f"{int(min_price * 3):,} تومان", ""),
-    #             Button.url(f"{int(min_price * 4):,} تومان", ""),
-    #         ],
-    #         [
-    #             Button.inline(InlineButtonsString.CUSTOM_CHARGE, "ONLINE-CUSTOM-CHARGE")
-    #         ],
-    #     ]
-        
-    #     return buttons
-
+        return [Button.url(text, link)]

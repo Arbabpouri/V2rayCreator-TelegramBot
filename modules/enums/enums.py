@@ -1,4 +1,4 @@
-from enum import IntEnum, unique
+from enum import IntEnum, StrEnum, unique
 
 
 @unique
@@ -44,3 +44,7 @@ class UserTypes(IntEnum):
 class CryptoPaymentType(IntEnum):
     CHARGE = 0
     ONLINE_PURCHASE = 1
+
+@unique
+class CryptoStatus(StrEnum):
+    FINISHED = "finished"

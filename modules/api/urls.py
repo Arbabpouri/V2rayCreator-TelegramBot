@@ -133,11 +133,7 @@ class ApiUrls:
 
         return fr"{self.API_URL}/Users/ChangeUserMoney?userId={user_id}&howMuch={how_much}"
 
-    def crypto_check_status(
-        self,
-        crypto_payment_type: CryptoPaymentType,
-        payment_id: int,
-    ) -> str:
+    def crypto_check_status(self, crypto_payment_type: int, payment_id: int) -> str:
 
         return fr"{self.CRYPTO_API_URL}/payment/status?payment_id={payment_id}&crypto_payment_type={crypto_payment_type}"
 

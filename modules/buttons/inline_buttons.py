@@ -1,12 +1,13 @@
 from telethon import Button
 from typing import List, Optional, Tuple
 from enum import StrEnum
+from datetime import datetime
+
 from modules.api.APIS import APIS
 from modules.enums import UserTypes
 from modules.models.api_response import GetAllConfigTypesResult
 from modules.enums import ResponseCode
 from config.bot_strings import Strings
-from datetime import datetime
 
 
 
@@ -17,7 +18,6 @@ class InlineButtonsString(StrEnum):
 
 class InlineButtons:
 
-
     def __init__(self, user_id: Optional[int] | None = None) -> None:
         self.user_id = user_id
         if (str(self.user_id).isnumeric()): self.user_api = APIS.user_api(int(user_id))
@@ -25,7 +25,6 @@ class InlineButtons:
         self.CANCEL_GET = [Button.inline("❌ لغو عملیات ❌", "CANCEl-GET")]
         self.BACK_TO_HOME = [Button.inline("برگشت به خانه", "BACK-TO-HOME")]
         self.BACK_TO_CONFIGS = [Button.inline("⬅️ برگشت به لیست کانفیگ ها ⬅️", "BACK-TO-CONFIG-LIST")]
-
 
     @property
     def user_configs(self) -> Tuple[str, List[List[Button]]]:
@@ -75,7 +74,6 @@ class InlineButtons:
         buttons.append(self.BACK_TO_HOME)
         
         return (Strings.SERVICES, buttons)
-
 
     def select_server(self, buy_or_change: Optional[str] = "BUY", config_id: int | str = "") -> Tuple[str, List[List[Button]]]:
         """_summary_
@@ -134,7 +132,6 @@ class InlineButtons:
 
         return (Strings.BUY_CONFIG, buttons)
 
-
     def accept_admin_documents(self, name: str, user_name: str,
                                price: str, uuid: str) -> Tuple[bool, List[List[Button]]]:
         """_summary_
@@ -162,7 +159,6 @@ class InlineButtons:
             [Button.inline("💎 Price"), Button.inline(f"{int(price):,} تومان")],
             [Button.inline("✅ تایید کردن", f"ACC-{uuid}"), Button.inline("❌ رد کردن", f"REJECT-{uuid}")]
         ]
-
 
     def configs_for_sell(self, server_id: int) -> Tuple[bool, List[List[Button]]]:
         """_summary_
@@ -215,7 +211,6 @@ class InlineButtons:
         del (configs, user_type)
         return (True, buttons)
 
-
     def vmess_or_vless(self, server_id: int, config_id: int) -> List[List[Button]]:
         """_summary_
 
@@ -241,7 +236,6 @@ class InlineButtons:
                 Button.inline("Vless", f"BUY-SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
             ]
         ]
-
 
     def show_config(self, config_id: int) -> Tuple[str, List[List[Button]]]:
 
@@ -302,7 +296,6 @@ class InlineButtons:
 
         return ("ok my bro", buttons)
 
-
     def acc_reject(self, amount: int) -> List[List[Button]]:
         """_summary_
 
@@ -324,8 +317,7 @@ class InlineButtons:
         ]
 
         return buttons
-
-
+    
     def crypto_status(self, payment_id: int, amount: int) -> List[Button]:
         """_summary_
 
@@ -343,6 +335,26 @@ class InlineButtons:
 
         return buttons
 
+    def crypto_status_online(self, payment_id: int, amount: int, server_id: int, config_id: int) -> List[Button]:
+        """_summary_
+
+        Args:
+            payment_id (int): _description_
+            amount (int): _description_
+            server_id (int): _description_
+            config_id (int): _description_
+
+        Returns:
+            _type_: _description_
+        """
+
+        buttons = [
+            Button.inline(
+            text="🔹پرداخت با کریپتو | دریافت کانفیگ🔹", 
+            data=f"CRYPTO-ONLINE-STATUS-{payment_id}-{amount}-{server_id}-{config_id}")
+        ]
+
+        return buttons
 
     def select_plan_online_buy(self, amount: int) -> List[List[Button]]:
 

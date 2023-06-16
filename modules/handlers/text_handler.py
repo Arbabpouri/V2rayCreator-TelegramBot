@@ -185,6 +185,12 @@ class TextHandlers:
 
                 else:
 
+                    message = await client.send_message(
+                        event.chat_id,
+                        Strings.WAITING,
+                        buttons=TextButtons.start_menu(event.sender_id)
+                    )
+
                     text = int(event.message.message)
                     user_api = APIS.user_api(event.sender_id)
                     user_type = user_api.get_user_type
@@ -251,12 +257,6 @@ class TextHandlers:
                             )
 
                         elif (part == Step.GET_CUSTOM_CHARGE_CRYPTO):
-
-                            message = await client.send_message(
-                                event.chat_id,
-                                Strings.WAITING,
-                                buttons=TextButtons.start_menu(event.sender_id)
-                            )
 
                             user_api = APIS.user_api(int(event.sender_id))
                             payment_informations = user_api.online_crypto_charge_link(toman_amount=text)

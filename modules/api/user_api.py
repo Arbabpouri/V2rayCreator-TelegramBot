@@ -5,7 +5,7 @@ from requests import (
 )
 from json import loads
 from typing import Optional, List
-from modules.enums.enums import ResponseCode
+from modules.enums.enums import ResponseCode, CryptoStatus
 from modules.models.api_response import (
     GetUserConfigsResult,
     GetUserInfoResult,
@@ -149,12 +149,11 @@ class UserApi:
             int -> 30, 32
         """
 
-        count = 0
-        while (count < 2):
+        url = self.urls.get_user_configs(self.user_id)
+        for i in range(2):
 
             try:
 
-                url = self.urls.get_user_configs(self.user_id)
                 response = get(
                     url=url,
                     headers=self.headers,
@@ -163,9 +162,7 @@ class UserApi:
 
                 if (response.status_code == 200):
 
-                    result = self.response.GetUserConfigs(
-                        **loads(response.content))
-                    del response
+                    result = self.response.GetUserConfigs(**loads(response.content))
 
                     if (result.status == ResponseCode.SUCSESS):
 
@@ -183,22 +180,15 @@ class UserApi:
 
                         return result.status  # 30, 32
 
-                elif (response.status_code == 401):
-
-                    count += 1
-                    ApiConfig().get_token
-                    continue
-
                 else:
 
                     return ResponseCode.FAILURE
+                
             except Exception as error:
                 print(error)
-                count += 1
                 continue
 
         return ResponseCode.FAILURE
-
 
     def online_crypto_buy_link(self, toman_amount: int, server_id: int, config_id: int) -> str:
         """
@@ -238,12 +228,7 @@ class UserApi:
                 else:
 
                     return ResponseCode.FAILURE
-
-            elif (response.status_code == 401):
-
-                ApiConfig().get_token
-                continue
-
+                
             else:
 
                 return ResponseCode.FAILURE
@@ -288,11 +273,6 @@ class UserApi:
                 else:
 
                     return ResponseCode.FAILURE
-
-            elif (response.status_code == 401):
-
-                ApiConfig().get_token
-                continue
 
             else:
 
@@ -346,6 +326,46 @@ class UserApi:
             elif (response.status_code == 401):
 
                 ApiConfig().get_token
+
+            else:
+
+                return ResponseCode.FAILURE
+
+        else:
+
+            return ResponseCode.FAILURE
+
+    def crypto_status(self, payment_id: int, crypto_payment_type: CryptoStatus, price: int) -> int:
+
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
+
+        data = self.send_data.CryptoGetStatus(price=price).dict()
+        url = self.urls.crypto_check_status(
+            crypto_payment_type=crypto_payment_type,
+            payment_id=payment_id,
+        )
+
+        for i in range(2):
+
+            response = get(
+                url=url,
+                data=data,
+                verify=False
+            )
+
+            if (response.status_code == 200):
+
+                result = self.response.CryptoPayment(**loads(response.content))
+
+                if (response.status_code == ResponseCode.SUCSESS):
+
+                    return result.status
+
+                return result.status
 
             else:
 

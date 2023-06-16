@@ -27,6 +27,8 @@ class Strings:
     CONFIG_DOES_NOT_EXIST = "nist"
     CANCELED = "cancel shod"
     WAIT_CONFIRMATION = "Waiting for confirmation"
+    PAID = "پرداخت شد"
+    UNPAIN = "پرداخت نشده"
     DOCUMENTS_RECEIVED = "✅ مدارک ارسالی شما برای ادمین ناظر ارسال شد, تا تایید صبور باشید"
     ACC_ERROR = "Error"
     DOCUMENTS_NOT_RECEIVED = (
@@ -179,3 +181,30 @@ class Strings:
         )
 
         return text
+
+    @staticmethod
+    def error_text(error_id: int) -> str:
+        """_summary_
+
+        Args:
+            error_id (int): _description_
+
+        Returns:
+            str: _description_
+        """
+        response_error = Strings.RESPONSE_API_STRINGS
+        if (str(error_id) in response_error.keys()):
+            
+            return response_error[str(error_id)]
+        
+        return Strings.ERROR
+
+    @staticmethod
+    def your_config(config_link: str) -> str:
+
+        """_summary_
+        """
+
+        return (
+            f"config: {config_link}"
+        )

@@ -3,12 +3,11 @@ from telethon.types import PeerUser
 
 from config import client
 from config.bot_strings import Strings
-from modules.buttons import TextButtons, InlineButtons, UrlButtons
+from modules.buttons import TextButtons, InlineButtons, UrlButtons, UrlButtonsString
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 from modules.handlers.limiter import Limit, Step
-from modules.enums import ResponseCode
-from modules.enums import UserTypes
+from modules.enums.enums import ResponseCode, UserTypes, CryptoStatus
 from config import Config
 from modules.models.api_response import (
     ChangeProtocolResult,
@@ -62,7 +61,7 @@ class InlineHandlers:
         elif (data.startswith("BUY-SELECT-SERVER-")):
 
             # data[0] is the server id
-            server_id = data.replace("BUY-SELECT-SERVER-", "").split("-")[0]
+            server_id = data.lstrip("BUY-SELECT-SERVER-").split("-")[0]
             result, buttons = InlineButtons(
                 event.sender_id).configs_for_sell(int(server_id))
 
@@ -74,7 +73,7 @@ class InlineHandlers:
         elif (data.startswith("BUY-CONFIG-")):
 
             # data[0] is server id and data[1] is config id
-            data = data.replace("BUY-CONFIG-", "").split("-")
+            data = data.lstrip("BUY-CONFIG-").split("-")
             server_id, config_id = data
             buttons = InlineButtons().vmess_or_vless(
                 server_id=int(server_id),
@@ -86,7 +85,7 @@ class InlineHandlers:
         elif (data.startswith("BUY-SELECT-PROTOCOL-")):
 
             # data[0] is protocol, data[1] is server id, data[2] is config id
-            data = data.replace("BUY-SELECT-PROTOCOL-", "").split("-")
+            data = data.lstrip("BUY-SELECT-PROTOCOL-").split("-")
             protocol, server_id, config_id = data
             user_api = APIS.user_api(event.sender_id)
             balance = user_api.get_user_information.balance
@@ -129,13 +128,13 @@ class InlineHandlers:
                         server_id=int(server_id),
                         config_type_id=int(config_id),
                         protocol=protocol.lower(),
-                        is_free=False if (
-                            not event.sender_id in Config.ADMINS_USER_ID) else True
+                        is_free=False if (not event.sender_id in Config.ADMINS_USER_ID) else True
                     )
 
                     if (isinstance(add_config, int)):
-                        text = Strings.RESPONSE_API_STRINGS[str(payment_link)]\
-                            if (str(add_config) in list(Strings.RESPONSE_API_STRINGS.keys())) else Strings.ERROR
+                        response_error = Strings.RESPONSE_API_STRINGS
+                        text = response_error[str(add_config)]\
+                            if (str(add_config) in list(response_error.keys())) else Strings.ERROR
 
                     else:
 
@@ -179,11 +178,13 @@ class InlineHandlers:
                         
                         buttons = [
                             
-                            UrlButtons.payment_link(payment_link_irr),
-                            UrlButtons.payment_link(crypto_payment_link),
-                            InlineButtons(int(event.sender_id)).crypto_status(
+                            UrlButtons.payment_link(payment_link_irr, UrlButtonsString.IRR_PAYMENT),
+                            UrlButtons.payment_link(crypto_payment_link, UrlButtonsString.CRYPTO_PAYMENT),
+                            InlineButtons(int(event.sender_id)).crypto_status_online(
                                 payment_id=payment_crypto_informations.payment_id,
-                                amount=payment_crypto_informations.pay_amount
+                                amount=payment_crypto_informations.pay_amount,
+                                server_id=server_id,
+                                config_id=config_id
                             )
                             
                         ]
@@ -195,7 +196,7 @@ class InlineHandlers:
 
         elif (data.startswith("SHOW-CONFIG-INFO")):
 
-            config_id = data.replace("SHOW-CONFIG-INFO-", "")
+            config_id = data.lstrip("SHOW-CONFIG-INFO-")
 
             if (not str(config_id).isnumeric()):
 
@@ -208,7 +209,7 @@ class InlineHandlers:
 
         elif (data.startswith("RENEWAL-CONFIG-")):
 
-            config_id = data.replace("RENEWAL-CONFIG-", "")
+            config_id = data.lstrip("RENEWAL-CONFIG-")
             v2ray = APIS.v2ray_api()
             renewal = v2ray.renewal_config(int(config_id))
 
@@ -229,7 +230,7 @@ class InlineHandlers:
 
         elif (data.startswith("CHANGE-PROTOCOL-")):
 
-            config_id = data.replace("CHANGE-PROTOCOL-", "")
+            config_id = data.lstrip("CHANGE-PROTOCOL-")
 
             if (not str(config_id).isnumeric()):
 
@@ -253,21 +254,19 @@ class InlineHandlers:
 
         elif (data.startswith("CHANGE-SERVER-")):
 
-            config_id = data.replace("CHANGE-SERVER-", "")
+            config_id = data.lstrip("CHANGE-SERVER-")
 
             if (not str(config_id).isnumeric()):
 
                 await event.edit(Strings.ERROR, buttons=InlineButtons().BACK_TO_HOME)
                 return
 
-            message, buttons = InlineButtons(
-                int(event.sender_id)).select_server("CHANGE", int(config_id))
+            message, buttons = InlineButtons(int(event.sender_id)).select_server("CHANGE", int(config_id))
             await event.edit(message, buttons=buttons)
-            del (message, buttons, config_id)
 
         elif (data.startswith("CHANGE-SELECT-SERVER-")):
 
-            data = data.replace("CHANGE-SELECT-SERVER-", "").split("-")
+            data = data.lstrip("CHANGE-SELECT-SERVER-").split("-")
             server_id, config_id = data
 
             if (not (str(server_id).isnumeric() or str(server_id).isnumeric())):
@@ -290,9 +289,96 @@ class InlineHandlers:
 
             await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
 
-        elif (data.startswith("CRYPTO-STATUS-")):
+        elif (data.startswith(("CRYPTO-STATUS-", "CRYPTO-ONLINE-STATUS-"))):
 
-            pass
+            user_api = APIS.user_api(int(event.sender_id))
+
+            if (data.startswith("CRYPTO-STATUS-")):
+
+                data = data.lstrip("CRYPTO-STATUS-").split("-")
+                await event.answer(message=Strings.WAITING, cache_time=1)
+                payment_id, amount = data
+                
+                status = user_api.crypto_status(
+                    payment_id=payment_id,
+                    crypto_payment_type=0,
+                    price=amount
+                )
+
+                if (isinstance(status, int)):
+
+                    text = Strings.error_text(status)
+                
+                else:
+
+                    if (status == CryptoStatus.FINISHED):
+
+                        increase_balance = user_api.balance_increase(how_much=amount)
+
+                        if (increase_balance):
+                            
+                            text = Strings.PAID
+                            await event.delete()
+                        
+                        else:
+
+                            text = Strings.ERROR
+
+                    else:
+
+                        await event.answer(message=Strings.UNPAIN, cache_time=1, alert=True)
+                        return
+
+            else:
+
+                data = data.lstrip("CRYPTO-ONLINE-STATUS-").split("-")
+                payment_id, amount, server_id, config_id = data
+                
+                status = user_api.crypto_status(
+                    payment_id=payment_id,
+                    crypto_payment_type=1,
+                    price=amount
+                )
+
+                if (isinstance(status, int)):
+
+                    text = Strings.error_text(status)
+                
+                else:
+
+                    if (status == CryptoStatus.FINISHED):
+                        
+                        v2ray = APIS.v2ray_api()
+                        add_config = v2ray.add_new_config(
+                            user_id=int(event.sender_id),
+                            server_id=server_id,
+                            config_type_id=config_id,
+                            protocol="VMESS",
+                            is_free=True
+                        )
+
+                        if (isinstance(add_config, int)):
+
+                            text = Strings.error_text(add_config)
+                        
+                        else:
+
+                            text = Strings.your_config(add_config.v2RayLink)
+                            await event.delete()
+
+                    else:
+
+                        await event.answer(message=Strings.UNPAIN, cache_time=1, alert=True)
+                        return
+            
+            await client.send_message(
+                entity=event.chat_id,
+                message=text
+            )
+                
+                
+
+
 
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:
