@@ -20,10 +20,10 @@ async def check_config() -> NoReturn:
 
     for config in configs:
 
-        time_remaining = (datetime.fromisoformat(
-            config.expiresDate) - datetime.now()).days
+        time_remaining = (datetime.fromisoformat(config.expiresDate) - datetime.now()).days
+        print(time_remaining)
 
-        if (0 <= time_remaining <= 30):
+        if (0 <= time_remaining <= 1):
             users.append(
                 (config.clientUserId, config.v2RayLink)
             )

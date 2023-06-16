@@ -1,16 +1,15 @@
-from uuid import uuid1
 from telethon.custom import Message
 from telethon.types import MessageMediaPhoto, PeerChannel
 from re import match
 from config import client, Config
 from config.bot_strings import Strings
 from modules.buttons import (
-    TextButtunsString, TextButtons, UrlButtons, InlineButtons)
+    TextButtunsString, TextButtons, UrlButtons, InlineButtons
+)
 from modules.handlers.limiter import Limit, Step
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 from modules.enums import UserTypes
-from modules.tools.check_configs import check_config
 
 
 class TextHandlers:
@@ -253,13 +252,58 @@ class TextHandlers:
 
                         elif (part == Step.GET_CUSTOM_CHARGE_CRYPTO):
 
-                            await client.send_message(
+                            message = await client.send_message(
                                 event.chat_id,
                                 Strings.WAITING,
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
 
-                            # TODO. dar in bakhsh bayad link va dokme pardakht kardam ezafe shavad
+                            user_api = APIS.user_api(int(event.sender_id))
+                            payment_informations = user_api.online_crypto_charge_link(toman_amount=text)
+
+                            if (isinstance(payment_informations, int)):
+
+                                response_text = Strings.RESPONSE_API_STRINGS
+
+                                reply = response_text[str(payment_informations)]\
+                                    if (str(payment_informations) in response_text.keys()) else Strings.ERROR
+
+                                button = None
+
+                            else:
+
+                                reply = Strings.created_payment_link(text)
+
+                                payment_link = ApiUrls().crypto_payment_url(
+                                    amount=payment_informations.pay_amount,
+                                    address=payment_informations.pay_address
+                                )
+
+                                url_button = UrlButtons.payment_link(link=payment_link)
+
+                                status_button = InlineButtons(int(event.sender_id)).crypto_status(
+                                    payment_id=payment_informations.payment_id,
+                                    amount=payment_informations.pay_amount
+                                )
+
+                                button = [
+                                    url_button,
+                                    status_button   
+                                ]
+
+                            await message.delete()
+
+                            await client.send_message(
+                                entity=event.chat_id,
+                                message=reply,
+                                buttons=button
+                            )
+
+                            await client.send_message(
+                                entity=event.chat_id,
+                                message=Strings.BACKED_TO_HOME,
+                                buttons=TextButtons.start_menu(int(event.sender_id))
+                            )
 
                             del Limit.LIMIT[str(event.sender_id)]
 

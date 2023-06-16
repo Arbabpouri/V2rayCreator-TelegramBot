@@ -3,10 +3,10 @@ from telethon.types import PeerUser
 
 from config import client
 from config.bot_strings import Strings
-from modules.buttons import TextButtons, InlineButtons
+from modules.buttons import TextButtons, InlineButtons, UrlButtons
 from modules.api.APIS import APIS
+from modules.api.urls import ApiUrls
 from modules.handlers.limiter import Limit, Step
-from modules.models.api_response import OfflineCharge
 from modules.enums import ResponseCode
 from modules.enums import UserTypes
 from config import Config
@@ -143,28 +143,55 @@ class InlineHandlers:
 
                 else:
 
-                    pass
-                #     user_api = APIS.user_api(int(event.sender_id))
-                #     payment_link = user_api.online_buy_link(
-                #         server_id=int(server_id),
-                #         config_id=int(config_id)
-                #     )
+                    user_api = APIS.user_api(int(event.sender_id))
 
-                #     if isinstance(payment_link, int):
+                    payment_link_irr = ApiUrls().online_buy_config(
+                        user_id=int(event.sender_id),
+                        server_id=int(server_id),
+                        config_type_id=int(config_id)
+                    )
 
-                #         if (str(payment_link) in list(Strings.RESPONSE_API_STRINGS.keys())):
+                    payment_crypto_informations = user_api.online_crypto_charge_link(toman_amount=price)
 
-                #             text = Strings.RESPONSE_API_STRINGS[str(payment_link)]
+                    if (isinstance(payment_link_irr, int) or
+                        isinstance(payment_crypto_informations, int)):
+                        
+                        response_error = list(Strings.RESPONSE_API_STRINGS.keys())
 
-                #         else:
+                        if (str(payment_link_irr) in response_error or
+                            str(payment_crypto_informations) in response_error):
 
-                #             text = "error"
+                            text = Strings.RESPONSE_API_STRINGS[str(payment_link_irr)]
 
-                #     else:
+                        else:
 
-                #         text = f"linket: {payment_link.result}"
+                            text = Strings.ERROR
+                        
+                        buttons = []
 
-                # await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
+                    else:
+
+                        text = Strings.created_payment_link(price=price)
+                        crypto_payment_link = ApiUrls().crypto_payment_url(
+                            amount=payment_crypto_informations.pay_amount,
+                            address=payment_crypto_informations.pay_address
+                        )
+                        
+                        buttons = [
+                            
+                            UrlButtons.payment_link(payment_link_irr),
+                            UrlButtons.payment_link(crypto_payment_link),
+                            InlineButtons(int(event.sender_id)).crypto_status(
+                                payment_id=payment_crypto_informations.payment_id,
+                                amount=payment_crypto_informations.pay_amount
+                            )
+                            
+                        ]
+
+                await event.edit(
+                    text,
+                    buttons=buttons
+                )
 
         elif (data.startswith("SHOW-CONFIG-INFO")):
 
@@ -262,14 +289,6 @@ class InlineHandlers:
                 text = Strings.ERROR
 
             await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
-
-        elif (data.startswith("IRR-PAYMENT-")):
-
-            pass
-
-        elif (data.startswith("CRYPTO-PAYMENT-")):
-
-            pass
 
         elif (data.startswith("CRYPTO-STATUS-")):
 

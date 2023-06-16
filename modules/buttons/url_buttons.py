@@ -40,7 +40,7 @@ class UrlButtons:
 
     
     @staticmethod
-    def payment_link(link) -> List[Button]:
+    def payment_link(link: str) -> List[Button]:
 
         """
             

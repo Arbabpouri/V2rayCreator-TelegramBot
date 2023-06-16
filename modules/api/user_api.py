@@ -3,13 +3,13 @@ from requests import (
     put,
     get
 )
-from json import loads, dumps
+from json import loads
 from typing import Optional, List
 from modules.enums.enums import ResponseCode
 from modules.models.api_response import (
     GetUserConfigsResult,
     GetUserInfoResult,
-    CryptoOnlinePurchaseResult
+    CryptoPayment
 )
 from modules.models import Models
 from modules.api.api_config import ApiConfig
@@ -199,58 +199,6 @@ class UserApi:
 
         return ResponseCode.FAILURE
 
-    def online_buy_link(self, server_id: int, config_id: int) -> int | str:
-        """_summary_
-
-        Args:
-            server_id (int): _description_
-            config_id (int): _description_
-
-        Returns:
-            int | str: _description_
-            int -> 32, 42, 100, 102, 110
-            str -> link
-        """
-
-        for i in range(2):
-
-            url = self.urls.online_buy_config(
-                user_id=int(self.user_id),
-                server_id=int(server_id),
-                config_type_id=int(config_id)
-            )
-            response = get(
-                url=url,
-                verify=False
-            )
-
-            if (response.status_code == 200):
-
-                result = self.response.PaymentLink(**loads(response.content))
-
-                if (result.status == ResponseCode.SUCSESS):
-
-                    return result.result
-
-                elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
-
-                    self.add_user()
-
-                else:
-
-                    return result.status  # 32, 42, 100, 102, 110
-
-            elif (response.status_code == 401):
-
-                ApiConfig().get_token
-
-            else:
-
-                return ResponseCode.FAILURE
-
-        else:
-
-            return ResponseCode.FAILURE
 
     def online_crypto_buy_link(self, toman_amount: int, server_id: int, config_id: int) -> str:
         """
@@ -304,7 +252,7 @@ class UserApi:
 
             return ResponseCode.FAILURE
 
-    def online_crypto_charge_link(self, toman_amount: int) -> CryptoOnlinePurchaseResult | int:
+    def online_crypto_charge_link(self, toman_amount: int) -> CryptoPayment | int:
         """
         :param amount:
         :return:
@@ -320,7 +268,8 @@ class UserApi:
             response = post(
                 url=self.urls.CRYPTO_PAYMENT,
                 data=data,
-                headers=self.headers
+                headers=self.headers,
+                verify=False
             )
 
             if (response.status_code == 200):

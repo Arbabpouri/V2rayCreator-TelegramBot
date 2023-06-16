@@ -53,15 +53,6 @@ class GetAllConfigTypes(BaseModel):
 
 
 #
-class OfflineCharge(BaseModel):
-    user_id: int
-    price: int
-    enable: bool
-    status: str
-    by: str | None = None
-
-
-#
 class GetConfigResult(BaseModel):
     id: int
     name: str
