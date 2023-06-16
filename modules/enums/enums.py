@@ -1,7 +1,6 @@
 from enum import IntEnum, unique
 
 
-
 @unique
 class ResponseCode(IntEnum):
     SUCSESS = 0
@@ -33,11 +32,13 @@ class ResponseCode(IntEnum):
     REMOVE_CONFIG_PANEL_FAILURE = 132
     TELEGRAM_SEND_MESSAGE_ERROR = 200
 
+
 @unique
 class UserTypes(IntEnum):
     MANUAL = 0
     SELLER = 1
     MARKETER = 2
+
 
 @unique
 class CryptoPaymentType(IntEnum):

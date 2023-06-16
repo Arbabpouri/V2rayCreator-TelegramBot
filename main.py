@@ -10,10 +10,9 @@ from modules.api.urls import ApiUrls
 from modules.tools.check_configs import check_config
 
 
-
 Write.Print("Modules imported", Colors.red_to_green, end="\n")
 if __name__ == "__main__":
-    
+
     try:
 
         with open(r"./config/token.txt", "r") as file:
@@ -21,7 +20,7 @@ if __name__ == "__main__":
             ApiUrls.TOKEN = file.read()
             Write.Print("Token received", Colors.purple_to_blue, end="\n")
             file.close()
-    
+
     except FileNotFoundError:
 
         APIS().config_api().get_token
@@ -32,12 +31,13 @@ if __name__ == "__main__":
 
         Write.Print(str(error), Colors.red, interval=0)
         exit()
-        
+
     # for move user to different sessions
     client.add_event_handler(
         TextHandlers.user_move,
         NewMessage(
-            func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
+            func=lambda e: e.is_private and str(
+                e.sender_id) not in list(Limit.LIMIT.keys())
         )
     )
 
@@ -45,7 +45,8 @@ if __name__ == "__main__":
     client.add_event_handler(
         TextHandlers.get_informatios,
         NewMessage(
-            func=lambda e: e.is_private and str(e.sender_id) in list(Limit.LIMIT.keys())
+            func=lambda e: e.is_private and str(
+                e.sender_id) in list(Limit.LIMIT.keys())
         )
     )
 
@@ -53,15 +54,17 @@ if __name__ == "__main__":
     client.add_event_handler(
         InlineHandlers.user_move,
         CallbackQuery(
-            func=lambda e: e.is_private and str(e.sender_id) not in list(Limit.LIMIT.keys())
+            func=lambda e: e.is_private and str(
+                e.sender_id) not in list(Limit.LIMIT.keys())
         )
     )
 
     client.add_event_handler(
         InlineHandlers.acc_reject,
         CallbackQuery(
-            func=lambda event: str(event.sender_id) not in list(Limit.LIMIT.keys()) \
-                and event.sender_id in Config.ADMINS_USER_ID
+            func=lambda event: str(
+                event.sender_id) not in list(Limit.LIMIT.keys())
+            and event.sender_id in Config.ADMINS_USER_ID
         )
     )
 
@@ -70,6 +73,6 @@ if __name__ == "__main__":
         func=check_config,
     )
 
-
-    Write.Print('Handlers Created\nBot is online', Colors.blue_to_green, end="\n")
+    Write.Print('Handlers Created\nBot is online',
+                Colors.blue_to_green, end="\n")
     client.run_until_disconnected()

@@ -1,9 +1,9 @@
 from enum import IntEnum, unique
 
 
-
 class Limit:
     LIMIT = {}
+
 
 @unique
 class Step(IntEnum):

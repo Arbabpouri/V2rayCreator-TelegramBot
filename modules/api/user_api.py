@@ -1,6 +1,6 @@
 from requests import (
     post,
-    put, 
+    put,
     get
 )
 from json import loads, dumps
@@ -32,7 +32,9 @@ class UserApi:
         self.urls = ApiUrls()
         self.response = Models.get_response_from_api
         self.send_data = Models.send_data_to_api
-        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN).dict()
+        self.headers = self.send_data.Headers(
+            Authorization=self.urls.TOKEN
+        ).dict()
 
     @property
     def get_user_information(self) -> GetUserInfoResult | bool:
@@ -46,28 +48,30 @@ class UserApi:
         """
 
         for i in range(2):
-            
+
             url = self.urls.get_user_info(self.user_id)
             response = get(
                 url=url,
                 headers=self.headers,
                 verify=False
             )
-            
+
             if (response.status_code == 200):
 
                 result = self.response.GetUserInfo(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS): return result.result
+                if (result.status == ResponseCode.SUCSESS):
+                    return result.result
 
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
-                    
+
                     add_user = self.add_user()
 
-                    if (not add_user): return False
-                
-                else: 
-                    
+                    if (not add_user):
+                        return False
+
+                else:
+
                     return False
 
             elif (response.status_code == 401):
@@ -75,8 +79,8 @@ class UserApi:
                 ApiConfig().get_token
                 continue
 
-            else: 
-                
+            else:
+
                 return False
 
     @property
@@ -96,7 +100,7 @@ class UserApi:
 
                 url = self.urls.get_user_type(self.user_id)
                 response = get(
-                    url=url, 
+                    url=url,
                     headers=self.headers,
                     verify=False
                 )
@@ -105,35 +109,35 @@ class UserApi:
 
                     result = self.response.UserType(**loads(response.content))
 
-                    if (result.status == ResponseCode.SUCSESS): 
+                    if (result.status == ResponseCode.SUCSESS):
                         return int(result.result.type)
-                    
+
                     elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                         add_user = self.add_user()
 
-                        if (not add_user): return False
+                        if (not add_user):
+                            return False
                         continue
 
-                    else: 
-                        
+                    else:
+
                         return False
-                
+
                 elif (response.status_code == 401):
-                    
+
                     ApiConfig().get_token
                     continue
 
                 else:
-                    
+
                     return False
-                
+
             except Exception as error:
 
                 print(error)
                 continue
 
-        
         return False
 
     @property
@@ -144,24 +148,25 @@ class UserApi:
             List[GetUserConfigsResult] | int: _description_
             int -> 30, 32
         """
-        
+
         count = 0
         while (count < 2):
 
             try:
-                
+
                 url = self.urls.get_user_configs(self.user_id)
                 response = get(
                     url=url,
                     headers=self.headers,
                     verify=False
                 )
-                
+
                 if (response.status_code == 200):
 
-                    result = self.response.GetUserConfigs(**loads(response.content))
+                    result = self.response.GetUserConfigs(
+                        **loads(response.content))
                     del response
-                    
+
                     if (result.status == ResponseCode.SUCSESS):
 
                         return result.result
@@ -169,15 +174,15 @@ class UserApi:
                     elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                         add_user = ApiConfig().get_token
-                        
+
                         if (not add_user):
-                            
+
                             return ResponseCode.FAILURE
-                        
+
                     else:
 
                         return result.status  # 30, 32
-                
+
                 elif (response.status_code == 401):
 
                     count += 1
@@ -208,7 +213,7 @@ class UserApi:
         """
 
         for i in range(2):
-            
+
             url = self.urls.online_buy_config(
                 user_id=int(self.user_id),
                 server_id=int(server_id),
@@ -218,7 +223,7 @@ class UserApi:
                 url=url,
                 verify=False
             )
-            
+
             if (response.status_code == 200):
 
                 result = self.response.PaymentLink(**loads(response.content))
@@ -226,7 +231,7 @@ class UserApi:
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result.result
-                
+
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     self.add_user()
@@ -242,13 +247,12 @@ class UserApi:
             else:
 
                 return ResponseCode.FAILURE
-        
+
         else:
 
             return ResponseCode.FAILURE
 
     def online_crypto_buy_link(self, toman_amount: int, server_id: int, config_id: int) -> str:
-
         """
         :param server_id:
         :param config_id:
@@ -277,7 +281,7 @@ class UserApi:
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result
-                
+
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     self.add_user()
@@ -295,13 +299,12 @@ class UserApi:
             else:
 
                 return ResponseCode.FAILURE
-        
+
         else:
 
             return ResponseCode.FAILURE
 
     def online_crypto_charge_link(self, toman_amount: int) -> CryptoOnlinePurchaseResult | int:
-
         """
         :param amount:
         :return:
@@ -327,7 +330,7 @@ class UserApi:
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result
-                
+
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     self.add_user()
@@ -345,7 +348,7 @@ class UserApi:
             else:
 
                 return ResponseCode.FAILURE
-        
+
         else:
 
             return ResponseCode.FAILURE
@@ -374,7 +377,7 @@ class UserApi:
                 url=url,
                 verify=False
             )
-            
+
             if (response.status_code == 200):
 
                 result = self.response.PaymentLink(**loads(response.content))
@@ -382,7 +385,7 @@ class UserApi:
                 if (result.status == ResponseCode.SUCSESS):
 
                     return result.result
-                
+
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     self.add_user()
@@ -398,10 +401,10 @@ class UserApi:
             else:
 
                 return ResponseCode.FAILURE
-        
+
         else:
 
-            return ResponseCode.FAILURE                
+            return ResponseCode.FAILURE
 
     def add_user(self, referraler: Optional[int] = 0) -> bool:
         """
@@ -416,11 +419,11 @@ class UserApi:
         Returns:
             bool | ValueError: _description_
         """
-        
+
         if (not str(referraler).isnumeric()):
 
             raise ValueError("referraler argument is not a number")
-        
+
         data = self.send_data.AddNewUser(
             userId=int(self.user_id),
             referralerUserId=int(referraler)
@@ -436,31 +439,31 @@ class UserApi:
                     headers=self.headers,
                     verify=False
                 )
-                
+
                 if (response.status_code == 200):
 
                     result = self.response.AddUser(**loads(response.content))
 
                     if (result.status in [ResponseCode.SUCSESS, ResponseCode.USER_ALREADY_EXIST]):
-                                                
+
                         return True
-                    
+
                     return False
-                
+
                 elif (response.status_code == 401):
 
                     ApiConfig().get_token
                     continue
 
-                else: 
-                    
+                else:
+
                     return False
 
             except Exception as error:
-                
+
                 print(error)
                 return False
-        
+
         else:
 
             return False
@@ -476,8 +479,9 @@ class UserApi:
             bool: successful or unsuccessful
         """
 
-        if (not str(how_much).isnumeric()): raise ValueError("how_much must be an integer")
-        
+        if (not str(how_much).isnumeric()):
+            raise ValueError("how_much must be an integer")
+
         for i in range(2):
 
             url = self.urls.increase_balance(self.user_id, how_much)
@@ -489,12 +493,13 @@ class UserApi:
 
             if (response.status_code == 200):
 
-                result = self.response.IncreaseBalance(**loads(response.content))
+                result = self.response.IncreaseBalance(
+                    **loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
 
                     return True
-                
+
                 elif (result.status == ResponseCode.USER_DOES_NOT_EXIST):
 
                     user_api = self.add_user()

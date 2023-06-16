@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-
 # UserType and UserTypeResult classes are for the data received from the user type api
 class UserTypeResult(BaseModel):
     type: int
+
 
 class UserType(BaseModel):
     status: int
@@ -24,6 +24,7 @@ class AddUser(BaseModel):
 class GetTokenResult(BaseModel):
     jwtToken: str
 
+
 class GetToken(BaseModel):
     status: int
     message: str | None = None
@@ -40,8 +41,10 @@ class GetAllConfigTypesResult(BaseModel):
     priceForManualUsers: int
     priceForSellerUsers: int
 
+
 class GetAllConfigTypesList(BaseModel):
     configTypes: Optional[List[GetAllConfigTypesResult]] = []
+
 
 class GetAllConfigTypes(BaseModel):
     status: int
@@ -58,8 +61,7 @@ class OfflineCharge(BaseModel):
     by: str | None = None
 
 
-
-# 
+#
 class GetConfigResult(BaseModel):
     id: int
     name: str
@@ -70,12 +72,13 @@ class GetConfigResult(BaseModel):
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
     clientUserId: int
     up: int
     down: int
     isEnable: bool
+
 
 class GetConfig(BaseModel):
     status: int
@@ -87,15 +90,15 @@ class GetConfig(BaseModel):
 class GetUserConfigsResult(BaseModel):
     id: int
     name: str
-    protocol : str
+    protocol: str
     serverName: str
     configTypeTitle: str
     numberOfUsers: int
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
     clientUserId: int
     up: int
     down: int
@@ -118,8 +121,8 @@ class AddNewConfigResult(BaseModel):
     activeDays: int
     maxTraffic: int
     v2RayLink: str
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
 
 
 class AddNewConfig(BaseModel):
@@ -140,8 +143,8 @@ class ChangeProtocolResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
 
 
 class ChangeProtocol(BaseModel):
@@ -162,13 +165,14 @@ class ChangeServerResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
+
+
 class ChangeServer(BaseModel):
     status: int
     message: str | None = None
     result: ChangeServerResult | None = None
-
 
 
 #
@@ -183,8 +187,9 @@ class RenewalConfigResult(BaseModel):
     v2RayLink: str
     up: int
     down: int
-    creationDate: str 
-    expiresDate: str 
+    creationDate: str
+    expiresDate: str
+
 
 class RenewalConfig(BaseModel):
     status: int
@@ -206,8 +211,10 @@ class GetAllServerResult(BaseModel):
     limit: int
     activeConfigs: int
 
+
 class GetAllServerList(BaseModel):
     servers: List[GetAllServerResult] | None = None
+
 
 class GetAllServer(BaseModel):
     status: int
@@ -219,10 +226,11 @@ class GetAllServer(BaseModel):
 class GetSettingsResult(BaseModel):
     minSellerAmount: int
 
+
 class GetSettings(BaseModel):
     status: int
     message: str | None = None
-    result: GetSettingsResult |None = None
+    result: GetSettingsResult | None = None
 
 
 #
@@ -231,6 +239,7 @@ class GetUserInfoResult(BaseModel):
     referralerUserId: Optional[int] = 0
     referrals: Optional[List[int]] = []
     precentage: int
+
 
 class GetUserInfo(BaseModel):
     status: int
@@ -261,6 +270,7 @@ class GetAllConfigsResult(BaseModel):
     up: int
     down: int
     isEnable: bool
+
 
 class GetAllConfigs(BaseModel):
     status: int

@@ -8,14 +8,13 @@ from modules.api.urls import ApiUrls
 
 class ApiConfig:
 
-
     def __init__(self) -> None:
-        
+
         self.urls = ApiUrls()
         self.send_data = Models.send_data_to_api
         self.response = Models.get_response_from_api
-        self.headers = self.send_data.Headers(Authorization=self.urls.TOKEN).dict()
-
+        self.headers = self.send_data.Headers(
+            Authorization=self.urls.TOKEN).dict()
 
     @property
     def get_token(self) -> bool:
@@ -34,23 +33,23 @@ class ApiConfig:
             )
 
             if (response.status_code != 200):
-                print(f"\n\ndata:{response.content}\ncode: {response.status_code}\n\nApi has no response")
+                print(
+                    f"\n\ndata:{response.content}\ncode: {response.status_code}\n\nApi has no response")
                 exit()
-            
+
             result = self.response.GetToken(**loads(response.content))
 
             if (result.status == ResponseCode.SUCSESS):
-                
 
                 with open(r"./config/token.txt", "w") as file:
                     file.write(f"bearer {result.result.jwtToken}")
                     file.close()
-                    
+
                 ApiUrls.TOKEN = rf"bearer {result.result.jwtToken}"
                 return True
 
             print(
-                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.ADMIN_NOT_FOUND) else \
+                "Error : {}".format("Username is wrong" if (result.status == ResponseCode.ADMIN_NOT_FOUND) else
                                     "Password is wrong" if (result.status == ResponseCode.ADMIN_WRONG_PASSWORD) else result.status)
             )
             exit()
@@ -59,7 +58,6 @@ class ApiConfig:
 
             print(error)
 
-
     @property
     def get_prices_limit(self) -> GetSettingsResult | bool:
         """
@@ -67,20 +65,20 @@ class ApiConfig:
             manual users and seller users have bin diffrent price limit , so you need to find the price limit for each
         """
         for i in range(2):
-            
+
             response = get(
                 url=self.urls.GET_SETTINGS,
                 headers=self.headers
             )
-            
+
             if (response.status_code == 200):
 
                 result = self.response.GetSettings(**loads(response.content))
 
-                if (result.status == ResponseCode.SUCSESS): 
-                    
+                if (result.status == ResponseCode.SUCSESS):
+
                     return result.result
-                
+
                 return False
 
             elif (response.status_code == 401):
@@ -88,6 +86,6 @@ class ApiConfig:
                 self.get_token
                 continue
 
-            else: 
-                
+            else:
+
                 return False

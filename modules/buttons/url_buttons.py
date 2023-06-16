@@ -19,7 +19,6 @@ class UrlButtonsString:
         return f"🔋 {int(price):,} تومان 💸"
 
 
-
 class UrlButtons:
 
     SUPPORT = [Button.url(UrlButtonsString.SUPPORT, f"https://t.me/{Config.ADMIN_USERNAME}")]

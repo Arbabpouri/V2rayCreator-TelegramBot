@@ -4,7 +4,8 @@ from telethon.types import MessageMediaPhoto, PeerChannel
 from re import match
 from config import client, Config
 from config.bot_strings import Strings
-from modules.buttons import (TextButtunsString, TextButtons, UrlButtons, InlineButtons)
+from modules.buttons import (
+    TextButtunsString, TextButtons, UrlButtons, InlineButtons)
 from modules.handlers.limiter import Limit, Step
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
@@ -14,25 +15,24 @@ from modules.tools.check_configs import check_config
 
 class TextHandlers:
 
-
     @staticmethod
     async def user_move(event: Message) -> None:
 
         text = str(event.message.message)
-        
+
         if (match(r"^/start [0-9]", text)):
 
-            user_id = str(event.message.message).lower().replace('https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
+            user_id = str(event.message.message).lower().replace(
+                'https://t.me/{}?start='.format(Config.BOT_USERNAME), '')
             user_id = user_id.replace("/start ", "")
-            
+
             APIS.user_api(event.sender_id).add_user(
                 referraler=0 if (user_id == str(event.sender_id) or not user_id.isnumeric() or
-                                  APIS.user_api(user_id).get_user_type != UserTypes.MANUAL) \
+                                 APIS.user_api(user_id).get_user_type != UserTypes.MANUAL)
                 else int(user_id)
             )
 
             text = "/start"
-
 
         match(text):
 
@@ -41,19 +41,23 @@ class TextHandlers:
 
                 add = APIS.user_api(user_id=event.sender_id).add_user()
 
-                if (add):message = Strings.start_menu(event.chat.first_name, event.sender_id)
-                else: message = Strings.ERROR
+                if (add):
+                    message = Strings.start_menu(
+                        event.chat.first_name, event.sender_id)
+                else:
+                    message = Strings.ERROR
 
                 await client.send_message(
                     event.chat_id,
                     Strings.start_menu(event.chat.first_name, event.sender_id),
                     buttons=TextButtons.start_menu(event.sender_id)
                 )
-                
+
             # this is session for select server for buy
             case (TextButtunsString.BUY_CONFIG):
 
-                message, buttons = InlineButtons(event.sender_id).select_server()
+                message, buttons = InlineButtons(
+                    event.sender_id).select_server()
 
                 await client.send_message(
                     event.chat_id,
@@ -72,13 +76,14 @@ class TextHandlers:
             # this is session for show configs
             case (TextButtunsString.MY_SUBSCRIPTIONS):
 
-                message, buttons = InlineButtons(int(event.sender_id)).user_configs
+                message, buttons = InlineButtons(
+                    int(event.sender_id)).user_configs
                 await client.send_message(
                     event.chat_id,
                     message,
                     buttons=buttons
                 )
-                
+
             # this is session for show charge buttons
             case (TextButtunsString.SHOP):
 
@@ -145,7 +150,7 @@ class TextHandlers:
                     Strings.get_user_id(event.sender_id),
                     parse_mode="html"
                 )
-            
+
             #
             case _:
                 pass
@@ -154,7 +159,7 @@ class TextHandlers:
     async def get_informatios(event: Message) -> None:
 
         if (event.message.message == TextButtunsString.CANCEl_GET):
-            
+
             await client.send_message(
                 event.chat_id,
                 Strings.CANCELED,
@@ -166,15 +171,13 @@ class TextHandlers:
         informations = Limit.LIMIT[str(event.sender_id)]
         part = informations["part"]
 
-        if (informations["last-message"] == event.message.message): return
-
-        
-        
+        if (informations["last-message"] == event.message.message):
+            return
 
         # get number for payment link for create custom charge
         match(part):
 
-            #this session for get custom charge number
+            # this session for get custom charge number
             case (Step.GET_CUSTOM_CHARGE_ONLINE | Step.GET_CUSTOM_CHARGE_OFFLINE | Step.GET_CUSTOM_CHARGE_CRYPTO):
 
                 if (not str(event.message.message).isnumeric()):
@@ -186,7 +189,7 @@ class TextHandlers:
                     text = int(event.message.message)
                     user_api = APIS.user_api(event.sender_id)
                     user_type = user_api.get_user_type
-                    
+
                     if (isinstance(user_type, bool) and not user_type):
 
                         await client.send_message(
@@ -243,7 +246,8 @@ class TextHandlers:
 
                             await client.send_message(
                                 event.chat_id,
-                                Strings.send_evidence(price=informations["price"]),
+                                Strings.send_evidence(
+                                    price=informations["price"]),
                                 buttons=TextButtons.CANCEL_GET
                             )
 
@@ -255,25 +259,7 @@ class TextHandlers:
                                 buttons=TextButtons.start_menu(event.sender_id)
                             )
 
-                            
-
-
-
-
-                            
-
                             # TODO. dar in bakhsh bayad link va dokme pardakht kardam ezafe shavad
-                            
-
-
-
-
-
-
-
-
-
-
 
                             del Limit.LIMIT[str(event.sender_id)]
 
@@ -287,11 +273,8 @@ class TextHandlers:
 
                             del Limit.LIMIT[str(event.sender_id)]
 
-
             # this session for get deposit documents
             case (Step.GET_EVIDENCE):
-
-
 
                 if (isinstance(event.message.media, MessageMediaPhoto)):
 
@@ -310,7 +293,8 @@ class TextHandlers:
                         user_id=int(event.sender_id),
                         amount=int(informations["price"]),
                     )
-                    buttons = InlineButtons(int(event.sender_id)).acc_reject(informations["price"])
+                    buttons = InlineButtons(int(event.sender_id)).acc_reject(
+                        informations["price"])
                     try:
 
                         await client.send_file(
@@ -321,7 +305,7 @@ class TextHandlers:
                         )
 
                     except:
-                        
+
                         for admin in Config.ADMINS_USER_ID:
 
                             try:
@@ -334,8 +318,9 @@ class TextHandlers:
                                 )
                                 break
 
-                            except: pass
-                        
+                            except:
+                                pass
+
                         else:
 
                             await client.send_message(
@@ -351,4 +336,3 @@ class TextHandlers:
                         Strings.NOT_PICTURE,
                         buttons=TextButtons.CANCEL_GET
                     )
-

@@ -50,12 +50,14 @@ class CryptoCharge(BaseModel):
     user_id: int
     toman_amount: int
 
+
 class CryptoOnlinePurchase(BaseModel):
     crypto_payment_type: Optional[int] = 1
     user_id: int
     toman_amount: int
     server_id: int
     config_type_id: int
+
 
 class CryptoGetStatus(BaseModel):
     price: int | float

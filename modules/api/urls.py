@@ -9,14 +9,17 @@ class ApiUrls:
 
         self.API_URL = "https://cnmellat.top"
         self.CRYPTO_API_URL = "https://127.0.0.1:443"
-        self.GET_TOKEN = fr"{self.API_URL}/api/Auth/LogIn"  # this is url for get token for request to api
-        self.ADD_NEW_USER = fr"{self.API_URL}/api/Users/AddNewUser"  # this is url for add user
-        self.GET_ALL_CONFIG_TYPES = fr"{self.API_URL}/api/ConfigTypes/GetAllConfigTypes"  # this is url for get all config
+        # this is url for get token for request to api
+        self.GET_TOKEN = fr"{self.API_URL}/api/Auth/LogIn"
+        # this is url for add user
+        self.ADD_NEW_USER = fr"{self.API_URL}/api/Users/AddNewUser"
+        # this is url for get all config
+        self.GET_ALL_CONFIG_TYPES = fr"{self.API_URL}/api/ConfigTypes/GetAllConfigTypes"
         self.ADD_NEW_CONFIG = fr"{self.API_URL}/api/Configs/AddNewConfig"  #
-        self.GET_ALL_SERVERS = fr"{self.API_URL}/api/Servers/GetAllServers"  # 
+        self.GET_ALL_SERVERS = fr"{self.API_URL}/api/Servers/GetAllServers"  #
         self.GET_SETTINGS = fr"{self.API_URL}/api/Settings/GetSettings"  #
-        self.RENEWAL_CONFIG = fr"{self.API_URL}/api/Configs/RenewalConfig"  # 
-        self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"  #    
+        self.RENEWAL_CONFIG = fr"{self.API_URL}/api/Configs/RenewalConfig"  #
+        self.CHANGE_SERVER = fr"{self.API_URL}/api/Configs/ChangeServer"
         self.CRYPTO_PAYMENT = fr"{self.API_URL}/api/payment/"
 
     def get_user_type(self, user_id) -> str:
@@ -30,7 +33,7 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Users/GetUserType?userId={user_id}"
-    
+
     def get_user_info(self, user_id) -> str:
         """_summary_
 
@@ -54,7 +57,7 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Configs/GetConfig?configId={config_id}"
-    
+
     def get_user_configs(self, user_id) -> str:
         """_summary_
 
@@ -66,7 +69,7 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Configs/GetUserConfigs?userId={user_id}"
-    
+
     def change_protocol(self, config_id) -> str:
         """_summary_
 
@@ -78,7 +81,7 @@ class ApiUrls:
         """
 
         return fr"{self.API_URL}/api/Configs/ChangeProtocol?configId={config_id}"
-    
+
     def delete_config(self, config_id) -> str:
         """_summary_
 
@@ -92,17 +95,16 @@ class ApiUrls:
         return fr"{self.API_URL}/api/Configs/DeleteConfig?configId={config_id}"
 
     def online_buy_config(
-        self, 
-        user_id: int, 
+        self,
+        user_id: int,
         server_id: int,
         config_type_id: int
     ) -> str:
-        
         """_summary_
         """
 
         return fr"{self.API_URL}/api/Gateway/GenOnlinePurchaseGateway"
-    
+
     def online_charge(self, user_id: int, amount: int) -> str:
         """_summary_
 
@@ -130,9 +132,9 @@ class ApiUrls:
         return fr"{self.API_URL}/api/Users/ChangeUserMoney?userId={user_id}&howMuch={how_much}"
 
     def crypto_check_status(
-        self, 
-        crypto_payment_type: CryptoPaymentType, 
-        payment_id: int, 
+        self,
+        crypto_payment_type: CryptoPaymentType,
+        payment_id: int,
     ) -> str:
 
         return fr"{self.CRYPTO_API_URL}/api/payment/status?payment_id={payment_id}&crypto_payment_type={crypto_payment_type}"

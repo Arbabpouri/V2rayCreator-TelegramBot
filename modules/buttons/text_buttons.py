@@ -68,6 +68,3 @@ class TextButtons:
             ] if (user_type != UserTypes.SELLER) else [],
 
         ]
-
-    
-
