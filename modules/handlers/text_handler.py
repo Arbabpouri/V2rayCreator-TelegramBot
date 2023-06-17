@@ -204,6 +204,7 @@ class TextHandlers:
                         )
 
                         del Limit.LIMIT[str(event.sender_id)]
+                        return
 
                     else:
 

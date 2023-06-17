@@ -7,7 +7,7 @@ from modules.buttons import TextButtons, InlineButtons, UrlButtons, UrlButtonsSt
 from modules.api.APIS import APIS
 from modules.api.urls import ApiUrls
 from modules.handlers.limiter import Limit, Step
-from modules.enums.enums import ResponseCode, UserTypes, CryptoStatus
+from modules.enums.enums import ResponseCode, UserTypes, CryptoStatus, CryptoPaymentType
 from config import Config
 from modules.models.api_response import (
     ChangeProtocolResult,
@@ -292,6 +292,7 @@ class InlineHandlers:
         elif (data.startswith(("CRYPTO-STATUS-", "CRYPTO-ONLINE-STATUS-"))):
 
             user_api = APIS.user_api(int(event.sender_id))
+            print(data)
 
             if (data.startswith("CRYPTO-STATUS-")):
 
@@ -301,7 +302,7 @@ class InlineHandlers:
                 
                 status = user_api.crypto_status(
                     payment_id=payment_id,
-                    crypto_payment_type=0,
+                    crypto_payment_type=CryptoPaymentType.CHARGE,
                     price=amount
                 )
 
@@ -333,10 +334,11 @@ class InlineHandlers:
 
                 data = data.lstrip("CRYPTO-ONLINE-STATUS-").split("-")
                 payment_id, amount, server_id, config_id = data
+                await event.answer(message=Strings.WAITING, cache_time=1)
                 
                 status = user_api.crypto_status(
                     payment_id=payment_id,
-                    crypto_payment_type=1,
+                    crypto_payment_type=CryptoPaymentType.ONLINE_PURCHASE,
                     price=amount
                 )
 

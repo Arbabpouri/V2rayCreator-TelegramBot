@@ -211,6 +211,7 @@ class UserApi:
                 data=data,
                 headers=self.headers
             )
+            print(response.content)
 
             if (response.status_code == 200):
 
@@ -356,6 +357,7 @@ class UserApi:
                 data=data,
                 verify=False
             )
+            print(response.content)
 
             if (response.status_code == 200):
 
