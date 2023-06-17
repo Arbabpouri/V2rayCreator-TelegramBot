@@ -209,9 +209,8 @@ class UserApi:
             response = post(
                 url=self.urls.CRYPTO_PAYMENT,
                 data=data,
-                headers=self.headers
+                verify=False
             )
-            print(response.content)
 
             if (response.status_code == 200):
 
@@ -254,7 +253,6 @@ class UserApi:
             response = post(
                 url=self.urls.CRYPTO_PAYMENT,
                 data=data,
-                headers=self.headers,
                 verify=False
             )
 
@@ -296,13 +294,14 @@ class UserApi:
 
         if (not str(amount).isnumeric()):
             raise ValueError("amount must be number")
-
-        for i in range(2):
-
-            url = self.urls.online_charge(
+        
+        url = self.urls.online_charge(
                 user_id=int(self.user_id),
                 amount=int(amount)
             )
+
+        for i in range(2):
+            
             response = get(
                 url=url,
                 verify=False
@@ -357,15 +356,14 @@ class UserApi:
                 data=data,
                 verify=False
             )
-            print(response.content)
 
             if (response.status_code == 200):
 
                 result = self.response.CryptoPayment(**loads(response.content))
 
-                if (response.status_code == ResponseCode.SUCSESS):
+                if (result.status == ResponseCode.SUCSESS):
 
-                    return result.status
+                    return result.payment_status
 
                 return result.status
 
@@ -450,9 +448,6 @@ class UserApi:
             bool: successful or unsuccessful
         """
 
-        if (not str(how_much).isnumeric()):
-            raise ValueError("how_much must be an integer")
-
         for i in range(2):
 
             url = self.urls.increase_balance(self.user_id, how_much)
@@ -464,8 +459,8 @@ class UserApi:
 
             if (response.status_code == 200):
 
-                result = self.response.IncreaseBalance(
-                    **loads(response.content))
+                result = self.response.IncreaseBalance(**loads(response.content))
+                
 
                 if (result.status == ResponseCode.SUCSESS):
 

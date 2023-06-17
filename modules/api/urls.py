@@ -124,7 +124,7 @@ class ApiUrls:
 
         return fr"{self.API_URL}/Configs/GetAllConfigs?ServerId={server_id}"
 
-    def increase_balance(self, user_id: int, how_much: int) -> str:
+    def increase_balance(self, user_id: int, how_much: float) -> str:
         """
         :param user_id: int
         :param how_much: int

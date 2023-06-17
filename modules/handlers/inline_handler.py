@@ -138,7 +138,8 @@ class InlineHandlers:
 
                     else:
 
-                        text = f"linket `{add_config.v2RayLink}`"
+                        text = Strings.your_config(add_config.v2RayLink)
+                        button = TextButtons.start_menu(int(event.sender_id))
 
                 else:
 
@@ -150,7 +151,11 @@ class InlineHandlers:
                         config_type_id=int(config_id)
                     )
 
-                    payment_crypto_informations = user_api.online_crypto_charge_link(toman_amount=price)
+                    payment_crypto_informations = user_api.online_crypto_buy_link(
+                        toman_amount=price,
+                        server_id=server_id,
+                        config_id=config_id
+                    )
 
                     if (isinstance(payment_link_irr, int) or
                         isinstance(payment_crypto_informations, int)):
@@ -166,7 +171,7 @@ class InlineHandlers:
 
                             text = Strings.ERROR
                         
-                        buttons = []
+                        button = []
 
                     else:
 
@@ -176,7 +181,7 @@ class InlineHandlers:
                             address=payment_crypto_informations.pay_address
                         )
                         
-                        buttons = [
+                        button = [
                             
                             UrlButtons.payment_link(payment_link_irr, UrlButtonsString.IRR_PAYMENT),
                             UrlButtons.payment_link(crypto_payment_link, UrlButtonsString.CRYPTO_PAYMENT),
@@ -191,7 +196,7 @@ class InlineHandlers:
 
                 await event.edit(
                     text,
-                    buttons=buttons
+                    buttons=button
                 )
 
         elif (data.startswith("SHOW-CONFIG-INFO")):
@@ -292,18 +297,17 @@ class InlineHandlers:
         elif (data.startswith(("CRYPTO-STATUS-", "CRYPTO-ONLINE-STATUS-"))):
 
             user_api = APIS.user_api(int(event.sender_id))
-            print(data)
 
             if (data.startswith("CRYPTO-STATUS-")):
 
                 data = data.lstrip("CRYPTO-STATUS-").split("-")
                 await event.answer(message=Strings.WAITING, cache_time=1)
-                payment_id, amount = data
+                payment_id, crypto_amount, toman_amount = data
                 
                 status = user_api.crypto_status(
                     payment_id=payment_id,
                     crypto_payment_type=CryptoPaymentType.CHARGE,
-                    price=amount
+                    price=crypto_amount
                 )
 
                 if (isinstance(status, int)):
@@ -314,7 +318,7 @@ class InlineHandlers:
 
                     if (status == CryptoStatus.FINISHED):
 
-                        increase_balance = user_api.balance_increase(how_much=amount)
+                        increase_balance = user_api.balance_increase(how_much=toman_amount)
 
                         if (increase_balance):
                             
@@ -323,7 +327,7 @@ class InlineHandlers:
                         
                         else:
 
-                            text = Strings.ERROR
+                            text = Strings.error_text(status)
 
                     else:
 
@@ -341,6 +345,7 @@ class InlineHandlers:
                     crypto_payment_type=CryptoPaymentType.ONLINE_PURCHASE,
                     price=amount
                 )
+                print(status)
 
                 if (isinstance(status, int)):
 
@@ -355,7 +360,7 @@ class InlineHandlers:
                             user_id=int(event.sender_id),
                             server_id=server_id,
                             config_type_id=config_id,
-                            protocol="VMESS",
+                            protocol="vmess",
                             is_free=True
                         )
 

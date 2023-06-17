@@ -9,7 +9,7 @@ class Config:
     BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     # Admin Username without @ , example: SirSardar . ** for supporter **
     ADMIN_USERNAME = "Oxygn16"
-    ADMINS_USER_ID = [2056493966,]  # Admins user id for send deposit documents
+    ADMINS_USER_ID = []  # Admins user id for send deposit documents
     MIN_USER_CHARGE = 50000  # T , for min charge by manual user
     CARD_NUMBER = "1234 5678 9876 5432"
     CARD_HOLDER = "علی مومنی"

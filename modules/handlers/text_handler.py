@@ -284,7 +284,8 @@ class TextHandlers:
 
                                 status_button = InlineButtons(int(event.sender_id)).crypto_status(
                                     payment_id=payment_informations.payment_id,
-                                    amount=payment_informations.pay_amount
+                                    crypto_amount=payment_informations.pay_amount,
+                                    toman_amount=text
                                 )
 
                                 button = [

@@ -318,7 +318,7 @@ class InlineButtons:
 
         return buttons
     
-    def crypto_status(self, payment_id: int, amount: int) -> List[Button]:
+    def crypto_status(self, payment_id: int, crypto_amount: int, toman_amount: int) -> List[Button]:
         """_summary_
 
         Args:
@@ -330,7 +330,7 @@ class InlineButtons:
         """
 
         buttons = [
-            Button.inline("📍 با کریپتو پرداخت کردم 📍", f"CRYPTO-STATUS-{payment_id}-{amount}")
+            Button.inline("📍 با کریپتو پرداخت کردم 📍", f"CRYPTO-STATUS-{payment_id}-{crypto_amount}-{toman_amount}")
         ]
 
         return buttons
