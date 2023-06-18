@@ -91,44 +91,38 @@ class InlineButtons:
             Tuple[str, List[List[Button]]]: _description_
         """
 
-        if (not str(self.user_id).isnumeric()): 
-            raise ValueError("user_id must be integer")
-        
-        if (not isinstance(buy_or_change, str) or buy_or_change.upper() not in ["BUY", "CHANGE"]):
-            raise ValueError("buy_or_change must be string and buy_or_change in ['BUY', 'CHANGE'].")
-        
-        if (buy_or_change.upper() == "CHANGE" and not str(config_id).isnumeric()):
-            raise ValueError("whene time set CHANGE should gave number for config_id")
-
         servers = self.v2ray.get_all_servers
         user_type = self.user_api.get_user_type
 
-        if (servers is False or
+        if (not servers or
             not servers or
-            user_type == UserTypes.MARKETER):
+            user_type == UserTypes.MARKETER
+        ):
 
             buttons = [
-                [Button.inline("❌ سروری برای نمایش وجود ندارد ❌")],
-                self.BACK_TO_HOME
+                Button.inline("❌ سروری برای نمایش وجود ندارد ❌")
             ]
 
             return (Strings.NOT_SERVER, buttons)
         
         buttons = [
             [
-                Button.inline("💢 نام سرور ")
+                Button.inline("نام سرور-کشور-کد"),
+                Button.inline("ظرفیت")
             ]
         ]
 
         config = f"-{config_id}" if (buy_or_change.upper() == 'CHANGE') else ''
+
         for server in servers:
+            
+            data = f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}{config}"
             buttons.append(
                 [   
-                    Button.inline(str(server.name), f"{buy_or_change.upper()}-SELECT-SERVER-{server.id}{config}"),
+                    Button.inline(f"{server.id}-{server.name}", data),
+                    Button.inline(str(server.limit), data)
                 ]
             )
-
-        buttons.append(self.BACK_TO_HOME)
 
         return (Strings.BUY_CONFIG, buttons)
 
@@ -189,26 +183,21 @@ class InlineButtons:
                 [Button.inline("🔙 برگشت به لیست سرور ها", f"BACK-TO-SERVERS-{self.user_id}")]
             ]
 
-            del (configs, user_type)
             return (False, buttons)
         
-        buttons = [
-            [
-                Button.inline("💥نام"),
-                Button.inline("💳 قیمت 'تومان'"),
-            ]
-        ]
+        buttons = []
 
         for config in configs:
             price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else config.priceForSellerUsers
             buttons.append(
                 [
-                    Button.inline(str(config.title), f"BUY-CONFIG-{server_id}-{config.id}"),
-                    Button.inline(f"{int(price):,}"),
+                    Button.inline(
+                        text=f"{config.title}-{int(price):,} تومان",
+                        data=f"BUY-CONFIG-{server_id}-{config.id}"
+                    ),
                 ]
             )
         
-        del (configs, user_type)
         return (True, buttons)
 
     def vmess_or_vless(self, server_id: int, config_id: int) -> List[List[Button]]:
@@ -355,17 +344,3 @@ class InlineButtons:
         ]
 
         return buttons
-
-    def select_plan_online_buy(self, amount: int) -> List[List[Button]]:
-
-        buttons = [
-            [
-                Button.inline("💳 خرید انلاین با ریال 💳", f"IRR-PAYMENT-{self.user_id}-{amount}")
-            ],
-            [
-                Button.inline("💎 پرداخت انلاین با ارز دیجیتال 💎", f"CRYPTO-PAYMENT-{self.user_id}-{amount}")
-            ]
-        ]
-
-        return buttons
-

@@ -190,7 +190,8 @@ class InlineHandlers:
                                 amount=payment_crypto_informations.pay_amount,
                                 server_id=server_id,
                                 config_id=config_id
-                            )
+                            ),
+                            InlineButtons(int(event.sender_id)).BACK_TO_HOME
                             
                         ]
 
