@@ -1,19 +1,11 @@
 from telethon import Button
 from typing import List, Optional, Tuple
-from enum import StrEnum
 from datetime import datetime
 
 from modules.api.APIS import APIS
 from modules.enums import UserTypes
-from modules.models.api_response import GetAllConfigTypesResult
-from modules.enums import ResponseCode
 from config.bot_strings import Strings
 
-
-
-class InlineButtonsString(StrEnum):
-    BUY_CONFIG = ""
-    CUSTOM_CHARGE = "💎 مبلغ دلخواه 💎"
 
 
 class InlineButtons:
@@ -126,34 +118,6 @@ class InlineButtons:
 
         return (Strings.BUY_CONFIG, buttons)
 
-    def accept_admin_documents(self, name: str, user_name: str,
-                               price: str, uuid: str) -> Tuple[bool, List[List[Button]]]:
-        """_summary_
-
-        Args:
-            name (str): _description_
-            user_name (str): _description_
-            price (str): _description_
-            uuid (str): _description_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            Tuple[bool, List[List[Button]]]: _description_
-        """
-
-        if (not str(self.user_id).isnumeric()):
-            raise ValueError("user_id must be integer")
-
-        return [
-            [Button.inline("💎 Name"), Button.inline(str(name))],
-            [Button.inline("💎 User Name"), Button.inline(str(user_name))],
-            [Button.inline("💎 User ID"), Button.inline(str(self.user_id))],
-            [Button.inline("💎 Price"), Button.inline(f"{int(price):,} تومان")],
-            [Button.inline("✅ تایید کردن", f"ACC-{uuid}"), Button.inline("❌ رد کردن", f"REJECT-{uuid}")]
-        ]
-
     def configs_for_sell(self, server_id: int) -> Tuple[bool, List[List[Button]]]:
         """_summary_
 
@@ -200,7 +164,7 @@ class InlineButtons:
         
         return (True, buttons)
 
-    def vmess_or_vless(self, server_id: int, config_id: int) -> List[List[Button]]:
+    def final_approval(self, server_id: int, config_id: int) -> List[List[Button]]:
         """_summary_
 
         Args:
@@ -214,17 +178,14 @@ class InlineButtons:
             List[List[Button]]: _description_
         """
 
-        if (not str(server_id).isnumeric() and
-            not str(config_id).isnumeric()):
-
-                raise ValueError("user/server/config id must be a number, example: InlineButtons(123456).vmess_or_vless(12345, 123)")
-        
-        return [
+        button = [
             [
-                Button.inline("Vmess", f"BUY-SELECT-PROTOCOL-VMESS-{server_id}-{config_id}"),
-                Button.inline("Vless", f"BUY-SELECT-PROTOCOL-VLESS-{server_id}-{config_id}"),
+                Button.inline("کنسل کردن ❌", f"BUY-CONFIRMATION-{server_id}-{config_id}"),
+                Button.inline("تایید نهایی ✅", f"BUY-CANCEL"),
             ]
         ]
+        
+        return button
 
     def show_config(self, config_id: int) -> Tuple[str, List[List[Button]]]:
 
@@ -339,8 +300,8 @@ class InlineButtons:
 
         buttons = [
             Button.inline(
-            text="🔹پرداخت با کریپتو | دریافت کانفیگ🔹", 
-            data=f"CRYPTO-ONLINE-STATUS-{payment_id}-{amount}-{server_id}-{config_id}")
+                text="🔹پرداخت با کریپتو | دریافت کانفیگ🔹", 
+                data=f"CRYPTO-ONLINE-STATUS-{payment_id}-{amount}-{server_id}-{config_id}")
         ]
 
         return buttons

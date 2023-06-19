@@ -53,8 +53,19 @@ class InlineHandlers:
 
         elif (data == "BACK-TO-HOME"):
 
-            await event.edit(
-                Strings.BACKED_TO_HOME,
+            await event.delete()
+            await client.send_message(
+                entity=event.chat_id,
+                message=Strings.BACKED_TO_HOME,
+                buttons=TextButtons.start_menu(event.sender_id)
+            )
+
+        elif (data == "BUY-CANCEL"):
+
+            await event.delete()
+            await client.send_message(
+                entity=event.chat_id,
+                message=Strings.BACKED_TO_HOME,
                 buttons=TextButtons.start_menu(event.sender_id)
             )
 
@@ -66,7 +77,7 @@ class InlineHandlers:
                 event.sender_id).configs_for_sell(int(server_id))
 
             await event.edit(
-                "select config" if (result) else "not config",
+                Strings.SELECT_SERVER if (result) else Strings.NOT_SERVER,
                 buttons=buttons
             )
 
@@ -75,26 +86,28 @@ class InlineHandlers:
             # data[0] is server id and data[1] is config id
             data = data.lstrip("BUY-CONFIG-").split("-")
             server_id, config_id = data
-            buttons = InlineButtons().vmess_or_vless(
+            buttons = InlineButtons().final_approval(
                 server_id=int(server_id),
                 config_id=int(config_id),
             )
 
-            await event.edit("test", buttons=buttons)
+            await event.edit(Strings.FINAL_APPROVAL, buttons=buttons)
 
-        elif (data.startswith("BUY-SELECT-PROTOCOL-")):
+        elif (data.startswith("BUY-CONFIRMATION-")):
 
             # data[0] is protocol, data[1] is server id, data[2] is config id
-            data = data.lstrip("BUY-SELECT-PROTOCOL-").split("-")
+            data = data.lstrip("BUY-CONFIRMATION-").split("-")
             protocol, server_id, config_id = data
             user_api = APIS.user_api(event.sender_id)
             balance = user_api.get_user_information.balance
             configs = APIS.v2ray_api().get_all_config_types
 
-            if (isinstance(configs, int) and
-                    configs == ResponseCode.FAILURE):
+            if (isinstance(configs, int) or
+                not user_type
+            ):
 
-                await event.edit("get configs error", buttons=InlineButtons().BACK_TO_HOME)
+                text = Strings.error_text(int(configs)) if (user_type == True) else Strings.ERROR
+                await event.edit(text, buttons=InlineButtons().BACK_TO_HOME)
 
             else:
 
@@ -108,10 +121,11 @@ class InlineHandlers:
 
                             price = config.priceForManualUsers if (user_type == UserTypes.MANUAL) else \
                                 config.priceForSellerUsers
+                            config_name = config.title
 
                             break
 
-                        await event.edit("shoma bazaryabi nemituni bekhari", buttons=InlineButtons().BACK_TO_HOME)
+                        await event.edit(Strings.NO_PURCHASE, buttons=InlineButtons().BACK_TO_HOME)
                         return
 
                 else:
@@ -175,7 +189,11 @@ class InlineHandlers:
 
                     else:
 
-                        text = Strings.created_payment_link(price=price)
+                        text = Strings.online_payment_link(
+                            config_name=config_name,
+                            price=price
+                        )
+
                         crypto_payment_link = ApiUrls().crypto_payment_url(
                             amount=payment_crypto_informations.pay_amount,
                             address=payment_crypto_informations.pay_address
@@ -192,7 +210,6 @@ class InlineHandlers:
                                 config_id=config_id
                             ),
                             InlineButtons(int(event.sender_id)).BACK_TO_HOME
-                            
                         ]
 
                 await event.edit(
@@ -385,9 +402,6 @@ class InlineHandlers:
             )
                 
                 
-
-
-
     @staticmethod
     async def acc_reject(event: CallbackQuery.Event) -> None:
         """

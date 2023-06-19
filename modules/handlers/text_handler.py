@@ -69,7 +69,10 @@ class TextHandlers:
 
                 await client.send_message(
                     event.chat_id,
-                    Strings.account(event.sender_id),
+                    Strings.account(
+                        name=event.chat.first_name,
+                        user_id=int(event.sender_id)
+                    ),
                 )
 
             # this is session for show configs

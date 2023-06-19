@@ -128,9 +128,10 @@ class V2Ray:
         servers = self.get_all_servers
         if (not servers):
             return False
-        configs: list = []
+        
 
         for server in servers:
+            configs: list = []
 
             response = get(
                 url=self.urls.get_all_configs(server.id),
@@ -143,15 +144,16 @@ class V2Ray:
                 result = self.response.GetAllConfigs(**loads(response.content))
 
                 if (result.status == ResponseCode.SUCSESS):
-
-                    configs.append(result.result)
+                    
+                    configs: list = [result.result]
+                    configs = chain.from_iterable(configs)
 
             elif (response.status_code == 401):
 
                 ApiConfig().get_token
                 continue
 
-        return chain.from_iterable(configs)
+        return configs
 
     def add_new_config(
         self,
