@@ -180,8 +180,8 @@ class InlineButtons:
 
         button = [
             [
-                Button.inline("کنسل کردن ❌", f"BUY-CONFIRMATION-{server_id}-{config_id}"),
-                Button.inline("تایید نهایی ✅", f"BUY-CANCEL"),
+                Button.inline("کنسل کردن ❌", f"BUY-CANCEL"),
+                Button.inline("تایید نهایی ✅", f"BUY-CONFIRMATION-{server_id}-{config_id}"),
             ]
         ]
         

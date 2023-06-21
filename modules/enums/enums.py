@@ -48,3 +48,9 @@ class CryptoPaymentType(IntEnum):
 @unique
 class CryptoStatus(StrEnum):
     FINISHED = "finished"
+
+
+class ConfigProtocol(StrEnum):
+    VMESS = "VMESS"
+    VLESS = "VLESS"
+    DEFULT = "VMESS"

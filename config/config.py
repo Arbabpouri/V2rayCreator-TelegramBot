@@ -1,11 +1,11 @@
 class Config:
 
-    SESSION_NAME = "bot"  # string
+    SESSION_NAME = "bot1"  # string
     API_ID = 3359959  # Telegram Api ID , you can get it from telegram website
     # Telegram Api Hash , you can get it from telegram website
     API_HASH = "fc809b5d42bdac477f9ac9b56383a699"
     # Bot Token,you can get it from @BotFather
-    BOT_TOKEN = "6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks"
+    BOT_TOKEN =   "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8" #"6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks"
     BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     # Admin Username without @ , example: SirSardar . ** for supporter **
     ADMIN_USERNAME = "Oxygn16"

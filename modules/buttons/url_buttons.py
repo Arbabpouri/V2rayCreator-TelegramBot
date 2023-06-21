@@ -1,6 +1,5 @@
 from telethon import Button
 from typing import List, Optional
-from modules.buttons.inline_buttons import InlineButtonsString
 from config import Config
 
 
