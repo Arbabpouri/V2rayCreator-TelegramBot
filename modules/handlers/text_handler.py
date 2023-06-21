@@ -100,7 +100,7 @@ class TextHandlers:
 
                 await client.send_message(
                     event.sender_id,
-                    "cheghad?",
+                    Strings.AMOUNT,
                     buttons=TextButtons.CANCEL_GET
                 )
 
