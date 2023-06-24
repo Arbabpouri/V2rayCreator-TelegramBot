@@ -112,7 +112,7 @@ class InlineButtons:
             buttons.append(
                 [   
                     Button.inline(f"{server.id}-{server.name}", data),
-                    Button.inline(str(server.limit), data)
+                    Button.inline(str(server.limit - server.activeConfigs), data)
                 ]
             )
 
@@ -244,7 +244,8 @@ class InlineButtons:
 
         buttons.append(self.BACK_TO_CONFIGS)
 
-        return ("ok my bro", buttons)
+        text = Strings.show_config(config_inform.v2RayLink)
+        return (text, buttons)
 
     def acc_reject(self, amount: int) -> List[List[Button]]:
         """_summary_

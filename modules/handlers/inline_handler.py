@@ -97,12 +97,23 @@ class InlineHandlers:
             # data[0] is server id and data[1] is config id
             data = data.lstrip("BUY-CONFIG-").split("-")
             server_id, config_id = data
-            buttons = InlineButtons().final_approval(
-                server_id=int(server_id),
-                config_id=int(config_id),
-            )
+            v2ray = APIS.v2ray_api()
+            config_informations = v2ray.get_config(int(config_id))
+            if (isinstance(config_informations, int)):
 
-            await event.edit(Strings.FINAL_APPROVAL, buttons=buttons)
+                text = Strings.error_text(config_informations)
+                buttons = None
+
+            else:
+
+                text = Strings.final_approval(config_title=config_informations.configTypeTitle)
+                buttons = InlineButtons().final_approval(
+                    server_id=int(server_id),
+                    config_id=int(config_id),
+                )
+                
+
+            await event.edit(text, buttons=buttons)
 
         elif (data.startswith("BUY-CONFIRMATION-")):
 

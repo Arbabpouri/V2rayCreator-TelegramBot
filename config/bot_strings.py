@@ -21,7 +21,6 @@ class Strings:
     NOT_SERVER = "❌ سروری برای نمایش وجود ندارد ❌"
     SELECT_SERVER = "🔹 از لیست زیر سرور مد نظر خود را انتخاب کنید ⁉️"
     NO_PURCHASE = "❌ این سرویس برای بازاریاب ها غیرفعال است ❌"
-    FINAL_APPROVAL = "📍 از خرید خود مطمئن هستید ⁉️"
     ERROR = "🚫 مشکلی پیش آمد , لطفا مجددا تست کنید ❤️"
     CANCELED = "🔴 عملیات کنسل شد "
     WAIT_CONFIRMATION = "در انتظار تایید "
@@ -98,7 +97,7 @@ class Strings:
             "📊 - وضعیت حساب شما به شرح زیر است :\n\n"
             f"✍ نام شما : `{name}`\n"
             f"🔢 ایدی عددی شما : {user_id}\n" 
-            f"🤑 موجودی شما : {result.balance} تومان\n"
+            f"🤑 موجودی شما : {int(result.balance):,} تومان\n"
             f"⛓ تعداد زیرمجموعه : {len(result.referrals)}\n"
             f"📅 تاریخ امروز : {time}\n\n"
             f"🆔 {Config.BOT_USERNAME}"
@@ -200,4 +199,19 @@ class Strings:
     def online_payment_link(config_name: str, price: int) -> str:
 
         text = f"🔶 خرید کانفیگ `{config_name}` با قیمت `{price}` تومان "
+        return text
+
+    @staticmethod
+    def show_config(config_link: str) -> str:
+        """
+        """
+        text = f"لینک کانفیگ شما : `{config_link}`\n\nوضعیت کانفیگ شما:"
+        return text
+
+    @staticmethod
+    def final_approval(config_title: str) -> str:
+        """
+        """
+
+        text = f"از خرید کانفیگ با مشخصات : **{config_title}** اطمینان کامل دارید؟"
         return text
