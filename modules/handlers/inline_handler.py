@@ -98,20 +98,29 @@ class InlineHandlers:
             data = data.lstrip("BUY-CONFIG-").split("-")
             server_id, config_id = data
             v2ray = APIS.v2ray_api()
-            config_informations = v2ray.get_config(int(config_id))
-            if (isinstance(config_informations, int)):
+            configs_informations = v2ray.get_all_config_types
+            buttons = None
 
-                text = Strings.error_text(config_informations)
-                buttons = None
+            if (isinstance(configs_informations, int)):
+
+                text = Strings.error_text(configs_informations)
 
             else:
 
-                text = Strings.final_approval(config_title=config_informations.configTypeTitle)
-                buttons = InlineButtons().final_approval(
-                    server_id=int(server_id),
-                    config_id=int(config_id),
-                )
+                config = [i for i in configs_informations if (str(i.id) == str(config_id))]
+
+                if (config):
+
+                    config = config[0]
+                    text = Strings.final_approval(config_title=config.title)
+                    buttons = InlineButtons().final_approval(
+                        server_id=int(server_id),
+                        config_id=int(config_id),
+                    )
                 
+                else:
+
+                    text = Strings.ERROR
 
             await event.edit(text, buttons=buttons)
 
