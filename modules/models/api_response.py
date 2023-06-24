@@ -230,6 +230,7 @@ class GetUserInfoResult(BaseModel):
     referralerUserId: Optional[int] = 0
     referrals: Optional[List[int]] = []
     precentage: int
+    userType: int
 
 
 class GetUserInfo(BaseModel):
