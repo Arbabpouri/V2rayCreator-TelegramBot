@@ -1,24 +1,20 @@
 class Config:
 
-    SESSION_NAME = "bot1"  # string
-    API_ID = 3359959  # Telegram Api ID , you can get it from telegram website
+    SESSION_NAME = "V2rayBot"  # string
+    API_ID = 123456  # Telegram Api ID , you can get it from telegram website
     # Telegram Api Hash , you can get it from telegram website
-    API_HASH = "fc809b5d42bdac477f9ac9b56383a699"
+    API_HASH = ""
     # Bot Token,you can get it from @BotFather
-    BOT_TOKEN =   "5867054982:AAH6SDlVaeULkaw5WF2aJSe3TiCvvMK5qq8" #"6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks"
+    BOT_TOKEN =   "" #"6128444589:AAHDM6sXhXj4yLlvANcsugogaWwx69aQtks"
     BOT_USERNAME = "V2rayCreatorBot"  # without the @ , example : V2rayCreatorBot
     # Admin Username without @ , example: SirSardar . ** for supporter **
-    ADMIN_USERNAME = "Oxygn16"
+    ADMIN_USERNAME = "MohammadMahdiArbabpouri"
     ADMINS_USER_ID = []  # Admins user id for send deposit documents
     MIN_USER_CHARGE = 50000  # T , for min charge by manual user
     CARD_NUMBER = "1234 5678 9876 5432"
-    CARD_HOLDER = "علی مومنی"
-    ACC_REJECT_CHANNEL_ID = 1946616237
+    CARD_HOLDER = "نام نام خانوادگی"
+    ACC_REJECT_CHANNEL_ID = 1946616237  # channel address for acc or reject documents
 
     # API Config
-    USERNAME = "MellatVpnAccount"  # username for login to api for get token
-    PASSWORD = "AlienSardarMomeni2023"  # password for login to api for get token
-
-
-def __check_config() -> bool:
-    pass
+    USERNAME = "Username"  # username for login to api for get token
+    PASSWORD = "Password"  # password for login to api for get token
