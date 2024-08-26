@@ -15,33 +15,37 @@ Welcome to the **V2Ray Configuration Purchase Bot**! This bot is designed to pro
 
 ## 🚀 Key Features of the Bot
 
-### 1. **User Authentication**
-   - Utilizes a secure authentication system based on JWT, ensuring the security of user data and information.
-
-### 2. **User Management**
+### 1. **User Management**
    - Create and manage user accounts with detailed specifications.
-   - Each user can view and edit their profile.
 
-### 3. **Configuration Management**
+### 2. **Configuration Management**
    - **Purchase Process**: In the first step, the user selects a server provided by the backend. Then, available configurations are displayed, and the user can make a selection and receive a purchase link.
 
-### 4. **Account Recharge Section**
+### 3. **Account Recharge Section**
    - Users can recharge their accounts via bank transfer or cryptocurrency. This allows users to easily and effortlessly increase their balance.
 
-### 5. **Support Section**
+### 4. **Support Section**
    - Access to support information, rules, and regulations, as well as account management.
    - Users can ask questions and benefit from support services.
 
-### 6. **Rules Section**
+### 5. **Rules Section**
    - Provides users with the rules and regulations for using the bot to fully understand their rights and responsibilities.
 
-### 7. **Account Management Section**
+### 6. **Account Management Section**
    - Manage personal information, purchase history, and account settings.
 
-### 8. **Other Features**
+### 7. **Other Features**
    - Ability to view statistics and information related to purchases and activities performed.
    - Option to submit feedback and suggestions for service improvement.
 
+---
+
+### ⚠️ Attention:
+
+The configuration creation, server information, server addition, and all database-related functionalities are managed by the backend section. You can find these in the "api" folder. Please note that the backend is currently unavailable, but you can design your own backend and connect the bot to it.
+
+---
+---
 ---
 
 # 🤖 ربات خرید کانفیگ V2Ray | فارسی
@@ -61,29 +65,30 @@ Welcome to the **V2Ray Configuration Purchase Bot**! This bot is designed to pro
 
 ## 🚀 امکانات کلیدی ربات
 
-### 1. **احراز هویت کاربر**
-   - استفاده از سیستم احراز هویت امن مبتنی بر JWT که امنیت داده‌ها و اطلاعات کاربران را تضمین می‌کند.
-
-### 2. **مدیریت کاربران**
+### 1. **مدیریت کاربران**
    - ایجاد و مدیریت حساب‌های کاربری با مشخصات دقیق.
-   - هر کاربر می‌تواند پروفایل خود را مشاهده و ویرایش کند.
 
-### 3. **مدیریت کانفیگ**
+### 2. **مدیریت کانفیگ**
    - **روند خرید**: در گام اول، کاربر سروری را که از سمت بک‌اند دریافت می‌کند انتخاب می‌کند. سپس، کانفیگ‌های موجود نمایش داده می‌شوند و کاربر می‌تواند انتخاب کند و لینک خرید را دریافت کند.
 
-### 4. **بخش شارژ حساب**
+### 3. **بخش شارژ حساب**
    - کاربران می‌توانند حساب خود را از طریق کارت به کارت یا ارز دیجیتال شارژ کنند. این امکان به کاربران اجازه می‌دهد تا به سادگی و بدون دردسر، موجودی خود را افزایش دهند.
 
-### 5. **بخش پشتیبانی**
+### 4. **بخش پشتیبانی**
    - دسترسی به اطلاعات پشتیبانی، قوانین و مقررات، و همچنین مدیریت حساب کاربری.
    - کاربران می‌توانند سوالات خود را مطرح کرده و از خدمات پشتیبانی بهره‌مند شوند.
 
-### 6. **بخش قوانین**
+### 5. **بخش قوانین**
    - ارائه قوانین و مقررات استفاده از ربات به کاربران برای آگاهی کامل از حقوق و مسئولیت‌های خود.
 
-### 7. **بخش حساب کاربری**
+### 6. **بخش حساب کاربری**
    - مدیریت اطلاعات شخصی، تاریخچه خریدها و تنظیمات مربوط به حساب کاربری.
 
-### 8. **سایر امکانات**
+### 7. **سایر امکانات**
    - قابلیت مشاهده آمار و اطلاعات مربوط به خریدها و فعالیت‌های انجام شده.
    - امکان ارسال نظرات و پیشنهادات برای بهبود خدمات.
+
+---
+### ⚠️ توجه:
+
+بخش ایجاد پیکربندی، اطلاعات سرور، افزودن سرورها و تمامی قابلیت‌های مرتبط با پایگاه داده توسط بخش backend مدیریت می‌شود. شما می‌توانید این موارد را در پوشه "api" مشاهده کنید. لطفاً توجه داشته باشید که در حال حاضر backend در دسترس نیست اما میتونید بکند رو خودتون طراحی کنید و ربات رو بهش متصل کنید.
